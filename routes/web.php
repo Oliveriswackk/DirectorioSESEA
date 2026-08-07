@@ -1,7 +1,8 @@
 <?php
 
-use App\Http\Controllers\EstadoController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\EstadoController;
+use App\Http\Controllers\MunicipioController;
 use Illuminate\Support\Facades\Route;
 
 // Redirección inicial
@@ -17,10 +18,12 @@ Route::middleware(['auth'])->group(function () {
         return view('dashboard');
     })->name('dashboard');
 
+
     // Perfil de Usuario
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
 
     // Módulo: Estados
     Route::prefix('estados')->name('estados.')->group(function () {
@@ -30,6 +33,13 @@ Route::middleware(['auth'])->group(function () {
         Route::patch('/{estado}/toggle', [EstadoController::class, 'toggleActive'])->name('toggle');
     });
 
+
+    // Rutas de Municipios
+    Route::resource('municipios', MunicipioController::class)->except(['create', 'edit', 'show', 'destroy']);
+    Route::patch('municipios/{municipio}/toggle', [MunicipioController::class, 'toggleActive'])->name('municipios.toggle');
+
+
+    
 });
 
 require __DIR__.'/auth.php';

@@ -26,9 +26,19 @@
 
 
     <style>
-        /* Ajuste fino visual para integraciones globales */
+        /* Ajuste fino visual */
         .ts-control { border-radius: 0.35rem !important; }
         .swal2-popup { font-family: 'Nunito', sans-serif !important; }
+
+        /* Permite que el modal no corte elementos flotantes */
+        .modal-content, .modal-body {
+            overflow: visible !important;
+        }
+
+        /* Eleva la lista desplegable de TomSelect sobre el modal */
+        .ts-dropdown {
+            z-index: 1060 !important;
+        }
     </style>
 
     @stack('styles')
@@ -251,6 +261,7 @@
     <script>
         $(document).ready(function() {
 
+
             // 1. Manejo Automático de SweetAlert2 desde Flashes de Sesión
             @if(session('success'))
                 Swal.fire({
@@ -273,18 +284,26 @@
                 });
             @endif
 
-            // 2. Inicializador Global de TomSelect (Selects dinámicos dentro y fuera de modales)
+
+            // 2. Inicializador Global de TomSelect
             window.initSelects = function(scope = document) {
                 $(scope).find('.select-search').each(function() {
                     if (!this.tomselect) {
-                        new TomSelect(this, {
+                        let defaultValue = $(this).val(); // Lee el estado_id seleccionado desde Blade
+
+                        let ts = new TomSelect(this, {
                             create: false,
-                            sortField: { field: "text", order: "asc" },
-                            dropdownParent: 'body' // Evita que modales corten o rompan el menú desplegable
+                            sortField: { field: "text", order: "asc" }
                         });
+
+                        // Si venía un estado seleccionado en la URL, lo fija visualmente
+                        if (defaultValue) {
+                            ts.setValue(defaultValue, true);
+                        }
                     }
                 });
             };
+
 
             // Ejecutar al cargar la vista
             initSelects();

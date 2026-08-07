@@ -7,7 +7,7 @@
     <div class="d-flex align-items-center justify-content-between mb-3">
         <div>
             <h1 class="h4 mb-0 font-weight-bold text-gray-800">Estados</h1>
-            <p class="text-muted small mb-0">Gestión e inventario de estados registrados</p>
+            <p class="text-muted small mb-0">Gestión de estados registrados</p>
         </div>
         <button type="button" class="btn btn-primary btn-sm rounded shadow-sm" data-toggle="modal" data-target="#modalCrearEstado">
             <i class="fas fa-plus fa-xs mr-1"></i> Nuevo Estado
