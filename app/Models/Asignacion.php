@@ -1,0 +1,55 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+class Asignacion extends Model
+{
+    use HasFactory;
+
+    protected $table = 'asignaciones';
+
+    protected $fillable = [
+        'contacto_id',
+        'ente_id',
+        'sede_id',
+        'puesto_id',
+        'correo',
+        'telefono',
+        'extension',
+        'celular',
+        'fecha_inicio',
+        'fecha_fin',
+        'observaciones',
+        'activo',
+    ];
+
+    protected $casts = [
+        'fecha_inicio' => 'date',
+        'fecha_fin' => 'date',
+        'activo' => 'boolean',
+    ];
+
+    public function contacto(): BelongsTo
+    {
+        return $this->belongsTo(Contacto::class);
+    }
+
+    public function ente(): BelongsTo
+    {
+        return $this->belongsTo(Ente::class);
+    }
+
+    public function sede(): BelongsTo
+    {
+        return $this->belongsTo(Sede::class);
+    }
+
+    public function puesto(): BelongsTo
+    {
+        return $this->belongsTo(Puesto::class);
+    }
+}
