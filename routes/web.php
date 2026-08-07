@@ -47,6 +47,16 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/entes/{ente}', [EnteController::class, 'update'])->name('entes.update');
     Route::patch('/entes/{ente}/toggle', [EnteController::class, 'toggle'])->name('entes.toggle');
     
+
+    // Módulo: Sedes
+    Route::get('/sedes', [SedeController::class, 'index'])->name('sedes.index');
+    Route::post('/sedes', [SedeController::class, 'store'])->name('sedes.store');
+    Route::put('/sedes/{sede}', [SedeController::class, 'update'])->name('sedes.update');
+    Route::patch('/sedes/{sede}/toggle', [SedeController::class, 'toggle'])->name('sedes.toggle');
+
+
+
+    
 });
 
 require __DIR__.'/auth.php';
