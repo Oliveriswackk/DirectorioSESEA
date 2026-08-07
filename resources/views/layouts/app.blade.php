@@ -18,7 +18,7 @@
     <!-- SweetAlert2 CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
-    <!-- TomSelect CSS (Reemplazo moderno y ligero de Select2 que NO falla en Modales) -->
+    <!-- TomSelect CSS (reemplazo select2) -->
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap4.min.css" rel="stylesheet">
 
     <!-- DataTables CSS Bootstrap 4 -->
@@ -26,7 +26,8 @@
 
 
     <style>
-        /* Ajuste fino visual */
+
+    /* == Configuración TomSelect == */
         .ts-control { border-radius: 0.35rem !important; }
         .swal2-popup { font-family: 'Nunito', sans-serif !important; }
 
@@ -35,10 +36,11 @@
             overflow: visible !important;
         }
 
-        /* Eleva la lista desplegable de TomSelect sobre el modal */
+        /* Eleva la lista desplegable sobre el modal */
         .ts-dropdown {
             z-index: 1060 !important;
         }
+
     </style>
 
     @stack('styles')
@@ -77,21 +79,21 @@
 
             <li class="nav-item">
                 <a class="nav-link" href="{{ Route::has('entes.index') ? route('entes.index') : '#' }}">
-                    <i class="fas fa-fw fa-building"></i>
+                    <i class="fas fa-fw fa-landmark"></i>
                     <span>Entes</span>
                 </a>
             </li>
 
             <li class="nav-item">
                 <a class="nav-link" href="{{ Route::has('sedes.index') ? route('sedes.index') : '#' }}">
-                    <i class="fas fa-fw fa-map-marker-alt"></i>
+                    <i class="fas fa-fw fa-building"></i>
                     <span>Sedes</span>
                 </a>
             </li>
 
             <hr class="sidebar-divider">
 
-            <!-- Cobertura Territorial / Activos e Inactivos -->
+            <!-- Cobertura Territorial  -->
             <div class="sidebar-heading">REGIONES</div>
 
             <li class="nav-item {{ request()->routeIs('estados.*') ? 'active' : '' }}">
@@ -103,7 +105,7 @@
 
             <li class="nav-item">
                 <a class="nav-link" href="{{ Route::has('municipios.index') ? route('municipios.index') : '#' }}">
-                    <i class="fas fa-fw fa-city"></i>
+                    <i class="fas fa-fw fa-map-marker-alt"></i>
                     <span>Municipios</span>
                 </a>
             </li>
@@ -289,7 +291,7 @@
             window.initSelects = function(scope = document) {
                 $(scope).find('.select-search').each(function() {
                     if (!this.tomselect) {
-                        let defaultValue = $(this).val(); // Lee el estado_id seleccionado desde Blade
+                        let defaultValue = $(this).val();
 
                         let ts = new TomSelect(this, {
                             create: false,
@@ -304,15 +306,13 @@
                 });
             };
 
-
-            // Ejecutar al cargar la vista
             initSelects();
 
-            // Re-ejecutar al abrir cualquier Modal de Bootstrap
             $('.modal').on('shown.bs.modal', function() {
                 initSelects(this);
             });
 
+            
             // 3. Confirmación Global para Botones o Formularios de Eliminación / Toggle
             $(document).on('click', '.btn-confirm', function(e) {
                 e.preventDefault();

@@ -36,6 +36,7 @@ class MunicipioController extends Controller
         return view('municipios.index', compact('municipios', 'estados', 'search', 'estado_id'));
     }
 
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -52,6 +53,7 @@ class MunicipioController extends Controller
         return redirect()->route('municipios.index')->with('success', 'Municipio registrado correctamente.');
     }
 
+
     public function update(Request $request, Municipio $municipio)
     {
         $validated = $request->validate([
@@ -64,6 +66,7 @@ class MunicipioController extends Controller
         return redirect()->route('municipios.index')->with('success', 'Municipio actualizado correctamente.');
     }
 
+    
     public function toggleActive(Municipio $municipio)
     {
         $municipio->update([

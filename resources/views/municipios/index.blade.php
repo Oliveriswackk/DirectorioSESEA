@@ -75,15 +75,17 @@
                                 <td class="align-middle text-muted">
                                     {{ $municipio->estado->nombre ?? 'N/A' }}
                                 </td>
+
+                                <!-- Switch Estatus con SweetAlert2 -->
                                 <td class="align-middle text-center">
                                     <form action="{{ route('municipios.toggle', $municipio) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('PATCH')
                                         <div class="custom-control custom-switch d-inline-block">
                                             <input type="checkbox" 
-                                                   class="custom-control-input" 
+                                                   class="custom-control-input btn-confirm-switch-mun" 
                                                    id="switch-mun-{{ $municipio->id }}" 
-                                                   onchange="this.form.submit()" 
+                                                   data-nombre="{{ $municipio->nombre }}"
                                                    {{ $municipio->activo ? 'checked' : '' }}>
                                             <label class="custom-control-label small {{ $municipio->activo ? 'text-success font-weight-bold' : 'text-muted' }}" 
                                                    for="switch-mun-{{ $municipio->id }}" style="cursor: pointer;">
@@ -92,11 +94,16 @@
                                         </div>
                                     </form>
                                 </td>
+
+                                <!-- Botón Editar (Modal Único Reutilizable) -->
                                 <td class="align-middle text-right pr-4">
                                     <button type="button" 
-                                            class="btn btn-sm btn-light text-primary border-0 rounded px-2" 
+                                            class="btn btn-sm btn-light text-primary border-0 rounded px-2 btn-editar-municipio" 
                                             data-toggle="modal" 
-                                            data-target="#modalEditarMunicipio{{ $municipio->id }}" 
+                                            data-target="#modalEditarMunicipio" 
+                                            data-id="{{ $municipio->id }}"
+                                            data-nombre="{{ $municipio->nombre }}"
+                                            data-estado="{{ $municipio->estado_id }}"
                                             title="Editar">
                                         <i class="fas fa-pen fa-xs"></i>
                                     </button>
@@ -135,6 +142,71 @@
         if ($('#inputSearch').val() === '') {
             $('#inputSearch').focus();
         }
+
+        // Llenar el Modal Único de Edición al hacer clic en el lápiz
+        $(document).on('click', '.btn-editar-municipio', function() {
+            let id = $(this).data('id');
+            let nombre = $(this).data('nombre');
+            let estadoId = $(this).data('estado');
+
+            let actionUrl = "{{ route('municipios.update', ':id') }}".replace(':id', id);
+            $('#formEditarMunicipio').attr('action', actionUrl);
+            $('#edit_nombre_municipio').val(nombre);
+
+            // Asignar valor al select de Estado (TomSelect o select normal)
+            if ($('#edit_estado_id')[0].tomselect) {
+                $('#edit_estado_id')[0].tomselect.setValue(estadoId);
+            } else {
+                $('#edit_estado_id').val(estadoId);
+            }
+        });
+
+        // SweetAlert2: Confirmación para el Switch de Estatus
+        $(document).on('change', '.btn-confirm-switch-mun', function(e) {
+            let checkbox = $(this);
+            let form = checkbox.closest('form');
+            let isChecking = checkbox.is(':checked');
+            let nombreMun = checkbox.data('nombre');
+
+            checkbox.prop('checked', !isChecking);
+
+            Swal.fire({
+                title: '¿Cambiar estatus?',
+                text: `El municipio "${nombreMun}" pasará a estar ${isChecking ? 'ACTIVO' : 'INACTIVO'}.`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#4e73df',
+                cancelButtonColor: '#858796',
+                confirmButtonText: 'Sí, cambiar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    checkbox.prop('checked', isChecking);
+                    form.submit();
+                }
+            });
+        });
+
+        // SweetAlert2: Confirmación antes de Guardar Cambios en Edición
+        $(document).on('submit', '#formEditarMunicipio', function(e) {
+            e.preventDefault();
+            let form = this;
+
+            Swal.fire({
+                title: '¿Guardar modificaciones?',
+                text: 'Se actualizarán los datos del municipio en el sistema.',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#4e73df',
+                cancelButtonColor: '#858796',
+                confirmButtonText: 'Sí, guardar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
     });
 </script>
 @endpush

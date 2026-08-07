@@ -3,6 +3,8 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\EstadoController;
 use App\Http\Controllers\MunicipioController;
+use App\Http\Controllers\EnteController;
+use App\Http\Controllers\SedeController;
 use Illuminate\Support\Facades\Route;
 
 // Redirección inicial
@@ -18,7 +20,7 @@ Route::middleware(['auth'])->group(function () {
         return view('dashboard');
     })->name('dashboard');
 
-
+    
     // Perfil de Usuario
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -34,11 +36,16 @@ Route::middleware(['auth'])->group(function () {
     });
 
 
-    // Rutas de Municipios
+    // Módulo: Municipios
     Route::resource('municipios', MunicipioController::class)->except(['create', 'edit', 'show', 'destroy']);
     Route::patch('municipios/{municipio}/toggle', [MunicipioController::class, 'toggleActive'])->name('municipios.toggle');
 
 
+    // Módulo: Entes
+    Route::get('/entes', [EnteController::class, 'index'])->name('entes.index');
+    Route::post('/entes', [EnteController::class, 'store'])->name('entes.store');
+    Route::put('/entes/{ente}', [EnteController::class, 'update'])->name('entes.update');
+    Route::patch('/entes/{ente}/toggle', [EnteController::class, 'toggle'])->name('entes.toggle');
     
 });
 

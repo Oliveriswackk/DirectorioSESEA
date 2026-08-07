@@ -15,6 +15,7 @@ class EstadoController extends Controller
         return view('estados.index', compact('estados'));
     }
 
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -29,6 +30,7 @@ class EstadoController extends Controller
         return redirect()->route('estados.index')->with('success', 'Estado registrado correctamente.');
     }
 
+
     public function update(Request $request, Estado $estado)
     {
         $validated = $request->validate([
@@ -42,6 +44,7 @@ class EstadoController extends Controller
         return redirect()->route('estados.index')->with('success', 'Estado actualizado correctamente.');
     }
 
+    
     public function toggleActive(Estado $estado)
     {
         $estado->update([
