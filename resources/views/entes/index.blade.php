@@ -39,10 +39,10 @@
                 <table class="table table-hover align-middle mb-0" id="tablaEntes" style="width:100%;">
                     <thead class="bg-light text-muted small text-uppercase">
                         <tr>
-                            <th class="border-top-0 pl-3 py-3" style="width: 45%;">Nombre / Siglas</th>
+                            <th class="border-top-0 pl-3 py-3" style="width: 40%;">Nombre / Siglas</th>
                             <th class="border-top-0 py-3" style="width: 30%;">Nivel / Municipio</th>
                             <th class="border-top-0 text-center py-3" style="width: 15%;">Estatus</th>
-                            <th class="border-top-0 text-right pr-3 py-3" style="width: 10%;">Acciones</th>
+                            <th class="border-top-0 text-right pr-3 py-3" style="width: 15%;">Acciones</th>
                         </tr>
                     </thead>
                     <tbody class="text-sm">
@@ -50,9 +50,16 @@
                             <tr>
                                 <!-- Columna 1: Nombre y Siglas -->
                                 <td class="align-middle pl-3">
-                                    <div class="font-weight-bold text-dark">{{ $ente->nombre }}</div>
+                                    <div class="d-flex align-items-center">
+                                        <span class="font-weight-bold text-dark mr-2">{{ $ente->nombre }}</span>
+                                        @if(isset($ente->sedes_count) && $ente->sedes_count > 0)
+                                            <span class="badge badge-light border text-muted px-2 py-1 font-weight-normal" title="{{ $ente->sedes_count }} sede(s) registrada(s)">
+                                                <i class="fas fa-building fa-xs mr-1 text-secondary"></i>{{ $ente->sedes_count }}
+                                            </span>
+                                        @endif
+                                    </div>
                                     @if($ente->siglas)
-                                        <small class="badge badge-light border text-muted px-2 py-1">{{ $ente->siglas }}</small>
+                                        <small class="text-muted d-block">{{ $ente->siglas }}</small>
                                     @endif
                                 </td>
 
@@ -91,20 +98,30 @@
                                     </form>
                                 </td>
 
-                                <!-- Columna 4: Editar (Lápiz) -->
+                                <!-- Columna 4: Acciones (Ver Sedes + Editar) -->
                                 <td class="align-middle text-right pr-3">
-                                    <button type="button" 
-                                            class="btn btn-sm btn-light text-primary border-0 rounded px-2 btn-editar-ente" 
-                                            data-toggle="modal" 
-                                            data-target="#modalEditarEnte" 
-                                            data-id="{{ $ente->id }}"
-                                            data-nombre="{{ $ente->nombre }}"
-                                            data-siglas="{{ $ente->siglas }}"
-                                            data-nivel="{{ $ente->nivel_gobierno_id }}"
-                                            data-municipio="{{ $ente->municipio_id }}"
-                                            title="Editar">
-                                        <i class="fas fa-pen fa-xs"></i>
-                                    </button>
+                                    <div class="btn-group" role="group">
+                                        <!-- Ver Sedes (Botón sutil de icono, sin texto que robe espacio) -->
+                                        <a href="{{ route('sedes.index', ['ente_id' => $ente->id]) }}" 
+                                        class="btn btn-sm btn-light text-secondary border-0 rounded mr-1 px-2" 
+                                        title="Ver sedes de {{ $ente->nombre }}">
+                                            <i class="fas fa-building fa-xs"></i>
+                                        </a>
+
+                                        <!-- Botón Editar (Conserva el protagonismo principal) -->
+                                        <button type="button" 
+                                                class="btn btn-sm btn-light text-primary border-0 rounded px-2 btn-editar-ente" 
+                                                data-toggle="modal" 
+                                                data-target="#modalEditarEnte" 
+                                                data-id="{{ $ente->id }}"
+                                                data-nombre="{{ $ente->nombre }}"
+                                                data-siglas="{{ $ente->siglas }}"
+                                                data-nivel="{{ $ente->nivel_gobierno_id }}"
+                                                data-municipio="{{ $ente->municipio_id }}"
+                                                title="Editar Ente">
+                                            <i class="fas fa-pen fa-xs"></i>
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach
@@ -145,7 +162,6 @@
             });
         }
 
-        
         // Llenar el Modal Único de Edición al hacer clic en el lápiz
         $(document).on('click', '.btn-editar-ente', function() {
             let id = $(this).data('id');
@@ -176,7 +192,6 @@
             }
         });
 
-
         // Switch de Confirmación con SweetAlert2
         $(document).on('change', '.btn-confirm-switch', function(e) {
             let checkbox = $(this);
@@ -201,7 +216,6 @@
                 }
             });
         });
-
 
         // Confirmación SweetAlert2 antes de actualizar un Ente
         $(document).on('submit', '#formEditarEnte', function(e) {

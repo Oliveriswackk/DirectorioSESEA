@@ -11,8 +11,11 @@ class EnteController extends Controller
 {
     public function index()
     {
-        // Carga optimizada con relaciones específicas
-        $entes = Ente::with(['nivelGobierno:id,nombre', 'municipio.estado:id,nombre'])->get();
+        // Carga optimizada con relaciones específicas y el conteo de sedes
+        $entes = Ente::with(['nivelGobierno:id,nombre', 'municipio.estado:id,nombre'])
+            ->withCount('sedes')
+            ->get();
+            
         $nivelesGobierno = NivelGobierno::where('activo', true)->select('id', 'nombre')->get();
         $municipios = Municipio::where('activo', true)->select('id', 'nombre', 'estado_id')->with('estado:id,nombre')->get();
 
