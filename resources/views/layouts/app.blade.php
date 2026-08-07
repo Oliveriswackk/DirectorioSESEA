@@ -1,18 +1,36 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>@yield('title', config('app.name', 'Directorio SESEA'))</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <!-- Custom fonts for this template-->
-    <link href="{{ asset('sbadmin2/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,400i,600,700,800,900" rel="stylesheet">
+    <title>{{ config('app.name', 'Directorio SESEA') }}</title>
 
-    <!-- Custom styles for this template-->
-    <link href="{{ asset('sbadmin2/css/sb-admin-2.min.css') }}" rel="stylesheet">
+    <!-- FontAwesome y Fuentes SBAdmin2 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+    <!-- CSS SBAdmin2 Base -->
+    <link href="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.1.4/css/sb-admin-2.min.css" rel="stylesheet">
+
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+    <!-- TomSelect CSS (Reemplazo moderno y ligero de Select2 que NO falla en Modales) -->
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap4.min.css" rel="stylesheet">
+
+    <!-- DataTables CSS Bootstrap 4 -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+
+
+    <style>
+        /* Ajuste fino visual para integraciones globales */
+        .ts-control { border-radius: 0.35rem !important; }
+        .swal2-popup { font-family: 'Nunito', sans-serif !important; }
+    </style>
+
     @stack('styles')
 </head>
 
@@ -66,8 +84,8 @@
             <!-- Cobertura Territorial / Activos e Inactivos -->
             <div class="sidebar-heading">REGIONES</div>
 
-            <li class="nav-item">
-                <a class="nav-link" href="{{ Route::has('estados.index') ? route('estados.index') : '#' }}">
+            <li class="nav-item {{ request()->routeIs('estados.*') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('estados.index') }}">
                     <i class="fas fa-fw fa-map"></i>
                     <span>Estados</span>
                 </a>
@@ -217,10 +235,94 @@
         </div>
     </div>
 
-    <script src="{{ asset('sbadmin2/vendor/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('sbadmin2/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('sbadmin2/vendor/jquery-easing/jquery.easing.min.js') }}"></script>
-    <script src="{{ asset('sbadmin2/js/sb-admin-2.min.js') }}"></script>
+    <!-- Scripts Esenciales Base -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-easing@1.4.1/jquery.easing.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.1.4/js/sb-admin-2.min.js"></script>
+
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- TomSelect JS -->
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+
+    <!-- Handlers Globales de UI -->
+    <script>
+        $(document).ready(function() {
+
+            // 1. Manejo Automático de SweetAlert2 desde Flashes de Sesión
+            @if(session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Logrado!',
+                    text: "{{ session('success') }}",
+                    timer: 2500,
+                    showConfirmButton: false,
+                    toast: true,
+                    position: 'top-end'
+                });
+            @endif
+
+            @if(session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: "{{ session('error') }}",
+                    confirmButtonColor: '#4e73df'
+                });
+            @endif
+
+            // 2. Inicializador Global de TomSelect (Selects dinámicos dentro y fuera de modales)
+            window.initSelects = function(scope = document) {
+                $(scope).find('.select-search').each(function() {
+                    if (!this.tomselect) {
+                        new TomSelect(this, {
+                            create: false,
+                            sortField: { field: "text", order: "asc" },
+                            dropdownParent: 'body' // Evita que modales corten o rompan el menú desplegable
+                        });
+                    }
+                });
+            };
+
+            // Ejecutar al cargar la vista
+            initSelects();
+
+            // Re-ejecutar al abrir cualquier Modal de Bootstrap
+            $('.modal').on('shown.bs.modal', function() {
+                initSelects(this);
+            });
+
+            // 3. Confirmación Global para Botones o Formularios de Eliminación / Toggle
+            $(document).on('click', '.btn-confirm', function(e) {
+                e.preventDefault();
+                let form = $(this).closest('form');
+                let message = $(this).data('confirm-message') || '¿Estás seguro de realizar esta acción?';
+
+                Swal.fire({
+                    title: '¿Confirmar acción?',
+                    text: message,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#4e73df',
+                    cancelButtonColor: '#e74a3b',
+                    confirmButtonText: 'Sí, continuar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+
+        });
+    </script>
+
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+
     @stack('scripts')
 </body>
 </html>
