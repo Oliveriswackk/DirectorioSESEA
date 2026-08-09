@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('asignaciones', function (Blueprint $table) {
@@ -20,8 +17,8 @@ return new class extends Migration
                 ->nullOnDelete();
 
             $table->foreignId('ente_id')
-                ->constrained('entes')
-                ->cascadeOnDelete();
+                ->nullable()
+                ->constrained('entes');
 
             $table->foreignId('sede_id')
                 ->nullable()
@@ -29,6 +26,7 @@ return new class extends Migration
                 ->nullOnDelete();
 
             $table->foreignId('puesto_id')
+                ->nullable()
                 ->constrained('puestos');
 
             $table->string('correo', 255)->nullable();
@@ -47,9 +45,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('asignaciones');

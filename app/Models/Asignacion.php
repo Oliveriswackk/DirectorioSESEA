@@ -2,16 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Asignacion extends Model
 {
-    use HasFactory;
-
-    protected $table = 'asignaciones';
-
     protected $fillable = [
         'contacto_id',
         'ente_id',
@@ -51,5 +46,20 @@ class Asignacion extends Model
     public function puesto(): BelongsTo
     {
         return $this->belongsTo(Puesto::class);
+    }
+
+    public function getConmutadorAttribute()
+    {
+        // Primero, intenta buscar el conmutador de la Sede (si existe y tiene valor)
+        if ($this->sede && $this->sede->conmutador) {
+            return $this->sede->conmutador;
+        }
+        
+        // Si no, recurre al del Ente (a nivel institucional)
+        if ($this->ente && $this->ente->conmutador) {
+            return $this->ente->conmutador;
+        }
+        
+        return 'N/A'; // O simplemente vacío
     }
 }

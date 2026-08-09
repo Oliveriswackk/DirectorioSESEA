@@ -13,6 +13,7 @@ return new class extends Migration
             $table->foreignId('ente_id')->constrained('entes')->cascadeOnDelete();
             $table->string('nombre');
             $table->text('direccion_texto')->nullable();
+            $table->string('conmutador', 50)->nullable();
             $table->boolean('activo')->default(true);
             $table->timestamps();
         });

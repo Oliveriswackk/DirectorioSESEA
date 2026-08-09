@@ -20,6 +20,8 @@ class DatabaseSeeder extends Seeder
             SedeSeeder::class,
             PuestoSeeder::class,
             UserSeeder::class,
+            ContactoSeeder::class,
+            AsignacionSeeder::class,
         ]);
     }
 }
