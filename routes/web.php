@@ -7,20 +7,30 @@ use App\Http\Controllers\EnteController;
 use App\Http\Controllers\SedeController;
 use App\Http\Controllers\ContactoController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 // Redirección inicial
 Route::get('/', function () {
-    return redirect()->route('dashboard');
+    return redirect()->route('contactos.index');
 });
+
+// Logout Manual y Seguro
+Route::post('/logout', function (Request $request) {
+    Auth::guard('web')->logout();
+    
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    return redirect('/login');
+})->name('logout');
+
 
 // Rutas protegidas por autenticación
 Route::middleware(['auth'])->group(function () {
 
-    // Dashboard
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
-
+    // Cargar directamente el directorio de contactos cuando entren a /dashboard
+    Route::get('/dashboard', [ContactoController::class, 'index'])->name('dashboard');
     
     // Perfil de Usuario
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

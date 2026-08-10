@@ -16,14 +16,22 @@
                 {{ $exception->getMessage() ?: 'La acción que intentaste realizar no pudo completarse o la página no está disponible.' }}
             </p>
 
-            <!-- Acciones de rescate -->
+            <!-- Acciones de rescate inteligentes -->
             <div class="mb-4">
-                <a href="{{ url()->previous() }}" class="btn btn-primary btn-sm px-4 mr-2">
-                    <i class="fas fa-arrow-left fa-xs mr-1"></i> Regresar a la pantalla anterior
-                </a>
-                <a href="{{ route('entes.index') }}" class="btn btn-outline-secondary btn-sm px-4">
-                    <i class="fas fa-home fa-xs mr-1"></i> Ir al Inicio
-                </a>
+                @if($exception instanceof \Illuminate\Auth\AuthenticationException)
+                    <!-- Si el problema es que no está logueado, directo al login -->
+                    <a href="{{ route('login') }}" class="btn btn-primary px-4">
+                        <i class="fas fa-sign-in-alt mr-2"></i> Iniciar sesión nuevamente
+                    </a>
+                @else
+                    <!-- Si es un error 500 u otro imprevisto dentro del sistema estando autorizado -->
+                    <a href="{{ url()->previous() }}" class="btn btn-primary btn-sm px-4 mr-2">
+                        <i class="fas fa-arrow-left fa-xs mr-1"></i> Regresar a la pantalla anterior
+                    </a>
+                    <a href="{{ route('dashboard') }}" class="btn btn-outline-secondary btn-sm px-4">
+                        <i class="fas fa-home fa-xs mr-1"></i> Ir al Inicio
+                    </a>
+                @endif
             </div>
 
             <!-- Chivato técnico para ti (Sistemas) -->

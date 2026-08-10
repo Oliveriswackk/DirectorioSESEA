@@ -181,13 +181,15 @@
 
                                 <div class="dropdown-divider"></div>
 
-                                <a class="dropdown-item"
-                                href="#"
-                                data-toggle="modal"
-                                data-target="#logoutModal">
+                                <a class="dropdown-item btn-logout" href="#">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Cerrar sesión
                                 </a>
+
+                                <!-- Formulario oculto indispensable para enviar el POST de cierre de sesión -->
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                    @csrf
+                                </form>
 
                             </div>
 
@@ -223,30 +225,6 @@
         <i class="fas fa-angle-up"></i>
     </a>
 
-    <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">¿Cerrar sesión?</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">Seleccione "Cerrar sesión" si está listo para finalizar su sesión actual.</div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
-                    <form action="{{ route('logout') }}" method="POST">
-                        @csrf
-                        <button type="submit" class="btn btn-primary">
-                            Cerrar sesión
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Scripts Esenciales Base -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -262,7 +240,6 @@
     <!-- Handlers Globales de UI -->
     <script>
         $(document).ready(function() {
-
 
             // 1. Manejo Automático de SweetAlert2 desde Flashes de Sesión
             @if(session('success'))
@@ -298,7 +275,6 @@
                             sortField: { field: "text", order: "asc" }
                         });
 
-                        // Si venía un estado seleccionado en la URL, lo fija visualmente
                         if (defaultValue) {
                             ts.setValue(defaultValue, true);
                         }
@@ -331,6 +307,35 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         form.submit();
+                    }
+                });
+            });
+
+
+            // 4. Confirmación de Cierre de Sesión con SweetAlert2
+            $(document).on('click', '.btn-logout', function(e) {
+                e.preventDefault();
+                
+                // Buscamos el formulario específico que está junto a este botón
+                let logoutForm = $(this).closest('.dropdown-menu').find('#logout-form');
+                
+                // Si por alguna razón no lo encuentra ahí, busca el global de la página
+                if (logoutForm.length === 0) {
+                    logoutForm = $('#logout-form');
+                }
+
+                Swal.fire({
+                    title: '¿Cerrar sesión?',
+                    text: '¿Estás seguro de que deseas salir del sistema?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#4e73df',
+                    cancelButtonColor: '#e74a3b',
+                    confirmButtonText: 'Sí, salir',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        logoutForm.submit();
                     }
                 });
             });
