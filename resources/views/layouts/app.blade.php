@@ -316,10 +316,8 @@
             $(document).on('click', '.btn-logout', function(e) {
                 e.preventDefault();
                 
-                // Buscamos el formulario específico que está junto a este botón
                 let logoutForm = $(this).closest('.dropdown-menu').find('#logout-form');
                 
-                // Si por alguna razón no lo encuentra ahí, busca el global de la página
                 if (logoutForm.length === 0) {
                     logoutForm = $('#logout-form');
                 }

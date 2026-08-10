@@ -15,6 +15,7 @@ class UserSeeder extends Seeder
             'email' => 'admin@example.com',
             'password' => Hash::make('123456789'),
             'role_id' => 1,
+            'activo' => true,
         ]);
 
         User::create([
@@ -22,6 +23,7 @@ class UserSeeder extends Seeder
             'email' => 'coordinador@example.com',
             'password' => Hash::make('123456789'),
             'role_id' => 2,
+            'activo' => true,
         ]);
 
         User::create([
@@ -29,6 +31,7 @@ class UserSeeder extends Seeder
             'email' => 'colab@example.com',
             'password' => Hash::make('123456789'),
             'role_id' => 3,
+            'activo' => true,
         ]);
     }
 }

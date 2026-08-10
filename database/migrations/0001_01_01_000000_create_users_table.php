@@ -23,6 +23,8 @@ return new class extends Migration
 
             $table->string('password');
 
+            $table->boolean('activo')->default(false);
+
             $table->rememberToken();
 
             $table->timestamps();

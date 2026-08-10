@@ -4,30 +4,22 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Mail\NuevaSolicitudAcceso;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rules;
-use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class RegisteredUserController extends Controller
 {
-    /**
-     * Display the registration view.
-     */
     public function create(): View
     {
         return view('auth.register');
     }
 
-    /**
-     * Handle an incoming registration request.
-     *
-     * @throws ValidationException
-     */
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
@@ -36,16 +28,27 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
+        // 1. Creamos el usuario inactivo y le asignamos su rol obligatorio por defecto
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role_id' => 4,
+            'activo' => 0,  // Bloqueado hasta autorización
         ]);
 
         event(new Registered($user));
 
-        Auth::login($user);
+        // 2. ENVIAR CORREO LEIDO DEL .ENV
+        $correoSistemas = env('ADMIN_EMAIL_NOTIFICATIONS'); 
+        
+        if ($correoSistemas) {
+            Mail::to($correoSistemas)->send(new NuevaSolicitudAcceso($user));
+        }
 
-        return redirect(route('dashboard', absolute: false));
+        // 3. Destruimos cualquier intento de sesión automática y mandamos al login con aviso
+        auth()->logout();
+
+        return redirect()->route('login')->with('status', '¡Solicitud enviada con éxito! Se ha notificado al área de sistemas para la autorización de tu cuenta.');
     }
 }

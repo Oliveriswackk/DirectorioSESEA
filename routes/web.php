@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AprobacionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\EstadoController;
 use App\Http\Controllers\MunicipioController;
@@ -25,6 +26,10 @@ Route::post('/logout', function (Request $request) {
     return redirect('/login');
 })->name('logout');
 
+// Autorizar solicitud de acceso
+Route::get('/admin/autorizar-acceso/{user}/{role}', [AprobacionController::class, 'procesarAprobacion'])
+    ->name('admin.aprobar.solicitud')
+    ->middleware('signed');
 
 // Rutas protegidas por autenticación
 Route::middleware(['auth'])->group(function () {

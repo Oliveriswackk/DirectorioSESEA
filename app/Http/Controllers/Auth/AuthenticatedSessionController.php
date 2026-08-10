@@ -24,7 +24,25 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        $credentials = $request->only('email', 'password');
+        $remember = $request->boolean('remember');
+
+        if (! Auth::attempt($credentials, $remember)) {
+            return back()->withInput($request->only('email'))
+                         ->withErrors([
+                             'email' => 'Las credenciales proporcionadas no coinciden con nuestros registros.',
+                         ]);
+        }
+
+        // BLINDAJE: Verificar si el usuario está activo
+        if (! Auth::user()->activo) {
+            Auth::logout();
+
+            return back()->withInput($request->only('email'))
+                         ->withErrors([
+                             'email' => 'Tu cuenta se encuentra pendiente de autorización por el área de sistemas.',
+                         ]);
+        }
 
         $request->session()->regenerate();
 
