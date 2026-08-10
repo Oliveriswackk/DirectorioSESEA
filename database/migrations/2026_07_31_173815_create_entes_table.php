@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('nombre');
             $table->string('siglas')->nullable();
             $table->string('conmutador', 50)->nullable();
+            $table->string('sitio_web')->nullable();
 
             $table->boolean('activo')->default(true);
             $table->timestamps();

@@ -5,6 +5,7 @@ use App\Http\Controllers\EstadoController;
 use App\Http\Controllers\MunicipioController;
 use App\Http\Controllers\EnteController;
 use App\Http\Controllers\SedeController;
+use App\Http\Controllers\ContactoController;
 use Illuminate\Support\Facades\Route;
 
 // Redirección inicial
@@ -25,6 +26,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+
+    // Módulo: Contactos
+    Route::resource('contactos', ContactoController::class)->parameters(['contactos' => 'contacto']);
+    Route::patch('contactos/{contacto}/nota', [ContactoController::class, 'updateNota'])->name('contactos.update-nota');
 
 
     // Módulo: Estados
@@ -53,9 +59,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/sedes', [SedeController::class, 'store'])->name('sedes.store');
     Route::put('/sedes/{sede}', [SedeController::class, 'update'])->name('sedes.update');
     Route::patch('/sedes/{sede}/toggle', [SedeController::class, 'toggle'])->name('sedes.toggle');
-
-
-
     
 });
 

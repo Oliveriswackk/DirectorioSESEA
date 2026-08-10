@@ -66,7 +66,7 @@
 
             <!-- Búsqueda Principal / Inicio -->
             <li class="nav-item active">
-                <a class="nav-link" href="{{ Route::has('dashboard') ? route('dashboard') : url('/') }}">
+                <a class="nav-link" href="{{ route('contactos.index') }}">
                     <i class="fas fa-fw fa-search"></i>
                     <span>Buscar Contactos</span>
                 </a>

@@ -11,9 +11,12 @@ return new class extends Migration
         Schema::create('sedes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('ente_id')->constrained('entes')->cascadeOnDelete();
+            
             $table->string('nombre');
             $table->text('direccion_texto')->nullable();
             $table->string('conmutador', 50)->nullable();
+            $table->string('sitio_web')->nullable();
+
             $table->boolean('activo')->default(true);
             $table->timestamps();
         });
