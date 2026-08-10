@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 
 // Redirección inicial
 Route::get('/', function () {
-    return redirect()->route('contactos.index');
+    return Auth::check() ? redirect()->route('contactos.index') : redirect()->route('login');
 });
 
 // Logout Manual y Seguro

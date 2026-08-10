@@ -1,29 +1,113 @@
 <x-guest-layout>
 
-<!-- CSS personalizado -->
+<!-- CSS personalizado para efectos suaves, transiciones y animaciones de texto -->
 <style>
     .transition-link:hover {
         color: #5e18b6 !important;
         text-decoration: none;
     }
+    html {
+        scroll-behavior: smooth;
+    }
+    /* Estilo elegante para el scrollbar */
+    ::-webkit-scrollbar {
+        width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+        background: #f1f3f8;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+    /* Animación para el cambio de frases dinámicas */
+    .fade-text {
+        opacity: 0;
+        transform: translateY(6px);
+        transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .fade-text.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
 </style>
 
-    <!-- Fondo claro refinado con sutil malla geométrica institucional -->
-    <div class="position-relative vh-100 d-flex align-items-center justify-content-center overflow-hidden" style="background-color: #f4f6f9; background-image: radial-gradient(#d1d8e0 1px, transparent 1px); background-size: 24px 24px;">
+<!-- Contenedor principal con scroll vertical suave (Inicia en la Hero Section arriba) -->
+<div class="container-fluid p-0 vh-100 overflow-y-auto" style="scroll-behavior: smooth;" id="mainContainer">
+
+    <!-- ================================================================= -->
+    <!-- SECCIÓN 1: HERO INSTITUCIONAL (ARRIBA)                             -->
+    <!-- ================================================================= -->
+    <div id="hero-section" class="position-relative vh-100 d-flex flex-column align-items-center justify-content-center text-center px-4 overflow-hidden animate-initial" 
+        style="background-color: #f4f6f9; background-image: radial-gradient(#d1d8e0 1px, transparent 1px); background-size: 24px 24px;">
         
-        <!-- Destellos lumínicos difuminados en segundo plano para dar volumen y calidez -->
+        <!-- Destellos lumínicos difuminados en segundo plano -->
+        <div class="position-absolute rounded-circle" style="width: 550px; height: 550px; background: rgba(78, 115, 223, 0.08); top: -100px; left: -100px; filter: blur(75px); pointer-events: none;"></div>
+        <div class="position-absolute rounded-circle" style="width: 500px; height: 500px; background: rgba(94, 24, 182, 0.04); bottom: -120px; right: -120px; filter: blur(85px); pointer-events: none;"></div>
+
+        <!-- Contenido Central del Hero -->
+        <div style="max-width: 750px; z-index: 10;">
+            
+            <!-- Badge institucional con frases cambiantes automáticas -->
+            <div class="mb-4">
+                <span class="badge px-4 py-2 font-weight-normal shadow-sm d-inline-flex align-items-center" 
+                    style="background-color: #ffffff; color: #4e73df; border-radius: 2rem; font-size: 0.85rem; border: 1px solid rgba(78, 115, 223, 0.25);">
+                    <i class="fas fa-shield-alt mr-2 text-primary"></i> 
+                    <span id="dynamicPhrase" class="fade-text show">Plataforma oficial de consulta y contacto institucional</span>
+                </span>
+            </div>
+
+            <!-- Título Principal Institucional -->
+            <h1 class="font-weight-bold text-gray-900 mb-3" style="font-size: 2.75rem; letter-spacing: -1px; line-height: 1.2;">
+                Directorio Interno de la <span style="color: #4e73df;">SESEA</span>
+            </h1>
+
+            <!-- Subtítulo refinado -->
+            <p class="text-muted mb-5 px-sm-5" style="font-size: 1.1rem; line-height: 1.6;">
+                Sistema centralizado para la localización rápida de áreas, funcionarios y enlaces de comunicación dentro del organismo.
+            </p>
+
+            <!-- Botón de Acción Principal para bajar al login -->
+            <div>
+                <a href="#login-section" class="btn btn-primary px-5 py-3 font-weight-bold shadow-sm d-inline-flex align-items-center" 
+                style="border-radius: 2rem; font-size: 0.95rem; background-color: #4e73df; border: none; transition: all 0.3s ease;">
+                    <span>Iniciar Sesión</span> <i class="fas fa-arrow-down ml-2 fa-xs"></i>
+                </a>
+            </div>
+
+        </div>
+
+        <!-- Indicador sutil de scroll hacia abajo -->
+        <div class="position-absolute" style="bottom: 35px; left: 50%; transform: translateX(-50%);">
+            <a href="#login-section" class="text-muted small text-decoration-none d-flex flex-column align-items-center" style="opacity: 0.65; transition: opacity 0.2s;">
+                <span style="font-size: 0.7rem; letter-spacing: 1.5px;" class="mb-1 font-weight-bold">DESLIZA PARA ACCEDER</span>
+                <i class="fas fa-chevron-down fa-xs animate-bounce"></i>
+            </a>
+        </div>
+
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- SECCIÓN 2: FORMULARIO DE ACCESO (LOGIN) ABAJO                      -->
+    <!-- ================================================================= -->
+    <div id="login-section" class="position-relative vh-100 d-flex flex-column align-items-center justify-content-center px-3" 
+        style="background-color: #f4f6f9; background-image: radial-gradient(#d1d8e0 1px, transparent 1px); background-size: 24px 24px;">
+        
+        <!-- Destellos lumínicos idénticos para mantener continuidad visual exacta -->
         <div class="position-absolute rounded-circle" style="width: 500px; height: 500px; background: rgba(78, 115, 223, 0.07); top: -100px; left: -100px; filter: blur(70px); pointer-events: none;"></div>
         <div class="position-absolute rounded-circle" style="width: 450px; height: 450px; background: rgba(94, 24, 182, 0.04); bottom: -120px; right: -120px; filter: blur(80px); pointer-events: none;"></div>
 
-        <!-- Tarjeta de Acceso Principal (Con relieve de alta gama) -->
-        <div class="container" style="max-width: 440px; z-index: 10;">
+        <!-- Tarjeta de Acceso Principal -->
+        <div class="container px-3" style="max-width: 480px; z-index: 10;">
             <div class="card border-0 shadow-lg" style="border-radius: 1rem; background: #ffffff; border-top: 4px solid #4e73df !important;">
                 
                 <div class="card-body p-4 p-sm-5">
                     
-                    <!-- Logotipo y Encabezado Institucional con Presencia -->
+                    <!-- Logotipo y Encabezado Institucional -->
                     <div class="text-center mb-4 pb-2 border-bottom">
-                        <!-- Aquí incluyes tu imagen de logo. Reemplaza la ruta si es necesario (ej: asset('img/logo-sesea.png')) -->
                         <div class="mb-3 d-inline-block">
                             <img src="{{ asset('img/logo.png') }}" alt="SESEA Logo" style="max-height: 52px; width: auto;" class="img-fluid">
                         </div>
@@ -34,13 +118,11 @@
                     <!-- Session Status -->
                     <x-auth-session-status class="mb-4" :status="session('status')" />
 
-                    <!-- ALERTA DE ERRORES  -->
+                    <!-- ALERTA DE ERRORES -->
                     @if ($errors->any())
                         <div class="alert alert-danger border-0 small py-2 px-3 mb-3 shadow-sm text-center" style="border-radius: 0.5rem; background-color: #f8d7da; color: #721c24;">
                             <i class="fas fa-exclamation-circle mr-1"></i>
-                            @foreach ($errors->all() as $error)
-                                <span>{{ $error }}</span>
-                            @endforeach
+                            <span>Por favor, verifique los campos ingresados en el formulario.</span>
                         </div>
                     @endif
 
@@ -52,11 +134,11 @@
                             <label class="small font-weight-bold text-gray-700 mb-1" for="email">Correo institucional</label>
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text bg-light border-right-0 text-muted pl-3" style="border-top-left-radius: 0.5rem; border-bottom-left-radius: 0.5rem;"><i class="fas fa-envelope fa-sm text-gray-400"></i></span>
+                                    <div class="input-group-text bg-light border-right-0 text-muted pl-3" style="border-top-left-radius: 0.5rem; border-bottom-left-radius: 0.5rem;"><i class="fas fa-envelope fa-sm text-gray-400"></i></div>
                                 </div>
                                 <input id="email" type="email" class="form-control bg-light border-left-0 @error('email') is-invalid @enderror" 
-                                       name="email" value="{{ old('email') }}" required autofocus autocomplete="username" 
-                                       placeholder="nombre@seseachihuahua.gob.mx" style="height: 46px; font-size: 0.925rem; border-top-right-radius: 0.5rem; border-bottom-right-radius: 0.5rem;">
+                                    name="email" value="{{ old('email') }}" {{ $errors->any() ? 'autofocus' : '' }} autocomplete="username" 
+                                    placeholder="nombre@seseachihuahua.gob.mx" style="height: 46px; font-size: 0.925rem; border-top-right-radius: 0.5rem; border-bottom-right-radius: 0.5rem;">
                             </div>
                             <x-input-error :messages="$errors->get('email')" class="mt-2 text-danger small pl-1" />
                         </div>
@@ -71,7 +153,7 @@
                             </div>
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text bg-light border-right-0 text-muted pl-3" style="border-top-left-radius: 0.5rem; border-bottom-left-radius: 0.5rem;"><i class="fas fa-lock fa-sm text-gray-400"></i></span>
+                                    <div class="input-group-text bg-light border-right-0 text-muted pl-3" style="border-top-left-radius: 0.5rem; border-bottom-left-radius: 0.5rem;"><i class="fas fa-lock fa-sm text-gray-400"></i></div>
                                 </div>
                                 
                                 <input id="password" type="password" class="form-control bg-light border-left-0 border-right-0 @error('password') is-invalid @enderror @error('email') is-invalid @enderror" 
@@ -96,7 +178,7 @@
                             </div>
                         </div>
 
-                        <!-- Botón de Ingreso con fuerza visual -->
+                        <!-- Botón de Ingreso -->
                         <button type="submit" class="btn btn-primary btn-block font-weight-bold shadow-sm py-3" style="border-radius: 0.5rem; font-size: 0.95rem; letter-spacing: 0.3px;">
                             Ingresar al Sistema <i class="fas fa-arrow-right ml-2 fa-xs"></i>
                         </button>
@@ -113,7 +195,7 @@
                 </div>
             </div>
 
-            <!-- Pie de página institucional sobrio -->
+            <!-- Pie de página institucional -->
             <div class="text-center mt-4">
                 <span class="text-muted font-weight-bold" style="font-size: 0.7rem; letter-spacing: 1px;">SECRETARÍA EJECUTIVA DEL SISTEMA ESTATAL ANTICORRUPCIÓN</span>
             </div>
@@ -121,21 +203,49 @@
 
     </div>
 
-    <!-- Ver Contraseña -->
-    <script>
-        document.getElementById('togglePassword').addEventListener('click', function () {
-            const passwordInput = document.getElementById('password');
-            const toggleIcon = document.getElementById('toggleIcon');
-            
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                toggleIcon.classList.remove('fa-eye');
-                toggleIcon.classList.add('fa-eye-slash');
-            } else {
-                passwordInput.type = 'password';
-                toggleIcon.classList.remove('fa-eye-slash');
-                toggleIcon.classList.add('fa-eye');
-            }
+</div>
+
+<!-- Scripts (Ver contraseña, frases dinámicas rotativas y auto-scroll inteligente si hay errores) -->
+<script>
+    // 1. Ver / Ocultar Contraseña
+    document.getElementById('togglePassword').addEventListener('click', function () {
+        const passwordInput = document.getElementById('password');
+        const toggleIcon = document.getElementById('toggleIcon');
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleIcon.classList.remove('fa-eye');
+            toggleIcon.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            toggleIcon.classList.remove('fa-eye-slash');
+            toggleIcon.classList.add('fa-eye');
+        }
+    });
+
+    // 2. Frases dinámicas institucionales rotativas en la Hero Section
+    const phrases = [
+        "Plataforma oficial de consulta y contacto institucional",
+        "Transparencia y control en la comunicación interna",
+        "Directorio actualizado del personal de la SESEA"
+    ];
+    let currentIndex = 0;
+    const phraseElement = document.getElementById('dynamicPhrase');
+
+    setInterval(() => {
+        phraseElement.classList.remove('show');
+        setTimeout(() => {
+            currentIndex = (currentIndex + 1) % phrases.length;
+            phraseElement.textContent = phrases[currentIndex];
+            phraseElement.classList.add('show');
+        }, 500);
+    }, 4000);
+
+    // 3. Auto-scroll inteligente: Si Laravel regresa con errores de validación, baja automáticamente al login
+    @if ($errors->any())
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('login-section').scrollIntoView({ behavior: 'smooth' });
         });
-    </script>
+    @endif
+</script>
 </x-guest-layout>

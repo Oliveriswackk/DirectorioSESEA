@@ -21,7 +21,7 @@
             margin: 0;
             padding: 0;
             font-family: 'Nunito', sans-serif;
-            background-color: #121620 !important;
+            background-color: #f8f9fc !important; /* Color de fondo limpio estándar de SB Admin 2 */
             overflow-x: hidden;
         }
     </style>

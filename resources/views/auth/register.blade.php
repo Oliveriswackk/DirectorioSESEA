@@ -5,7 +5,7 @@
         <div class="position-absolute rounded-circle" style="width: 450px; height: 450px; background: rgba(94, 24, 182, 0.04); bottom: -120px; right: -120px; filter: blur(80px); pointer-events: none;"></div>
 
         <!-- Tarjeta de Registro -->
-        <div class="container" style="max-width: 440px; z-index: 10;">
+        <div class="container px-3" style="max-width: 480px; z-index: 10;">
             <div class="card border-0 shadow-lg" style="border-radius: 1rem; background: #ffffff; border-top: 4px solid #4e73df !important;">
                 
                 <div class="card-body p-4 p-sm-5">
