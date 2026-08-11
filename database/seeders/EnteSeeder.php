@@ -15,7 +15,7 @@ class EnteSeeder extends Seeder
     public function run()
     {
         $entes = [
-            // 1 al 88: Entes Estatales / Secretarías / Fideicomisos (Nivel de Gobierno Estatal, ej: 1)
+            // 1 al 88: Entes Estatales / Secretarías / Fideicomisos (Nivel de Gobierno Estatal)
             ['id' => 1, 'nivel_gobierno_id' => 1, 'municipio_id' => null, 'nombre' => 'SECRETARÍA DE GOBIERNO', 'siglas' => null, 'sitio_web' => null],
             ['id' => 2, 'nivel_gobierno_id' => 1, 'municipio_id' => null, 'nombre' => 'SECRETARÍA DE HACIENDA', 'siglas' => null, 'sitio_web' => null],
             ['id' => 3, 'nivel_gobierno_id' => 1, 'municipio_id' => null, 'nombre' => 'SECRETARÍA DE DESARROLLO URBANO Y ECOLOGÍA', 'siglas' => null, 'sitio_web' => null],
@@ -120,7 +120,7 @@ class EnteSeeder extends Seeder
             ['id' => 100, 'nivel_gobierno_id' => 1, 'municipio_id' => null, 'nombre' => 'TRIBUNAL DE JUSTICIA ADMINISTRATIVA DEL ESTADO DE CHIHUAHUA', 'siglas' => 'TJA', 'sitio_web' => null],
             ['id' => 101, 'nivel_gobierno_id' => 1, 'municipio_id' => null, 'nombre' => 'SECRETARÍA EJECUTIVA DEL SISTEMA ESTATAL ANTICORRUPCIÓN', 'siglas' => 'SESEA', 'sitio_web' => null],
 
-            // 102 al 133: JMAS (Asociadas a un municipio específico, ej: nivel municipal = 2, y su respectivo municipio_id)
+            // 102 al 133: JMAS (Asociadas a un municipio específico
             ['id' => 102, 'nivel_gobierno_id' => 2, 'municipio_id' => 134, 'nombre' => 'JUNTA MUNICIPAL DE AGUA Y SANEAMIENTO DE AHUMADA', 'siglas' => 'JMAS AHUMADA', 'sitio_web' => null],
             ['id' => 103, 'nivel_gobierno_id' => 2, 'municipio_id' => 135, 'nombre' => 'JUNTA MUNICIPAL DE AGUA Y SANEAMIENTO DE ALDAMA', 'siglas' => 'JMAS ALDAMA', 'sitio_web' => null],
             ['id' => 104, 'nivel_gobierno_id' => 2, 'municipio_id' => 136, 'nombre' => 'JUNTA MUNICIPAL DE AGUA Y SANEAMIENTO DE ALLENDE', 'siglas' => 'JMAS ALLENDE', 'sitio_web' => null],

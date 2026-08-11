@@ -27,75 +27,82 @@
         </div>
     </div>
 
-    <!-- BARRA DE BÚSQUEDA, FILTROS Y ACCIONES -->
+    <!-- PANEL DE CONTROL Y FILTROS -->
     <div class="card border-0 shadow-sm rounded-lg mb-3">
         <div class="card-body p-3">
-            <div class="row align-items-center">
-                <!-- Buscador -->
-                <div class="col-md-3 mb-2 mb-md-0">
-                    <div class="input-group bg-light rounded border">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text bg-transparent border-0 text-muted"><i class="fas fa-search"></i></span>
+            
+            <!-- Fila 1: Buscador Global con estilo de barra grande -->
+            <div class="mb-3">
+                <div class="card border-0 shadow-sm rounded-lg bg-light">
+                    <div class="card-body p-2">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-transparent border-0 text-muted">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                            </div>
+                            <input type="text" 
+                                id="inputBuscadorGlobal" 
+                                class="form-control border-0 bg-transparent shadow-none" 
+                                placeholder="Escribe para buscar un contacto de manera global..." 
+                                autofocus>
                         </div>
-                        <input type="text" id="inputBuscadorGlobal" class="form-control form-control-sm border-0 bg-transparent shadow-none" placeholder="Buscar...">
                     </div>
                 </div>
+            </div>
 
-                <!-- Filtro Nivel -->
-                <div class="col-md-2 mb-2 mb-md-0 px-1">
-                    <select id="filtroNivelGobierno" class="form-control form-control-sm border bg-light select-search">
+            <!-- Fila 2: Selects de Filtros (Nivel, Ente, Puesto y Estado Activo) -->
+            <div class="row align-items-center mb-3">
+                <div class="col-md-3 mb-2 mb-md-0 px-1">
+                    <select id="filtroNivelGobierno" class="select-search form-control form-control-sm border bg-light filter-trigger">
                         <option value="">Nivel Gobierno...</option>
-                        @if(isset($nivelesGobierno))
-                            @foreach($nivelesGobierno as $nivel)
-                                <option value="{{ $nivel->nombre }}">{{ $nivel->nombre }}</option>
-                            @endforeach
-                        @endif
+                        @foreach($nivelesGobierno as $nivel)<option value="{{ $nivel->nombre }}">{{ $nivel->nombre }}</option>@endforeach
                     </select>
                 </div>
-
-                <!-- Filtro Ente -->
-                <div class="col-md-2 mb-2 mb-md-0 px-1">
-                    <select id="filtroEnte" class="form-control form-control-sm border bg-light select-search">
+                <div class="col-md-3 mb-2 mb-md-0 px-1">
+                    <select id="filtroEnte" class="select-search form-control form-control-sm border bg-light filter-trigger">
                         <option value="">Ente...</option>
-                        @if(isset($entes))
-                            @foreach($entes as $ente)
-                                <option value="{{ $ente->nombre }}">{{ $ente->nombre }}</option>
-                            @endforeach
-                        @endif
+                        @foreach($entes as $ente)<option value="{{ $ente->nombre }}">{{ $ente->nombre }}</option>@endforeach
                     </select>
                 </div>
-
-                <!-- Filtro Puesto -->
-                <div class="col-md-2 mb-2 mb-md-0 px-1">
-                    <select id="filtroPuesto" class="form-control form-control-sm border bg-light select-search">
+                <div class="col-md-3 mb-2 mb-md-0 px-1">
+                    <select id="filtroPuesto" class="select-search form-control form-control-sm border bg-light filter-trigger">
                         <option value="">Puesto...</option>
-                        @if(isset($puestos))
-                            @foreach($puestos as $puesto)
-                                <option value="{{ $puesto->nombre }}">{{ $puesto->nombre }}</option>
-                            @endforeach
-                        @endif
+                        @foreach($puestos as $puesto)<option value="{{ $puesto->nombre }}">{{ $puesto->nombre }}</option>@endforeach
                     </select>
                 </div>
+                <div class="col-md-3 mb-2 mb-md-0 px-1">
+                    <select id="filtroEstado" class="select-search form-control form-control-sm border bg-light filter-trigger">
+                        <option value="">Estado (Todos)...</option>
+                        <option value="1">Activos</option>
+                        <option value="0">Inactivos</option>
+                    </select>
+                </div>
+            </div>
 
-                <!-- Botones de Acción (Filtrar, Limpiar, Exportar) -->
-                <div class="col-md-3 text-right">
-                    <button type="button" class="btn btn-primary btn-sm px-2" onclick="aplicarFiltrosGlobales()" title="Filtrar">
-                        <i class="fas fa-filter fa-xs"></i>
+            <!-- Fila 3: Botones de Acción (Añadir, Limpiar y Exportar) -->
+            <div class="d-flex justify-content-between align-items-center border-top pt-3">
+                <div class="d-flex align-items-center">
+                    <button class="btn btn-primary btn-sm mr-2" data-toggle="modal" data-target="#modalCrearContacto">
+                        <i class="fas fa-plus mr-1"></i> Añadir Contacto
                     </button>
-                    <button type="button" class="btn btn-light border btn-sm px-2 text-secondary" onclick="limpiarFiltros()" title="Limpiar filtros">
-                        <i class="fas fa-eraser fa-xs"></i>
+                    <button type="button" class="btn btn-light border btn-sm text-secondary" onclick="limpiarFiltros()" title="Limpiar filtros">
+                        <i class="fas fa-eraser mr-1"></i> Limpiar filtros
                     </button>
-                    <div class="dropdown d-inline-block ml-1">
-                        <button class="btn btn-success btn-sm dropdown-toggle px-2" type="button" id="dropdownExportar" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Exportar">
-                            <i class="fas fa-file-excel fa-xs"></i>
+                </div>
+                <div>
+                    <div class="dropdown d-inline-block">
+                        <button class="btn btn-success btn-sm dropdown-toggle" type="button" id="dropdownExportar" data-toggle="dropdown">
+                            <i class="fas fa-file-excel mr-1"></i> Exportar
                         </button>
-                        <div class="dropdown-menu dropdown-menu-right shadow-sm border-0 small" aria-labelledby="dropdownExportar">
+                        <div class="dropdown-menu dropdown-menu-right shadow-sm border-0 small">
                             <a class="dropdown-item" href="#"><i class="fas fa-file-excel text-success mr-1"></i> Exportar a Excel</a>
                             <a class="dropdown-item" href="#"><i class="fas fa-file-pdf text-danger mr-1"></i> Exportar a PDF</a>
                         </div>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 
@@ -222,16 +229,48 @@
         let formUrl = "{{ route('contactos.update', ':id') }}".replace(':id', id);
         document.getElementById('formEditarInspector').setAttribute('action', formUrl);
 
+        // Datos básicos de texto
         document.getElementById('insp_nombre').value = el.getAttribute('data-nombre') || '';
         document.getElementById('insp_apellido_paterno').value = el.getAttribute('data-apellido_paterno') || '';
         document.getElementById('insp_apellido_materno').value = el.getAttribute('data-apellido_materno') || '';
-        document.getElementById('insp_puesto_id').value = el.getAttribute('data-puesto') || '';
-        document.getElementById('insp_ente_id').value = el.getAttribute('data-ente') || '';
-        document.getElementById('insp_sede_id').value = el.getAttribute('data-sede') || '';
+        
         document.getElementById('insp_correo').value = el.getAttribute('data-correo') || '';
         document.getElementById('insp_telefono').value = el.getAttribute('data-telefono') || '';
         document.getElementById('insp_extension').value = el.getAttribute('data-extension') || '';
 
+        // Asignación correcta de valores para Selects (Soportando librerías como TomSelect / Select2)
+        let puestoId = el.getAttribute('data-puesto-id') || '';
+        let enteId = el.getAttribute('data-ente-id') || '';
+        let sedeId = el.getAttribute('data-sede-id') || '';
+
+        // 1. Puesto
+        let selectPuesto = document.getElementById('insp_puesto_id');
+        selectPuesto.value = puestoId;
+        if (selectPuesto.tomselect) {
+            selectPuesto.tomselect.setValue(puestoId);
+        } else if ($(selectPuesto).hasClass('select2-hidden-accessible')) {
+            $(selectPuesto).val(puestoId).trigger('change');
+        }
+
+        // 2. Ente
+        let selectEnte = document.getElementById('insp_ente_id');
+        selectEnte.value = enteId;
+        if (selectEnte.tomselect) {
+            selectEnte.tomselect.setValue(enteId);
+        } else if ($(selectEnte).hasClass('select2-hidden-accessible')) {
+            $(selectEnte).val(enteId).trigger('change');
+        }
+
+        // 3. Sede
+        let selectSede = document.getElementById('insp_sede_id');
+        selectSede.value = sedeId;
+        if (selectSede.tomselect) {
+            selectSede.tomselect.setValue(sedeId);
+        } else if ($(selectSede).hasClass('select2-hidden-accessible')) {
+            $(selectSede).val(sedeId).trigger('change');
+        }
+
+        // Mostrar el cajón lateral deslizándolo
         document.getElementById('inspectorLateral').style.right = '0';
     }
 
@@ -239,72 +278,75 @@
         document.getElementById('inspectorLateral').style.right = '-450px';
     }
 
+    function debounce(func, wait) {
+        let timeout;
+        return function(...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), wait);
+        };
+    }
+
     function aplicarFiltrosGlobales() {
         let textoBusqueda = $('#inputBuscadorGlobal').val().toLowerCase().trim();
-        let nivelFiltro = $('#filtroNivelGobierno').val().toLowerCase();
-        let enteFiltro = $('#filtroEnte').val().toLowerCase();
-        let puestoFiltro = $('#filtroPuesto').val().toLowerCase();
+        let nivelFiltro = $('#filtroNivelGobierno').val();
+        let enteFiltro = $('#filtroEnte').val();
+        let puestoFiltro = $('#filtroPuesto').val();
+        let estadoFiltro = $('#filtroEstado').val();
 
         if (vistaActual === 'tabla') {
             if (window.tablaContactosDT) {
                 window.tablaContactosDT.search(textoBusqueda);
-                window.tablaContactosDT.column(1).search(enteFiltro ? '^' + enteFiltro + '$' : '', true, false);
-                window.tablaContactosDT.column(0).search(puestoFiltro ? puestoFiltro : '', true, false);
+                
+                window.tablaContactosDT.column(1).search(nivelFiltro, true, false);
+                window.tablaContactosDT.column(2).search(enteFiltro, true, false);
+                window.tablaContactosDT.column(3).search(puestoFiltro, true, false);
+                window.tablaContactosDT.column(4).search(estadoFiltro === '1' ? 'Activo' : (estadoFiltro === '0' ? 'Inactivo' : ''), true, false);
+
                 window.tablaContactosDT.draw();
             }
         } else {
             $('#contenedorCards .contacto-card-item').each(function() {
-                let cardText = $(this).text().toLowerCase();
-                let cardNivel = ($(this).data('nivel') || '').toLowerCase();
-                let cardEnte = ($(this).data('ente') || '').toLowerCase();
-                let cardPuesto = ($(this).data('puesto') || '').toLowerCase();
-
-                let coincideTexto = textoBusqueda === '' || cardText.includes(textoBusqueda);
-                let coincideNivel = nivelFiltro === '' || cardNivel.includes(nivelFiltro);
-                let coincideEnte = enteFiltro === '' || cardEnte.includes(enteFiltro);
-                let coincidePuesto = puestoFiltro === '' || cardPuesto.includes(puestoFiltro);
-
-                if (coincideTexto && coincideNivel && coincideEnte && coincidePuesto) {
-                    $(this).show();
-                } else {
-                    $(this).hide();
-                }
+                let text = $(this).text().toLowerCase();
+                let match = text.includes(textoBusqueda) && 
+                            ($(this).data('nivel') == nivelFiltro || !nivelFiltro) &&
+                            ($(this).data('ente') == enteFiltro || !enteFiltro) &&
+                            ($(this).data('puesto') == puestoFiltro || !puestoFiltro) &&
+                            ($(this).data('estado') == estadoFiltro || estadoFiltro === '');
+                $(this).toggle(match);
             });
         }
     }
 
     function limpiarFiltros() {
         $('#inputBuscadorGlobal').val('');
-        $('#filtroNivelGobierno').val('');
-        $('#filtroEnte').val('');
-        $('#filtroPuesto').val('');
+        $('.filter-trigger').each(function() {
+            if (this.tomselect) {
+                this.tomselect.clear();
+            } else {
+                $(this).val('');
+            }
+        });
         aplicarFiltrosGlobales();
     }
 
     $(document).ready(function() {
-        if ($.fn.DataTable) {
+        if ($.fn.DataTable && !$.fn.DataTable.isDataTable('#tablaContactos')) {
             window.tablaContactosDT = $('#tablaContactos').DataTable({
                 language: { url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json' },
                 dom: 'rtip',
                 pageLength: 15,
                 responsive: true,
-                columnDefs: [{ orderable: false, targets: [4] }]
+                columnDefs: [{ orderable: false, targets: [-1] }]
             });
         }
 
-        $('#inputBuscadorGlobal').on('keyup', function() {
+        $(document).on('change', '.filter-trigger', function() {
             aplicarFiltrosGlobales();
         });
 
-        $(document).on('click', '.btn-nota-contacto', function(e) {
-            e.stopPropagation();
-            let id = $(this).data('id');
-            let formUrl = "{{ route('contactos.update-nota', ':id') }}".replace(':id', id);
-            $('#formNotaContacto').attr('action', formUrl);
-            $('#labelNombreNota').text($(this).data('nombre'));
-            $('#nota_observaciones').val($(this).data('observaciones'));
-            $('#modalNotaContacto').modal('show');
-        });
+        $('#inputBuscadorGlobal').on('keyup', debounce(function() {
+            aplicarFiltrosGlobales();
+        }, 300));
     });
 </script>
 @endpush

@@ -19,12 +19,15 @@
                             data-nombre="{{ $asignacion->contacto->nombre ?? '' }}"
                             data-apellido_paterno="{{ $asignacion->contacto->apellido_paterno ?? '' }}"
                             data-apellido_materno="{{ $asignacion->contacto->apellido_materno ?? '' }}"
-                            data-puesto="{{ $asignacion->puesto_id }}"
-                            data-ente="{{ $asignacion->ente_id }}"
-                            data-sede="{{ $asignacion->sede_id }}"
-                            data-correo="{{ $asignacion->correo }}"
-                            data-telefono="{{ $asignacion->telefono }}"
-                            data-extension="{{ $asignacion->extension }}">
+                            data-puesto-id="{{ $asignacion->puesto_id }}"
+                            data-puesto="{{ $asignacion->puesto->nombre ?? '' }}"
+                            data-ente-id="{{ $asignacion->ente_id }}"
+                            data-ente="{{ $asignacion->ente->nombre ?? '' }}"
+                            data-sede-id="{{ $asignacion->sede_id ?? '' }}"
+                            data-sede="{{ $asignacion->sede->nombre ?? '' }}"
+                            data-correo="{{ $asignacion->correo ?? '' }}"
+                            data-telefono="{{ $asignacion->telefono ?? '' }}"
+                            data-extension="{{ $asignacion->extension ?? '' }}">
                             
                             <td class="align-middle pl-3">
                                 <div class="font-weight-bold text-dark" style="font-family: 'Montserrat', sans-serif;">
@@ -75,9 +78,10 @@
                                             title="Añadir nota">
                                         <i class="fas fa-comment-alt fa-xs"></i>
                                     </button>
-                                    <!-- Botón de lápiz explícito para editar -->
-                                    <button type="button" class="btn btn-sm btn-light text-primary border-0 rounded px-2" 
-                                            onclick="abrirInspector(this.closest('tr'))" 
+                                    
+                                    <!-- Botón para editar (con la estética limpia que te gusta) -->
+                                    <button type="button" class="btn btn-sm btn-light text-primary border px-2 rounded" 
+                                            onclick="abrirInspector(this.closest('tr'))"
                                             title="Editar">
                                         <i class="fas fa-pen fa-xs"></i>
                                     </button>
