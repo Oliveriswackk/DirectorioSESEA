@@ -3,43 +3,100 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Contacto;
+use Illuminate\Support\Facades\DB;
 
 class ContactoSeeder extends Seeder
 {
     public function run(): void
     {
         $contactos = [
-            ['nombre' => 'Juan Carlos', 'apellido_paterno' => 'Pérez', 'apellido_materno' => 'Gómez', 'observaciones' => 'Contacto principal de área técnica.'],
-            ['nombre' => 'María Fernanda', 'apellido_paterno' => 'López', 'apellido_materno' => 'Martínez', 'observaciones' => 'Enlace institucional para auditorías.'],
-            ['nombre' => 'Roberto', 'apellido_paterno' => 'Ramírez', 'apellido_materno' => 'Hernández', 'observaciones' => 'Soporte de infraestructura de redes.'],
-            ['nombre' => 'Ana Sofía', 'apellido_paterno' => 'Torres', 'apellido_materno' => 'Jiménez', 'observaciones' => 'Coordinación de proyectos especiales.'],
-            ['nombre' => 'Luis Alberto', 'apellido_paterno' => 'Flores', 'apellido_materno' => 'Morales', 'observaciones' => 'Desarrollador backend senior.'],
-            ['nombre' => 'Carmen Rosa', 'apellido_paterno' => 'Vargas', 'apellido_materno' => 'Castillo', 'observaciones' => 'Gestión documental y oficialía de partes.'],
-            ['nombre' => 'José Antonio', 'apellido_paterno' => 'Rojas', 'apellido_materno' => 'Ortiz', 'observaciones' => 'Jefatura de departamento jurídico.'],
-            ['nombre' => 'Guadalupe', 'apellido_paterno' => 'Mendoza', 'apellido_materno' => 'Silva', 'observaciones' => 'Analista de presupuestos y finanzas.'],
-            ['nombre' => 'Francisco Javier', 'apellido_paterno' => 'Castillo', 'apellido_materno' => 'Guerrero', 'observaciones' => 'Enlace de transparencia y acceso a la información.'],
-            ['nombre' => 'Daniela', 'apellido_paterno' => 'Navarro', 'apellido_materno' => 'Ríos', 'observaciones' => ''],
-            ['nombre' => 'Alejandro', 'apellido_paterno' => 'Medina', 'apellido_materno' => 'Vega', 'observaciones' => ''],
-            ['nombre' => 'Patricia', 'apellido_paterno' => 'Soto', 'apellido_materno' => 'Estrada', 'observaciones' => 'Coordinadora de recursos humanos.'],
-            ['nombre' => 'Manuel', 'apellido_paterno' => 'Contreras', 'apellido_materno' => 'Pacheco', 'observaciones' => 'Soporte técnico en sitio.'],
-            ['nombre' => 'Rosa María', 'apellido_paterno' => 'Santos', 'apellido_materno' => 'Aguilar', 'observaciones' => 'Secretaría de dirección general.'],
-            ['nombre' => 'Jorge Luis', 'apellido_paterno' => 'Domínguez', 'apellido_materno' => 'Salazar', 'observaciones' => 'Auditor interno de procesos.'],
-            ['nombre' => 'Valeria', 'apellido_paterno' => 'Guzmán', 'apellido_materno' => 'Cervantes', 'observaciones' => 'Analista de datos y estadística.'],
-            ['nombre' => 'Ricardo', 'apellido_paterno' => 'Luna', 'apellido_materno' => 'Peña', 'observaciones' => 'Especialista en ciberseguridad.'],
-            ['nombre' => 'Adriana', 'apellido_paterno' => 'Reyes', 'apellido_materno' => 'Mejía', 'observaciones' => 'Responsable de comunicación social.'],
-            ['nombre' => 'Héctor', 'apellido_paterno' => 'Cruz', 'apellido_materno' => 'Duarte', 'observaciones' => 'Jefe de unidad de informática.'],
-            ['nombre' => 'Gabriela', 'apellido_paterno' => 'Herrera', 'apellido_materno' => 'Sánchez', 'observaciones' => 'Gestora de trámites interinstitucionales.'],
+            [
+                'id' => 1,
+                'nombre' => 'Juan',
+                'apellido_paterno' => 'Pérez',
+                'apellido_materno' => 'García',
+                'observaciones' => 'Contacto principal de Hacienda.',
+                'activo' => true,
+            ],
+            [
+                'id' => 2,
+                'nombre' => 'María',
+                'apellido_paterno' => 'Gómez',
+                'apellido_materno' => 'López',
+                'observaciones' => 'Enlace asignado a seguridad.',
+                'activo' => true,
+            ],
+            [
+                'id' => 3,
+                'nombre' => 'Carlos',
+                'apellido_paterno' => 'Ruiz',
+                'apellido_materno' => 'Martínez',
+                'observaciones' => null,
+                'activo' => true,
+            ],
+            [
+                'id' => 4,
+                'nombre' => 'Ana',
+                'apellido_paterno' => 'López',
+                'apellido_materno' => 'Hernández',
+                'observaciones' => 'Comisión temporal.',
+                'activo' => true,
+            ],
+            [
+                'id' => 5,
+                'nombre' => 'Pedro',
+                'apellido_paterno' => 'Sánchez',
+                'apellido_materno' => 'Ramírez',
+                'observaciones' => null,
+                'activo' => true,
+            ],
+            [
+                'id' => 6,
+                'nombre' => 'Soporte',
+                'apellido_paterno' => 'Técnico',
+                'apellido_materno' => null,
+                'observaciones' => 'Área de soporte general.',
+                'activo' => true,
+            ],
+            [
+                'id' => 7,
+                'nombre' => 'Luis',
+                'apellido_paterno' => 'Torres',
+                'apellido_materno' => 'Flores',
+                'observaciones' => 'Baja temporal.',
+                'activo' => false,
+            ],
+            [
+                'id' => 8,
+                'nombre' => 'Sofía',
+                'apellido_paterno' => 'Ramírez',
+                'apellido_materno' => 'Cruz',
+                'observaciones' => null,
+                'activo' => true,
+            ],
+            [
+                'id' => 9,
+                'nombre' => 'Roberto',
+                'apellido_paterno' => 'Dávila',
+                'apellido_materno' => 'Soto',
+                'observaciones' => null,
+                'activo' => true,
+            ],
+            [
+                'id' => 10,
+                'nombre' => 'Personal',
+                'apellido_paterno' => 'Operativo',
+                'apellido_materno' => null,
+                'observaciones' => 'Registro genérico operativo.',
+                'activo' => true,
+            ],
         ];
 
         foreach ($contactos as $contacto) {
-            Contacto::create([
-                'nombre' => $contacto['nombre'],
-                'apellido_paterno' => $contacto['apellido_paterno'],
-                'apellido_materno' => $contacto['apellido_materno'],
-                'observaciones' => $contacto['observaciones'],
-                'activo' => true,
-            ]);
+            DB::table('contactos')->updateOrInsert(
+                ['id' => $contacto['id']],
+                $contacto
+            );
         }
     }
 }

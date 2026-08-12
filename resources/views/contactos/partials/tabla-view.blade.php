@@ -15,20 +15,23 @@
                     @foreach($asignaciones as $asignacion)
                         <tr style="cursor: pointer;" 
                             onclick="abrirInspector(this)"
+                            
                             data-id="{{ $asignacion->contacto_id }}"
+                            data-nivel-id="{{ $asignacion->ente->nivel_gobierno_id ?? '' }}"
+                            data-ente-id="{{ $asignacion->ente_id ?? '' }}"
+                            data-puesto-id="{{ $asignacion->puesto_id ?? '' }}"
+                            data-activo="{{ $asignacion->activo ? '1' : '0' }}"
                             data-nombre="{{ $asignacion->contacto->nombre ?? '' }}"
                             data-apellido_paterno="{{ $asignacion->contacto->apellido_paterno ?? '' }}"
                             data-apellido_materno="{{ $asignacion->contacto->apellido_materno ?? '' }}"
-                            data-puesto-id="{{ $asignacion->puesto_id }}"
                             data-puesto="{{ $asignacion->puesto->nombre ?? '' }}"
-                            data-ente-id="{{ $asignacion->ente_id }}"
                             data-ente="{{ $asignacion->ente->nombre ?? '' }}"
                             data-sede-id="{{ $asignacion->sede_id ?? '' }}"
                             data-sede="{{ $asignacion->sede->nombre ?? '' }}"
                             data-correo="{{ $asignacion->correo ?? '' }}"
                             data-telefono="{{ $asignacion->telefono ?? '' }}"
                             data-extension="{{ $asignacion->extension ?? '' }}">
-                            
+
                             <td class="align-middle pl-3">
                                 <div class="font-weight-bold text-dark" style="font-family: 'Montserrat', sans-serif;">
                                     {{ $asignacion->contacto->nombre ?? '' }} 

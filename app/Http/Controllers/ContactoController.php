@@ -8,27 +8,42 @@ use App\Models\Puesto;
 use App\Models\Ente;
 use App\Models\Sede;
 use App\Models\NivelGobierno;
+use App\Queries\AsignacionQuery;
 use Illuminate\Http\Request;
 
 class ContactoController extends Controller
 {
     public function index()
     {
-        // Asegúrate de traer la relación anidada para el nivel de gobierno
-        $asignaciones = Asignacion::with(['contacto', 'puesto', 'ente.nivelGobierno', 'sede'])->get();
+        $asignaciones = Asignacion::with([
+            'contacto',
+            'puesto',
+            'ente.nivelGobierno',
+            'sede',
+        ])->get();
 
-        $puestos = Puesto::orderBy('nombre')->get();
-        $entes = Ente::orderBy('nombre')->get();
-        $sedes = Sede::orderBy('nombre')->get();
-        
-        // Obtenemos los niveles de gobierno para el filtro superior
-        $nivelesGobierno = NivelGobierno::orderBy('nombre')->get();
+        $puestos = Puesto::where('activo', true)
+            ->orderBy('nombre')
+            ->get();
+
+        $entes = Ente::where('activo', true)
+            ->with('nivelGobierno')
+            ->orderBy('nombre')
+            ->get();
+
+        $nivelesGobierno = NivelGobierno::where('activo', true)
+            ->orderBy('nombre')
+            ->get();
+
+        $sedes = Sede::where('activo', true)
+            ->orderBy('nombre')
+            ->get();
 
         return view('contactos.index', compact(
-            'asignaciones', 
-            'puestos', 
-            'entes', 
-            'sedes', 
+            'asignaciones',
+            'puestos',
+            'entes',
+            'sedes',
             'nivelesGobierno'
         ));
     }
