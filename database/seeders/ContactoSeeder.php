@@ -15,7 +15,6 @@ class ContactoSeeder extends Seeder
                 'nombre' => 'Juan',
                 'apellido_paterno' => 'Pérez',
                 'apellido_materno' => 'García',
-                'observaciones' => 'Contacto principal de Hacienda.',
                 'activo' => true,
             ],
             [
@@ -23,7 +22,6 @@ class ContactoSeeder extends Seeder
                 'nombre' => 'María',
                 'apellido_paterno' => 'Gómez',
                 'apellido_materno' => 'López',
-                'observaciones' => 'Enlace asignado a seguridad.',
                 'activo' => true,
             ],
             [
@@ -31,7 +29,6 @@ class ContactoSeeder extends Seeder
                 'nombre' => 'Carlos',
                 'apellido_paterno' => 'Ruiz',
                 'apellido_materno' => 'Martínez',
-                'observaciones' => null,
                 'activo' => true,
             ],
             [
@@ -39,7 +36,6 @@ class ContactoSeeder extends Seeder
                 'nombre' => 'Ana',
                 'apellido_paterno' => 'López',
                 'apellido_materno' => 'Hernández',
-                'observaciones' => 'Comisión temporal.',
                 'activo' => true,
             ],
             [
@@ -47,7 +43,6 @@ class ContactoSeeder extends Seeder
                 'nombre' => 'Pedro',
                 'apellido_paterno' => 'Sánchez',
                 'apellido_materno' => 'Ramírez',
-                'observaciones' => null,
                 'activo' => true,
             ],
             [
@@ -55,7 +50,6 @@ class ContactoSeeder extends Seeder
                 'nombre' => 'Soporte',
                 'apellido_paterno' => 'Técnico',
                 'apellido_materno' => null,
-                'observaciones' => 'Área de soporte general.',
                 'activo' => true,
             ],
             [
@@ -63,7 +57,6 @@ class ContactoSeeder extends Seeder
                 'nombre' => 'Luis',
                 'apellido_paterno' => 'Torres',
                 'apellido_materno' => 'Flores',
-                'observaciones' => 'Baja temporal.',
                 'activo' => false,
             ],
             [
@@ -71,7 +64,6 @@ class ContactoSeeder extends Seeder
                 'nombre' => 'Sofía',
                 'apellido_paterno' => 'Ramírez',
                 'apellido_materno' => 'Cruz',
-                'observaciones' => null,
                 'activo' => true,
             ],
             [
@@ -79,7 +71,6 @@ class ContactoSeeder extends Seeder
                 'nombre' => 'Roberto',
                 'apellido_paterno' => 'Dávila',
                 'apellido_materno' => 'Soto',
-                'observaciones' => null,
                 'activo' => true,
             ],
             [
@@ -87,7 +78,6 @@ class ContactoSeeder extends Seeder
                 'nombre' => 'Personal',
                 'apellido_paterno' => 'Operativo',
                 'apellido_materno' => null,
-                'observaciones' => 'Registro genérico operativo.',
                 'activo' => true,
             ],
         ];

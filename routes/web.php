@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Admin\AprobacionController;
+use App\Http\Controllers\Auth\AprobacionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\EstadoController;
 use App\Http\Controllers\MunicipioController;
@@ -44,9 +44,10 @@ Route::middleware(['auth'])->group(function () {
 
 
     // Módulo: Contactos
-    Route::resource('contactos', ContactoController::class)->parameters(['contactos' => 'contacto']);
-    Route::patch('contactos/{contacto}/nota', [ContactoController::class, 'updateNota'])->name('contactos.update-nota');
-
+    Route::get('contactos/verificar-asignacion', [ContactoController::class, 'verificarAsignacion'])->name('contactos.verificar-asignacion');
+    Route::post('contactos/{id}/reemplazar', [ContactoController::class, 'reemplazar'])->name('contactos.reemplazar');
+    Route::resource('contactos', ContactoController::class);
+    Route::patch('contactos/{id}/nota', [ContactoController::class, 'updateNota'])->name('contactos.nota');
 
     // Módulo: Estados
     Route::prefix('estados')->name('estados.')->group(function () {

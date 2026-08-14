@@ -11,7 +11,6 @@ class Contacto extends Model
         'nombre',
         'apellido_paterno',
         'apellido_materno',
-        'observaciones',
         'activo',
     ];
 

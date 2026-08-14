@@ -1,109 +1,164 @@
 <!-- ================================================================= -->
-<!-- MODAL: CREAR NUEVA ASIGNACIÓN / CONTACTO                          -->
+<!-- MODAL: CREAR NUEVA ASIGNACIÓN / CONTACTO    -->
 <!-- ================================================================= -->
 <div class="modal fade" id="modalCrearContacto" tabindex="-1" role="dialog" aria-labelledby="modalCrearContactoLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 1rem;">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 1rem; overflow: hidden;">
             
-            <div class="modal-header bg-light border-0 px-4 pt-4 pb-3" style="border-top-left-radius: 1rem; border-top-right-radius: 1rem;">
+            <!-- Header Institucional -->
+            <div class="modal-header bg-light border-bottom px-4 pt-4 pb-3">
                 <h5 class="modal-title font-weight-bold text-gray-900" id="modalCrearContactoLabel">
-                    <i class="fas fa-user-plus text-primary mr-2"></i> Registrar Nuevo Contacto y Asignación
+                    <i class="fas fa-user-plus text-primary mr-2"></i> Registrar Nuevo Contacto
                 </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close text-gray-500" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
 
             <form action="{{ route('contactos.store') }}" method="POST" class="user">
                 @csrf
-                <div class="modal-body px-4 py-3">
+                
+                <div class="modal-body px-4 py-4 bg-white">
                     
+                    @if ($errors->any())
+                        <div class="alert alert-danger border-left-danger shadow-sm mb-4">
+                            <strong>No se pudo registrar el contacto.</strong>
+                            <ul class="mb-0 mt-2 small">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
                     <!-- Bloque 1: Datos Personales -->
-                    <h6 class="text-xs font-weight-bold text-uppercase text-muted mb-3 border-bottom pb-1">1. Información Personal</h6>
-                    <div class="row">
-                        <div class="col-md-4 form-group mb-3">
-                            <label class="font-weight-bold text-gray-700 small">Nombre <span class="text-danger">*</span></label>
-                            <input type="text" name="nombre" class="form-control bg-light" required placeholder="Ej. Juan Carlos">
-                        </div>
-                        <div class="col-md-4 form-group mb-3">
-                            <label class="font-weight-bold text-gray-700 small">Apellido Paterno <span class="text-danger">*</span></label>
-                            <input type="text" name="apellido_paterno" class="form-control bg-light" required placeholder="Ej. Pérez">
-                        </div>
-                        <div class="col-md-4 form-group mb-3">
-                            <label class="font-weight-bold text-gray-700 small">Apellido Materno</label>
-                            <input type="text" name="apellido_materno" class="form-control bg-light" placeholder="Ej. Gómez">
+                    <div class="mb-4">
+                        <h6 class="text-xs font-weight-bold text-uppercase text-muted mb-3 border-bottom pb-1">
+                            1. Información Personal
+                        </h6>
+                        <div class="row">
+                            <div class="col-md-4 form-group mb-3">
+                                <label class="font-weight-bold text-gray-700 small">Nombre <span class="text-danger">*</span></label>
+                                <input type="text" name="nombre" class="form-control" required placeholder="Ej. María José"autofocus>
+                            </div>
+                            <div class="col-md-4 form-group mb-3">
+                                <label class="font-weight-bold text-gray-700 small">Apellido Paterno</label>
+                                <input type="text" name="apellido_paterno" class="form-control">
+                            </div>
+                            <div class="col-md-4 form-group mb-3">
+                                <label class="font-weight-bold text-gray-700 small">Apellido Materno</label>
+                                <input type="text" name="apellido_materno" class="form-control">
+                            </div>
                         </div>
                     </div>
 
                     <!-- Bloque 2: Ubicación Institucional -->
-                    <h6 class="text-xs font-weight-bold text-uppercase text-muted mb-3 mt-4 border-bottom pb-1">2. Ubicación Institucional</h6>
-                    <div class="row">
-                        <div class="col-md-6 form-group mb-3">
-                            <label class="font-weight-bold text-gray-700 small">
-                                Ente <span class="text-danger">*</span>
-                                <i class="fas fa-info-circle text-muted ml-1" data-toggle="tooltip" title="Dependencia u organismo al que se encuentra adscrito el contacto."></i>
-                            </label>
-                            <select name="ente_id" class="form-control bg-light" required>
-                                <option value="">Seleccione un Ente...</option>
-                                @foreach($entes ?? [] as $ente)
-                                    <option value="{{ $ente->id }}">{{ $ente->nombre }}</option>
-                                @endforeach
-                            </select>
+                    <div class="mb-4">
+                        <h6 class="text-xs font-weight-bold text-uppercase text-muted mb-3 border-bottom pb-1">
+                            2. Ubicación Institucional
+                        </h6>
+                        <div class="row">
+                            <div class="col-md-6 form-group mb-3">
+                                <label class="font-weight-bold text-gray-700 small">
+                                    Ente <span class="text-danger">*</span>
+                                </label>
+                                <select name="ente_id" class="form-control select-search" required>
+                                    <option value="">Seleccione...</option>
+                                    @foreach($entes ?? [] as $ente)
+                                        <option value="{{ $ente->id }}">{{ $ente->nombre }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 form-group mb-3">
+                                <label class="font-weight-bold text-gray-700 small">
+                                    Puesto <span class="text-danger">*</span>
+                                </label>
+                                <select name="puesto_id" class="form-control select-search" required>
+                                    <option value="">Seleccione...</option>
+                                    @foreach($puestos ?? [] as $puesto)
+                                        <option value="{{ $puesto->id }}">{{ $puesto->nombre }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
 
-                        <div class="col-md-6 form-group mb-3">
-                            <label class="font-weight-bold text-gray-700 small">
-                                Puesto <span class="text-danger">*</span>
-                                <i class="fas fa-info-circle text-muted ml-1" data-toggle="tooltip" title="Cargo o jerarquía que desempeña dentro de la institución."></i>
-                            </label>
-                            <select name="puesto_id" class="form-control bg-light" required>
-                                <option value="">Seleccione un Puesto...</option>
-                                @foreach($puestos ?? [] as $puesto)
-                                    <option value="{{ $puesto->id }}">{{ $puesto->nombre }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12 form-group mb-3">
-                            <label class="font-weight-bold text-gray-700 small">Sede</label>
-                            <select name="sede_id" class="form-control bg-light">
-                                <option value="">Seleccione una Sede (Opcional)...</option>
-                                @foreach($sedes ?? [] as $sede)
-                                    <option value="{{ $sede->id }}">{{ $sede->nombre }}</option>
-                                @endforeach
-                            </select>
+                        <div class="row">
+                            <div class="col-md-12 form-group mb-0">
+                                <label class="font-weight-bold text-gray-700 small">Sede <span class="text-muted font-weight-normal">(Opcional)</span></label>
+                                <select name="sede_id" class="form-control select-search">
+                                    <option value="">Seleccione...</option>
+                                    @foreach($sedes ?? [] as $sede)
+                                        <option value="{{ $sede->id }}">{{ $sede->nombre }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Bloque 3: Medios de Contacto -->
-                    <h6 class="text-xs font-weight-bold text-uppercase text-muted mb-3 mt-4 border-bottom pb-1">3. Medios de Comunicación</h6>
-                    <div class="row">
-                        <div class="col-md-6 form-group mb-3">
-                            <label class="font-weight-bold text-gray-700 small">Correo Institucional <span class="text-danger">*</span></label>
-                            <input type="email" name="correo" class="form-control bg-light" required placeholder="correo@seseachihuahua.gob.mx">
+                    <div class="mb-4">
+                        <h6 class="text-xs font-weight-bold text-uppercase text-muted mb-3 border-bottom pb-1">
+                            3. Medios de Comunicación
+                        </h6>
+
+                        <div class="row">
+                            <div class="col-md-6 form-group mb-3">
+                                <label class="font-weight-bold text-gray-700 small">Correo Institucional</label>
+                                <input type="email" name="correo"     class="form-control @error('correo') is-invalid @enderror" maxlength="255" placeholder="ejemplo@correo.gob.mx" value="{{ old('correo') }}">
+                                @error('correo')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+                            <div class="col-md-4 form-group mb-3">
+                                <label class="font-weight-bold text-gray-700 small">Teléfono / Oficina</label>
+                                <input type="text" name="telefono" class="form-control" inputmode="tel" pattern="[0-9\s\-\(\)]+" inputmode="tel" maxlength="20" placeholder="Ej. 614 123 4567" value="{{ old('telefono') }}">
+                                @error('telefono')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+                            <div class="col-md-2 form-group mb-3">
+                                <label class="font-weight-bold text-gray-700 small">Extensión</label>
+                                <input type="text" name="extension" class="form-control" inputmode="tel" maxlength="10" placeholder="Ej. 1234" value="{{ old('extension') }}">
+                                @error('extension')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
                         </div>
-                        <div class="col-md-3 form-group mb-3">
-                            <label class="font-weight-bold text-gray-700 small">Teléfono</label>
-                            <input type="text" name="telefono" class="form-control bg-light" placeholder="(614) 000-0000">
-                        </div>
-                        <div class="col-md-3 form-group mb-3">
-                            <label class="font-weight-bold text-gray-700 small">Extensión</label>
-                            <input type="text" name="extension" class="form-control bg-light" placeholder="Ej. 104">
+
+                        <div class="row">
+                            <div class="col-md-6 form-group mb-0">
+                                <label class="font-weight-bold text-gray-700 small">Celular</label>
+                                <input type="text" name="celular" class="form-control" inputmode="tel" maxlength="20" placeholder="Ej. 614 123 4567" value="{{ old('celular') }}">
+                                @error('celular')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Bloque 4: Notas u Observaciones iniciales -->
-                    <h6 class="text-xs font-weight-bold text-uppercase text-muted mb-3 mt-4 border-bottom pb-1">4. Observaciones Iniciales</h6>
-                    <div class="row">
-                        <div class="col-md-12 form-group mb-0">
-                            <textarea name="observaciones" class="form-control bg-light" rows="3" placeholder="Notas internas relevantes sobre este contacto..."></textarea>
+                    <!-- Bloque 4: Observaciones -->
+                    <div>
+                        <h6 class="text-xs font-weight-bold text-uppercase text-muted mb-3 border-bottom pb-1">
+                            4. Observaciones Iniciales
+                        </h6>
+                        <div class="form-group mb-0">
+                            <textarea name="observaciones" class="form-control" rows="2"></textarea>
                         </div>
                     </div>
 
                 </div>
-                <div class="modal-footer bg-light border-0 px-4 py-3" style="border-bottom-left-radius: 1rem; border-bottom-right-radius: 1rem;">
+
+                <!-- Footer -->
+                <div class="modal-footer bg-light border-top px-4 py-3">
                     <button type="button" class="btn btn-secondary px-4" data-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-primary px-4 font-weight-bold shadow-sm">Guardar Registro</button>
                 </div>
@@ -111,7 +166,6 @@
         </div>
     </div>
 </div>
-
 
 <!-- ================================================================= -->
 <!-- MODALES DINÁMICOS POR CADA CONTACTO (DETALLES, EDITAR, NOTAS)      -->
@@ -221,129 +275,8 @@
     </div>
 
 
-    <!-- 2. MODAL DE EDITAR CONTACTO Y ASIGNACIÓN -->
-    <div class="modal fade" id="modalEditarContacto{{ $contacto->id }}" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content border-0 shadow-lg" style="border-radius: 1rem;">
-                
-                <div class="modal-header bg-light border-0 px-4 pt-4 pb-3" style="border-top-left-radius: 1rem; border-top-right-radius: 1rem;">
-                    <h5 class="modal-title font-weight-bold text-gray-900">
-                        <i class="fas fa-user-edit text-primary mr-2"></i> Editar Contacto: {{ $contacto->nombre }}
-                    </h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-
-                <form action="{{ route('contactos.update', $contacto->id) }}" method="POST" class="user">
-                    @csrf
-                    @method('PUT')
-                    
-                    <div class="modal-body px-4 py-3">
-                        
-                        <!-- Bloque 1: Datos Personales -->
-                        <h6 class="text-xs font-weight-bold text-uppercase text-muted mb-3 border-bottom pb-1">1. Información Personal</h6>
-                        <div class="row">
-                            <div class="col-md-4 form-group mb-3">
-                                <label class="font-weight-bold text-gray-700 small">Nombre <span class="text-danger">*</span></label>
-                                <input type="text" name="nombre" class="form-control bg-light" required value="{{ old('nombre', $contacto->nombre) }}">
-                            </div>
-                            <div class="col-md-4 form-group mb-3">
-                                <label class="font-weight-bold text-gray-700 small">Apellido Paterno <span class="text-danger">*</span></label>
-                                <input type="text" name="apellido_paterno" class="form-control bg-light" required value="{{ old('apellido_paterno', $contacto->apellido_paterno) }}">
-                            </div>
-                            <div class="col-md-4 form-group mb-3">
-                                <label class="font-weight-bold text-gray-700 small">Apellido Materno</label>
-                                <input type="text" name="apellido_materno" class="form-control bg-light" value="{{ old('apellido_materno', $contacto->apellido_materno) }}">
-                            </div>
-                        </div>
-
-                        <!-- Bloque 2: Ubicación Institucional (Selects con valores actuales corregidos) -->
-                        <h6 class="text-xs font-weight-bold text-uppercase text-muted mb-3 mt-4 border-bottom pb-1">2. Ubicación Institucional</h6>
-                        <div class="row">
-                            <div class="col-md-6 form-group mb-3">
-                                <label class="font-weight-bold text-gray-700 small">Ente <span class="text-danger">*</span></label>
-                                <select name="ente_id" class="form-control bg-light" required>
-                                    <option value="">Seleccione un Ente...</option>
-                                    @foreach($entes ?? [] as $ente)
-                                        <option value="{{ $ente->id }}" {{ (optional($asignacionActual)->ente_id == $ente->id) ? 'selected' : '' }}>
-                                            {{ $ente->nombre }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <div class="col-md-6 form-group mb-3">
-                                <label class="font-weight-bold text-gray-700 small">Puesto <span class="text-danger">*</span></label>
-                                <select name="puesto_id" class="form-control bg-light" required>
-                                    <option value="">Seleccione un Puesto...</option>
-                                    @foreach($puestos ?? [] as $puesto)
-                                        <option value="{{ $puesto->id }}" {{ (optional($asignacionActual)->puesto_id == $puesto->id) ? 'selected' : '' }}>
-                                            {{ $puesto->nombre }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-12 form-group mb-3">
-                                <label class="font-weight-bold text-gray-700 small">Sede</label>
-                                <select name="sede_id" class="form-control bg-light">
-                                    <option value="">Seleccione una Sede (Opcional)...</option>
-                                    @foreach($sedes ?? [] as $sede)
-                                        <option value="{{ $sede->id }}" {{ (optional($asignacionActual)->sede_id == $sede->id) ? 'selected' : '' }}>
-                                            {{ $sede->nombre }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- Bloque 3: Medios de Contacto -->
-                        <h6 class="text-xs font-weight-bold text-uppercase text-muted mb-3 mt-4 border-bottom pb-1">3. Medios de Comunicación</h6>
-                        <div class="row">
-                            <div class="col-md-6 form-group mb-3">
-                                <label class="font-weight-bold text-gray-700 small">Correo Institucional <span class="text-danger">*</span></label>
-                                <input type="email" name="correo" class="form-control bg-light" required value="{{ old('correo', optional($asignacionActual)->correo) }}">
-                            </div>
-                            <div class="col-md-3 form-group mb-3">
-                                <label class="font-weight-bold text-gray-700 small">Teléfono</label>
-                                <input type="text" name="telefono" class="form-control bg-light" value="{{ old('telefono', optional($asignacionActual)->telefono) }}">
-                            </div>
-                            <div class="col-md-3 form-group mb-3">
-                                <label class="font-weight-bold text-gray-700 small">Extensión</label>
-                                <input type="text" name="extension" class="form-control bg-light" value="{{ old('extension', optional($asignacionActual)->extension) }}">
-                            </div>
-                        </div>
-
-                        <!-- Bloque 4: Estatus y Nota -->
-                        <h6 class="text-xs font-weight-bold text-uppercase text-muted mb-3 mt-4 border-bottom pb-1">4. Estatus y Observaciones</h6>
-                        <div class="row">
-                            <div class="col-md-4 form-group mb-3">
-                                <label class="font-weight-bold text-gray-700 small">Estado del Contacto</label>
-                                <select name="activo" class="form-control bg-light">
-                                    <option value="1" {{ $contacto->activo ? 'selected' : '' }}>Activo</option>
-                                    <option value="0" {{ !$contacto->activo ? 'selected' : '' }}>Inactivo</option>
-                                </select>
-                            </div>
-                            <div class="col-md-8 form-group mb-0">
-                                <label class="font-weight-bold text-gray-700 small">Observaciones / Notas</label>
-                                <textarea name="observaciones" class="form-control bg-light" rows="2">{{ old('observaciones', $contacto->observaciones) }}</textarea>
-                            </div>
-                        </div>
-
-                    </div>
-                    
-                    <div class="modal-footer bg-light border-0 px-4 py-3" style="border-bottom-left-radius: 1rem; border-bottom-right-radius: 1rem;">
-                        <button type="button" class="btn btn-secondary px-4" data-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary px-4 font-weight-bold shadow-sm">Guardar Cambios</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
+    <!-- 2. MODAL DE INSPECTOR LATERAL (FUTURO MOVIMIENTO) -->
+    
 
     <!-- 3. MODAL DE NOTAS RÁPIDAS (ACCESO INDIVIDUAL) -->
     <div class="modal fade" id="modalNota{{ $contacto->id }}" tabindex="-1" role="dialog" aria-hidden="true">

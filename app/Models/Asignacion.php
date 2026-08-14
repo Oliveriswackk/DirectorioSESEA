@@ -52,16 +52,14 @@ class Asignacion extends Model
 
     public function getConmutadorAttribute()
     {
-        // Primero, intenta buscar el conmutador de la Sede (si existe y tiene valor)
         if ($this->sede && $this->sede->conmutador) {
             return $this->sede->conmutador;
         }
-        
-        // Si no, recurre al del Ente (a nivel institucional)
+
         if ($this->ente && $this->ente->conmutador) {
             return $this->ente->conmutador;
         }
-        
-        return 'N/A'; // O simplemente vacío
+
+        return 'N/A';
     }
 }

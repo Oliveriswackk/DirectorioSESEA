@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('apellido_paterno', 100)->nullable();
             $table->string('apellido_materno', 100)->nullable();
 
-            $table->text('observaciones')->nullable();
+            // $table->text('observaciones')->nullable(); // reservado para información propia de la persona
 
             $table->boolean('activo')->default(true);
 

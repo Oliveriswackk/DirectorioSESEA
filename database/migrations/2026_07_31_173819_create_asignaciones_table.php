@@ -37,7 +37,7 @@ return new class extends Migration
             $table->date('fecha_inicio')->nullable();
             $table->date('fecha_fin')->nullable();
 
-            $table->text('observaciones')->nullable();
+            $table->text('observaciones')->nullable(); // notas relativas a esta asignación
 
             $table->boolean('activo')->default(true);
 

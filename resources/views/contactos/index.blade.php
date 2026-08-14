@@ -21,9 +21,6 @@
                 </button>
             </div>
 
-            <button type="button" class="btn btn-primary btn-sm rounded shadow-sm" data-toggle="modal" data-target="#modalCrearContacto">
-                <i class="fas fa-user-plus fa-xs mr-1"></i> Nuevo Contacto
-            </button>
         </div>
     </div>
 
@@ -102,10 +99,10 @@
             <!-- Fila 3: Botones de Acción (Añadir, Limpiar y Exportar) -->
             <div class="d-flex justify-content-between align-items-center border-top pt-3">
                 <div class="d-flex align-items-center">
-                    <button class="btn btn-primary btn-sm mr-2" data-toggle="modal" data-target="#modalCrearContacto">
-                        <i class="fas fa-plus mr-1"></i> Añadir Contacto
+                    <button type="button" class="btn btn-primary btn-sm rounded shadow-sm" data-toggle="modal" data-target="#modalCrearContacto">
+                        <i class="fas fa-user-plus fa-xs mr-1"></i> Nuevo Contacto
                     </button>
-                    <button type="button" class="btn btn-light border btn-sm text-secondary" onclick="limpiarFiltros()" title="Limpiar filtros">
+                    <button type="button" class="btn btn-light border btn-sm text-secondary ml-2" onclick="limpiarFiltros()" title="Limpiar filtros">
                         <i class="fas fa-eraser mr-1"></i> Limpiar filtros
                     </button>
                 </div>
@@ -148,19 +145,29 @@
         <form id="formEditarInspector" method="POST">
             @csrf
             @method('PUT')
+
+            <input
+                type="hidden"
+                name="tipo_actualizacion"
+                id="insp_tipo_actualizacion"
+            >
             
+
             <div class="form-group mb-3">
                 <label class="small font-weight-bold text-muted">Nombre(s) *</label>
                 <input type="text" id="insp_nombre" name="nombre" class="form-control" required>
             </div>
+
             <div class="form-group mb-3">
                 <label class="small font-weight-bold text-muted">Apellido Paterno</label>
                 <input type="text" id="insp_apellido_paterno" name="apellido_paterno" class="form-control">
             </div>
+
             <div class="form-group mb-3">
                 <label class="small font-weight-bold text-muted">Apellido Materno</label>
                 <input type="text" id="insp_apellido_materno" name="apellido_materno" class="form-control">
             </div>
+
             <div class="form-group mb-3">
                 <label class="small font-weight-bold text-muted">Puesto *</label>
                 <select id="insp_puesto_id" name="puesto_id" class="form-control select-search" required>
@@ -170,6 +177,7 @@
                     @endforeach
                 </select>
             </div>
+
             <div class="form-group mb-3">
                 <label class="small font-weight-bold text-muted">Ente / Institución *</label>
                 <select id="insp_ente_id" name="ente_id" class="form-control select-search" required>
@@ -179,6 +187,7 @@
                     @endforeach
                 </select>
             </div>
+
             <div class="form-group mb-3">
                 <label class="small font-weight-bold text-muted">Sede</label>
                 <select id="insp_sede_id" name="sede_id" class="form-control select-search">
@@ -188,10 +197,12 @@
                     @endforeach
                 </select>
             </div>
+
             <div class="form-group mb-3">
                 <label class="small font-weight-bold text-muted">Correo</label>
                 <input type="email" id="insp_correo" name="correo" class="form-control">
             </div>
+
             <div class="form-row mb-3">
                 <div class="col-8">
                     <label class="small font-weight-bold text-muted">Teléfono</label>
@@ -202,6 +213,31 @@
                     <input type="text" id="insp_extension" name="extension" class="form-control">
                 </div>
             </div>
+
+            <div class="form-group mb-3">
+                <label class="small font-weight-bold text-muted">Celular</label>
+
+                <input
+                    type="text"
+                    id="insp_celular"
+                    name="celular"
+                    class="form-control"
+                >
+            </div>
+
+            <div class="form-group mb-3">
+                <label class="small font-weight-bold text-muted">
+                    Observaciones
+                </label>
+
+                <textarea
+                    id="insp_observaciones"
+                    name="observaciones"
+                    class="form-control"
+                    rows="3"
+                ></textarea>
+            </div>
+
 
             <div class="border-top pt-3 text-right">
                 <button type="button" class="btn btn-secondary btn-sm" onclick="cerrarInspector()">Cancelar</button>
@@ -273,7 +309,6 @@
 
     }
 
-
     // =========================================================
     // INSPECTOR
     // =========================================================
@@ -292,7 +327,6 @@
 
 
         // Datos básicos
-
         document.getElementById('insp_nombre').value =
             el.getAttribute('data-nombre') || '';
 
@@ -304,7 +338,6 @@
 
 
         // Contacto
-
         document.getElementById('insp_correo').value =
             el.getAttribute('data-correo') || '';
 
@@ -314,9 +347,14 @@
         document.getElementById('insp_extension').value =
             el.getAttribute('data-extension') || '';
 
+        document.getElementById('insp_celular').value =
+            el.getAttribute('data-celular') || '';
+
+        document.getElementById('insp_observaciones').value =
+            el.getAttribute('data-observaciones') || '';
+
 
         // IDs
-
         let puestoId =
             el.getAttribute('data-puesto-id') || '';
 
@@ -327,8 +365,12 @@
             el.getAttribute('data-sede-id') || '';
 
 
-        // Puesto
+        const formulario = document.getElementById('formEditarInspector');
 
+        formulario.dataset.puestoOriginal = puestoId;
+        formulario.dataset.enteOriginal = enteId;
+        
+        // Puesto
         let selectPuesto =
             document.getElementById('insp_puesto_id');
 
@@ -349,9 +391,7 @@
 
         }
 
-
         // Ente
-
         let selectEnte =
             document.getElementById('insp_ente_id');
 
@@ -372,9 +412,7 @@
 
         }
 
-
         // Sede
-
         let selectSede =
             document.getElementById('insp_sede_id');
 
@@ -395,9 +433,7 @@
 
         }
 
-
         // Abrir inspector
-
         document
             .getElementById('inspectorLateral')
             .style.right = '0';
@@ -412,6 +448,117 @@
             .style.right = '-450px';
 
     }
+
+
+    // =========================================================
+    // ACTUALIZAR CONTACTO / ASIGNACIÓN
+    // =========================================================
+
+    document
+        .getElementById('formEditarInspector')
+        ?.addEventListener('submit', function(event) {
+
+            event.preventDefault();
+
+            const form = this;
+
+            const puestoOriginal =
+                form.dataset.puestoOriginal || '';
+
+            const enteOriginal =
+                form.dataset.enteOriginal || '';
+
+            const puestoNuevo =
+                document.getElementById('insp_puesto_id').value;
+
+            const enteNuevo =
+                document.getElementById('insp_ente_id').value;
+
+
+            const cambioDeAsignacion =
+                String(puestoOriginal) !== String(puestoNuevo) ||
+                String(enteOriginal) !== String(enteNuevo);
+
+
+            // =====================================================
+            // CASO 1: NO CAMBIÓ ENTE NI PUESTO
+            // =====================================================
+
+            if (!cambioDeAsignacion) {
+
+                document.getElementById(
+                    'insp_tipo_actualizacion'
+                ).value = '';
+
+                form.submit();
+
+                return;
+            }
+
+
+            // =====================================================
+            // CASO 2: CAMBIÓ ENTE O PUESTO
+            // =====================================================
+
+            Swal.fire({
+
+                title: 'Cambio de asignación',
+
+                text:
+                    'Detectamos un cambio de Ente o Puesto. ' +
+                    '¿Qué deseas registrar?',
+
+                icon: 'question',
+
+                showDenyButton: true,
+
+                showCancelButton: true,
+
+                confirmButtonText: 'Cambio real',
+
+                denyButtonText: 'Corrección',
+
+                cancelButtonText: 'Cancelar',
+
+                reverseButtons: true
+
+            }).then((result) => {
+
+
+                // -------------------------------------------------
+                // CAMBIO REAL
+                // -------------------------------------------------
+
+                if (result.isConfirmed) {
+
+                    document.getElementById(
+                        'insp_tipo_actualizacion'
+                    ).value = 'cambio';
+
+                    form.submit();
+
+                    return;
+                }
+
+
+                // -------------------------------------------------
+                // CORRECCIÓN
+                // -------------------------------------------------
+
+                if (result.isDenied) {
+
+                    document.getElementById(
+                        'insp_tipo_actualizacion'
+                    ).value = 'correccion';
+
+                    form.submit();
+
+                    return;
+                }
+
+            });
+
+        });
 
 
     // =========================================================
@@ -1062,7 +1209,189 @@
         renderizarCards();
 
     });
+    
+    // == MODALES ==
+    
+    // Autofocus modal
+    $('#modalCrearContacto').on('shown.bs.modal', function () {
+        $('#modalCrearContacto input[name="nombre"]').trigger('focus');
+    });
 
+    //
+    @if ($errors->any())
+        $(document).ready(function () {
+            $('#modalCrearContacto').modal('show');
+        });
+    @endif
+</script>
+<script>
+$(document).ready(function () {
+
+    const form = $('#modalCrearContacto form');
+
+    const telefono = $('input[name="telefono"]');
+    const celular = $('input[name="celular"]');
+    const extension = $('input[name="extension"]');
+    const correo = $('input[name="correo"]');
+
+
+    // =====================================================
+    // VALIDAR TELÉFONO
+    // =====================================================
+
+    function validarTelefono(campo) {
+
+        const valor = campo.val().trim();
+
+        if (valor === '') {
+            campo.removeClass('is-invalid');
+            return true;
+        }
+
+        const valido =
+            /^[0-9\s\-\(\)]+$/.test(valor);
+
+        campo.toggleClass('is-invalid', !valido);
+
+        return valido;
+    }
+
+
+    // =====================================================
+    // VALIDAR EXTENSIÓN
+    // =====================================================
+
+    function validarExtension(campo) {
+
+        const valor = campo.val().trim();
+
+        if (valor === '') {
+            campo.removeClass('is-invalid');
+            return true;
+        }
+
+        const valido =
+            /^[0-9]+$/.test(valor);
+
+        campo.toggleClass('is-invalid', !valido);
+
+        return valido;
+    }
+
+
+    // =====================================================
+    // VALIDAR CORREO
+    // =====================================================
+
+    function validarCorreo(campo) {
+
+        const valor = campo.val().trim();
+
+        if (valor === '') {
+            campo.removeClass('is-invalid');
+            return true;
+        }
+
+        const valido =
+            /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valor);
+
+        campo.toggleClass('is-invalid', !valido);
+
+        return valido;
+    }
+
+
+    // =====================================================
+    // VALIDAR AL SALIR DEL CAMPO
+    // =====================================================
+
+    telefono.on('blur', function () {
+        validarTelefono(telefono);
+    });
+
+    celular.on('blur', function () {
+        validarTelefono(celular);
+    });
+
+    extension.on('blur', function () {
+        validarExtension(extension);
+    });
+
+    correo.on('blur', function () {
+        validarCorreo(correo);
+    });
+
+
+    // =====================================================
+    // VALIDAR MIENTRAS CORRIGE
+    // =====================================================
+
+    telefono.on('input', function () {
+
+        if (telefono.hasClass('is-invalid')) {
+            validarTelefono(telefono);
+        }
+
+    });
+
+    celular.on('input', function () {
+
+        if (celular.hasClass('is-invalid')) {
+            validarTelefono(celular);
+        }
+
+    });
+
+    extension.on('input', function () {
+
+        if (extension.hasClass('is-invalid')) {
+            validarExtension(extension);
+        }
+
+    });
+
+    correo.on('input', function () {
+
+        if (correo.hasClass('is-invalid')) {
+            validarCorreo(correo);
+        }
+
+    });
+
+
+    // =====================================================
+    // VALIDAR ANTES DE ENVIAR
+    // =====================================================
+
+    form.on('submit', function (event) {
+
+        const telefonoValido =
+            validarTelefono(telefono);
+
+        const celularValido =
+            validarTelefono(celular);
+
+        const extensionValida =
+            validarExtension(extension);
+
+        const correoValido =
+            validarCorreo(correo);
+
+
+        if (
+            !telefonoValido ||
+            !celularValido ||
+            !extensionValida ||
+            !correoValido
+        ) {
+
+            event.preventDefault();
+
+        }
+
+    });
+
+});
 </script>
 
 @endpush
