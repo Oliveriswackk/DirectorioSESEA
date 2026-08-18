@@ -19,6 +19,7 @@ class ContactoController extends Controller
             'contacto',
             'puesto',
             'ente.nivelGobierno',
+            'ente.municipio.estado',
             'sede',
         ])->get();
 
@@ -47,6 +48,7 @@ class ContactoController extends Controller
             'nivelesGobierno'
         ));
     }
+
 
     public function store(Request $request)
     {
@@ -115,6 +117,7 @@ class ContactoController extends Controller
             ->route('contactos.index')
             ->with('success', 'Contacto registrado exitosamente.');
     }
+
 
     public function update(Request $request, $id)
     {
@@ -263,6 +266,7 @@ class ContactoController extends Controller
             ->with('success', 'Contacto actualizado exitosamente.');
     }
 
+
     public function updateNota(Request $request, $id)
     {
         $validated = $request->validate([
@@ -290,6 +294,7 @@ class ContactoController extends Controller
             ->with('success', 'Nota guardada exitosamente.');
     }
 
+
     public function verificarAsignacion(Request $request)
     {
         $validated = $request->validate([
@@ -313,6 +318,7 @@ class ContactoController extends Controller
             'asignacion' => $asignacion,
         ]);
     }
+
 
     public function reemplazar(Request $request, $id)
     {

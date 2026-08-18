@@ -1,6 +1,51 @@
 @extends('layouts.app')
 
 @section('content')
+<style>
+    .inspector-tab {
+        position: relative;
+        border: 0;
+        background: transparent;
+        padding: .55rem 0 .65rem;
+        margin: 0;
+        color: #858796;
+        font-size: .78rem;
+        font-weight: 600;
+        cursor: pointer;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    .inspector-tab::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: .3rem;
+        height: 2px;
+        background: transparent;
+        border-radius: 2px;
+        transition: background-color .2s ease;
+    }
+
+    .inspector-tab:hover {
+        color: #4e73df;
+    }
+
+    .inspector-tab.active {
+        color: #4e73df;
+    }
+
+    .inspector-tab.active::after {
+        background: #4e73df;
+    }
+
+    .inspector-tab:focus,
+    .inspector-tab:active {
+        outline: none !important;
+        box-shadow: none !important;
+    }
+</style>
 <div class="container-fluid px-4">
 
     <!-- Encabezado -->
@@ -20,7 +65,6 @@
                     <i class="fas fa-th-large mr-1"></i> Tarjetas
                 </button>
             </div>
-
         </div>
     </div>
 
@@ -28,7 +72,7 @@
     <div class="card border-0 shadow-sm rounded-lg mb-3">
         <div class="card-body p-3">
             
-            <!-- Fila 1: Buscador Global con estilo de barra grande -->
+            <!-- Fila 1: Buscador Global -->
             <div class="mb-3">
                 <div class="card border-0 shadow-sm rounded-lg bg-light">
                     <div class="card-body p-2">
@@ -48,47 +92,34 @@
                 </div>
             </div>
 
-            <!-- Fila 2: Selects de Filtros (Nivel, Ente, Puesto y Estado Activo) -->
+            <!-- Fila 2: Selects de Filtros -->
             <div class="row align-items-center mb-3">
                 <div class="col-md-3 mb-2 mb-md-0 px-1">
-                    <select id="filtroNivelGobierno"
-                            class="select-search form-control form-control-sm border bg-light filter-trigger">
+                    <select id="filtroNivelGobierno" class="select-search form-control form-control-sm border bg-light filter-trigger">
                         <option value="">Nivel Gobierno...</option>
-
                         @foreach($nivelesGobierno as $nivel)
-                            <option value="{{ $nivel->id }}">
-                                {{ $nivel->nombre }}
-                            </option>
+                            <option value="{{ $nivel->id }}">{{ $nivel->nombre }}</option>
                         @endforeach
                     </select>
                 </div>
                 <div class="col-md-3 mb-2 mb-md-0 px-1">
-                    <select id="filtroEnte"
-                            class="select-search form-control form-control-sm border bg-light filter-trigger">
+                    <select id="filtroEnte" class="select-search form-control form-control-sm border bg-light filter-trigger">
                         <option value="">Ente...</option>
-
                         @foreach($entes as $ente)
-                            <option value="{{ $ente->id }}">
-                                {{ $ente->nombre }}
-                            </option>
+                            <option value="{{ $ente->id }}">{{ $ente->nombre }}</option>
                         @endforeach
                     </select>
                 </div>
                 <div class="col-md-3 mb-2 mb-md-0 px-1">
-                    <select id="filtroPuesto"
-                            class="select-search form-control form-control-sm border bg-light filter-trigger">
+                    <select id="filtroPuesto" class="select-search form-control form-control-sm border bg-light filter-trigger">
                         <option value="">Puesto...</option>
-
                         @foreach($puestos as $puesto)
-                            <option value="{{ $puesto->id }}">
-                                {{ $puesto->nombre }}
-                            </option>
+                            <option value="{{ $puesto->id }}">{{ $puesto->nombre }}</option>
                         @endforeach
                     </select>
                 </div>
                 <div class="col-md-3 mb-2 mb-md-0 px-1">
-                    <select id="filtroEstado"
-                            class="select-search form-control form-control-sm border bg-light filter-trigger">
+                    <select id="filtroEstado" class="select-search form-control form-control-sm border bg-light filter-trigger">
                         <option value="">Estado (Todos)...</option>
                         <option value="1">Activos</option>
                         <option value="0">Inactivos</option>
@@ -96,7 +127,7 @@
                 </div>
             </div>
 
-            <!-- Fila 3: Botones de Acción (Añadir, Limpiar y Exportar) -->
+            <!-- Fila 3: Botones de Acción -->
             <div class="d-flex justify-content-between align-items-center border-top pt-3">
                 <div class="d-flex align-items-center">
                     <button type="button" class="btn btn-primary btn-sm rounded shadow-sm" data-toggle="modal" data-target="#modalCrearContacto">
@@ -123,142 +154,25 @@
     </div>
 
     <!-- CONTENEDOR DINÁMICO DE VISTAS -->
-    <div idSeccion="seccionTabla">
+    <div id="seccionTabla">
         @include('contactos.partials.tabla-view')
     </div>
 
-    <div idSeccion="seccionCards" style="display: none;">
+    <div id="seccionCards" style="display: none;">
         @include('contactos.partials.cards-view')
     </div>
 
 </div>
 
-<!-- CAJÓN LATERAL (INSPECTOR) -->
-<div class="offcanvas offcanvas-end shadow-lg" tabindex="-1" id="inspectorLateral" aria-labelledby="inspectorLabel" style="width: 450px; background: #fff; position: fixed; top: 0; right: -450px; height: 100vh; z-index: 1050; transition: right 0.3s ease;">
-    <div class="offcanvas-header bg-light border-bottom px-4 py-3 d-flex justify-content-between align-items-center">
-        <h5 class="offcanvas-title font-weight-bold text-dark mb-0" id="inspectorLabel">Detalle de Vinculación</h5>
-        <button type="button" class="close border-0 bg-transparent text-dark" data-dismiss="offcanvas" aria-label="Close" onclick="cerrarInspector()">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <div class="offcanvas-body px-4 py-3 overflow-auto" style="height: calc(100vh - 70px);">
-        <form id="formEditarInspector" method="POST">
-            @csrf
-            @method('PUT')
-
-            <input
-                type="hidden"
-                name="tipo_actualizacion"
-                id="insp_tipo_actualizacion"
-            >
-            
-
-            <div class="form-group mb-3">
-                <label class="small font-weight-bold text-muted">Nombre(s) *</label>
-                <input type="text" id="insp_nombre" name="nombre" class="form-control" required>
-            </div>
-
-            <div class="form-group mb-3">
-                <label class="small font-weight-bold text-muted">Apellido Paterno</label>
-                <input type="text" id="insp_apellido_paterno" name="apellido_paterno" class="form-control">
-            </div>
-
-            <div class="form-group mb-3">
-                <label class="small font-weight-bold text-muted">Apellido Materno</label>
-                <input type="text" id="insp_apellido_materno" name="apellido_materno" class="form-control">
-            </div>
-
-            <div class="form-group mb-3">
-                <label class="small font-weight-bold text-muted">Puesto *</label>
-                <select id="insp_puesto_id" name="puesto_id" class="form-control select-search" required>
-                    <option value="">Seleccione...</option>
-                    @foreach($puestos as $puesto)
-                        <option value="{{ $puesto->id }}">{{ $puesto->nombre }}</option>
-                    @endforeach
-                </select>
-            </div>
-
-            <div class="form-group mb-3">
-                <label class="small font-weight-bold text-muted">Ente / Institución *</label>
-                <select id="insp_ente_id" name="ente_id" class="form-control select-search" required>
-                    <option value="">Seleccione...</option>
-                    @foreach($entes as $ente)
-                        <option value="{{ $ente->id }}">{{ $ente->nombre }}</option>
-                    @endforeach
-                </select>
-            </div>
-
-            <div class="form-group mb-3">
-                <label class="small font-weight-bold text-muted">Sede</label>
-                <select id="insp_sede_id" name="sede_id" class="form-control select-search">
-                    <option value="">Ninguna...</option>
-                    @foreach($sedes as $sede)
-                        <option value="{{ $sede->id }}">{{ $sede->nombre }}</option>
-                    @endforeach
-                </select>
-            </div>
-
-            <div class="form-group mb-3">
-                <label class="small font-weight-bold text-muted">Correo</label>
-                <input type="email" id="insp_correo" name="correo" class="form-control">
-            </div>
-
-            <div class="form-row mb-3">
-                <div class="col-8">
-                    <label class="small font-weight-bold text-muted">Teléfono</label>
-                    <input type="text" id="insp_telefono" name="telefono" class="form-control">
-                </div>
-                <div class="col-4">
-                    <label class="small font-weight-bold text-muted">Ext.</label>
-                    <input type="text" id="insp_extension" name="extension" class="form-control">
-                </div>
-            </div>
-
-            <div class="form-group mb-3">
-                <label class="small font-weight-bold text-muted">Celular</label>
-
-                <input
-                    type="text"
-                    id="insp_celular"
-                    name="celular"
-                    class="form-control"
-                >
-            </div>
-
-            <div class="form-group mb-3">
-                <label class="small font-weight-bold text-muted">
-                    Observaciones
-                </label>
-
-                <textarea
-                    id="insp_observaciones"
-                    name="observaciones"
-                    class="form-control"
-                    rows="3"
-                ></textarea>
-            </div>
-
-
-            <div class="border-top pt-3 text-right">
-                <button type="button" class="btn btn-secondary btn-sm" onclick="cerrarInspector()">Cancelar</button>
-                <button type="submit" class="btn btn-primary btn-sm">Guardar Cambios</button>
-            </div>
-        </form>
-    </div>
-</div>
-
+<!-- LLAMADO ÚNICO DE MODALES EXTERNOS -->
 @include('contactos.modals')
+
 @endsection
 
 @push('scripts')
-
 <script>
 
     let vistaActual = 'tabla';
-
-    // =========================================================
-    // CONFIGURACIÓN DE CARDS
-    // =========================================================
 
     const CARDS_POR_PAGINA = 12;
 
@@ -273,12 +187,11 @@
 
         vistaActual = tipo;
 
-        const tabla = document.querySelector('[idSeccion="seccionTabla"]');
-        const cards = document.querySelector('[idSeccion="seccionCards"]');
+        const tabla = document.getElementById('seccionTabla');
+        const cards = document.getElementById('seccionCards');
 
         const btnTabla = document.getElementById('btnVistaTabla');
         const btnCards = document.getElementById('btnVistaCards');
-
 
         if (tipo === 'tabla') {
 
@@ -290,6 +203,14 @@
 
             btnCards.classList.remove('btn-primary', 'active');
             btnCards.classList.add('btn-light', 'border');
+
+            if (window.tablaContactosDT) {
+                window.tablaContactosDT
+                    .columns
+                    .adjust()
+                    .responsive
+                    .recalc();
+            }
 
         } else {
 
@@ -304,40 +225,96 @@
 
         }
 
-
         aplicarFiltrosGlobales();
-
     }
 
+
     // =========================================================
-    // INSPECTOR
+    // INSPECTOR — ABRIR
     // =========================================================
 
     function abrirInspector(el) {
 
-        let id = el.getAttribute('data-id');
+        const id = el.getAttribute('data-id');
 
-        let formUrl = "{{ route('contactos.update', ':id') }}"
-            .replace(':id', id);
+        const formUrl =
+            "{{ route('contactos.update', ':id') }}"
+                .replace(':id', id);
+
+        const formulario =
+            document.getElementById('formEditarInspector');
+
+        formulario.setAttribute('action', formUrl);
 
 
-        document
-            .getElementById('formEditarInspector')
-            .setAttribute('action', formUrl);
+        // =====================================================
+        // DATOS PERSONALES
+        // =====================================================
 
-
-        // Datos básicos
-        document.getElementById('insp_nombre').value =
+        const nombre =
             el.getAttribute('data-nombre') || '';
 
-        document.getElementById('insp_apellido_paterno').value =
+        const apellidoPaterno =
             el.getAttribute('data-apellido_paterno') || '';
 
-        document.getElementById('insp_apellido_materno').value =
+        const apellidoMaterno =
             el.getAttribute('data-apellido_materno') || '';
 
+        document.getElementById('insp_nombre').value =
+            nombre;
 
-        // Contacto
+        document.getElementById('insp_apellido_paterno').value =
+            apellidoPaterno;
+
+        document.getElementById('insp_apellido_materno_input').value =
+            apellidoMaterno;
+
+
+        // Nombre visible del inspector
+
+        const nombreCompleto = [
+            nombre,
+            apellidoPaterno,
+            apellidoMaterno
+        ]
+            .filter(Boolean)
+            .join(' ');
+
+        document.getElementById('insp_nombre_display').textContent =
+            nombreCompleto || 'Detalles del contacto';
+
+
+        // =====================================================
+        // ESTADO
+        // =====================================================
+
+        const activo =
+            el.getAttribute('data-activo') === '1';
+
+        const badge =
+            document.getElementById('insp_estado_badge');
+
+        if (activo) {
+
+            badge.textContent = 'ACTIVO';
+
+            badge.className =
+                'badge badge-success mr-2';
+
+        } else {
+
+            badge.textContent = 'INACTIVO';
+
+            badge.className =
+                'badge badge-danger mr-2';
+
+        }
+
+
+        // =====================================================
+        // DATOS DE CONTACTO
+        // =====================================================
+
         document.getElementById('insp_correo').value =
             el.getAttribute('data-correo') || '';
 
@@ -354,104 +331,162 @@
             el.getAttribute('data-observaciones') || '';
 
 
-        // IDs
-        let puestoId =
+        // =====================================================
+        // INFORMACIÓN TERRITORIAL
+        // =====================================================
+
+        document.getElementById('insp_nivel').textContent =
+            el.getAttribute('data-nivel') || 'No disponible';
+
+        document.getElementById('insp_municipio').textContent =
+            el.getAttribute('data-municipio') || 'No disponible';
+
+        document.getElementById('insp_estado').textContent =
+            el.getAttribute('data-estado') || 'No disponible';
+
+        document.getElementById('insp_direccion').textContent =
+            el.getAttribute('data-direccion') ||
+            'Sin dirección registrada';
+
+
+        // =====================================================
+        // IDS DE ASIGNACIÓN
+        // =====================================================
+
+        const puestoId =
             el.getAttribute('data-puesto-id') || '';
 
-        let enteId =
+        const enteId =
             el.getAttribute('data-ente-id') || '';
 
-        let sedeId =
+        const sedeId =
             el.getAttribute('data-sede-id') || '';
 
 
-        const formulario = document.getElementById('formEditarInspector');
+        // =====================================================
+        // GUARDAR VALORES ORIGINALES
+        // =====================================================
 
-        formulario.dataset.puestoOriginal = puestoId;
-        formulario.dataset.enteOriginal = enteId;
-        
-        // Puesto
-        let selectPuesto =
-            document.getElementById('insp_puesto_id');
+        formulario.dataset.puestoOriginal =
+            puestoId;
 
-        selectPuesto.value = puestoId;
-
-
-        if (selectPuesto.tomselect) {
-
-            selectPuesto.tomselect.setValue(puestoId);
-
-        } else if (
-            $(selectPuesto).hasClass('select2-hidden-accessible')
-        ) {
-
-            $(selectPuesto)
-                .val(puestoId)
-                .trigger('change');
-
-        }
-
-        // Ente
-        let selectEnte =
-            document.getElementById('insp_ente_id');
-
-        selectEnte.value = enteId;
+        formulario.dataset.enteOriginal =
+            enteId;
 
 
-        if (selectEnte.tomselect) {
+        // =====================================================
+        // CARGAR TOMSELECT
+        // =====================================================
 
-            selectEnte.tomselect.setValue(enteId);
+        const selects = [
+            ['puesto', puestoId],
+            ['ente', enteId],
+            ['sede', sedeId]
+        ];
 
-        } else if (
-            $(selectEnte).hasClass('select2-hidden-accessible')
-        ) {
+        selects.forEach(([campo, valor]) => {
 
-            $(selectEnte)
-                .val(enteId)
-                .trigger('change');
+            const select =
+                document.getElementById(`insp_${campo}_id`);
 
-        }
+            if (!select) {
+                return;
+            }
 
-        // Sede
-        let selectSede =
-            document.getElementById('insp_sede_id');
+            if (select.tomselect) {
 
-        selectSede.value = sedeId;
+                select.tomselect.setValue(
+                    valor || '',
+                    true
+                );
+
+            } else {
+
+                select.value = valor || '';
+
+            }
+
+        });
 
 
-        if (selectSede.tomselect) {
+        // =====================================================
+        // SIEMPRE INICIAR EN INFORMACIÓN ACTUAL
+        // =====================================================
 
-            selectSede.tomselect.setValue(sedeId);
+        switchTabInspector('actual');
 
-        } else if (
-            $(selectSede).hasClass('select2-hidden-accessible')
-        ) {
 
-            $(selectSede)
-                .val(sedeId)
-                .trigger('change');
+        // =====================================================
+        // ABRIR INSPECTOR
+        // =====================================================
 
-        }
-
-        // Abrir inspector
         document
             .getElementById('inspectorLateral')
             .style.right = '0';
-
     }
 
+
+    // =========================================================
+    // INSPECTOR — CERRAR
+    // =========================================================
 
     function cerrarInspector() {
 
         document
             .getElementById('inspectorLateral')
-            .style.right = '-450px';
-
+            .style.right = '-480px';
     }
 
 
     // =========================================================
-    // ACTUALIZAR CONTACTO / ASIGNACIÓN
+    // INSPECTOR — PESTAÑAS
+    // =========================================================
+
+    function switchTabInspector(tab) {
+
+        const tabActual = document.getElementById('tabInspectorActual');
+        const tabHistorial = document.getElementById('tabInspectorHistorial');
+
+        const contenidoActual = document.getElementById('tabInspectorActualContenido');
+        const contenidoHistorial = document.getElementById('tabInspectorHistorialContenido');
+
+        if (
+            !tabActual ||
+            !tabHistorial ||
+            !contenidoActual ||
+            !contenidoHistorial
+        ) {
+            console.error('No se encontraron los elementos del inspector.');
+            return;
+        }
+
+        if (tab === 'actual') {
+
+            tabActual.classList.add('active');
+            tabHistorial.classList.remove('active');
+
+            contenidoActual.style.display = 'block';
+            contenidoHistorial.style.display = 'none';
+
+            return;
+        }
+
+        if (tab === 'historial') {
+
+            tabActual.classList.remove('active');
+            tabHistorial.classList.add('active');
+
+            contenidoActual.style.display = 'none';
+            contenidoHistorial.style.display = 'block';
+
+            return;
+        }
+
+        console.warn('Pestaña de inspector desconocida:', tab);
+    }
+
+    // =========================================================
+    // FORMULARIO DEL INSPECTOR
     // =========================================================
 
     document
@@ -469,10 +504,14 @@
                 form.dataset.enteOriginal || '';
 
             const puestoNuevo =
-                document.getElementById('insp_puesto_id').value;
+                document
+                    .getElementById('insp_puesto_id')
+                    .value;
 
             const enteNuevo =
-                document.getElementById('insp_ente_id').value;
+                document
+                    .getElementById('insp_ente_id')
+                    .value;
 
 
             const cambioDeAsignacion =
@@ -480,15 +519,15 @@
                 String(enteOriginal) !== String(enteNuevo);
 
 
-            // =====================================================
-            // CASO 1: NO CAMBIÓ ENTE NI PUESTO
-            // =====================================================
+            // =================================================
+            // ACTUALIZACIÓN NORMAL
+            // =================================================
 
             if (!cambioDeAsignacion) {
 
-                document.getElementById(
-                    'insp_tipo_actualizacion'
-                ).value = '';
+                document
+                    .getElementById('insp_tipo_actualizacion')
+                    .value = '';
 
                 form.submit();
 
@@ -496,64 +535,62 @@
             }
 
 
-            // =====================================================
-            // CASO 2: CAMBIÓ ENTE O PUESTO
-            // =====================================================
+            // =================================================
+            // CAMBIO DE ASIGNACIÓN
+            // =================================================
 
             Swal.fire({
 
                 title: 'Cambio de asignación',
 
                 text:
-                    'Detectamos un cambio de Ente o Puesto. ' +
-                    '¿Qué deseas registrar?',
+                    'Detectamos un cambio de Ente o Puesto. ¿Qué deseas registrar?',
 
                 icon: 'question',
 
                 showDenyButton: true,
-
                 showCancelButton: true,
 
                 confirmButtonText: 'Cambio real',
-
                 denyButtonText: 'Corrección',
-
                 cancelButtonText: 'Cancelar',
 
-                reverseButtons: true
+                reverseButtons: true,
+
+                customClass: {
+
+                    confirmButton:
+                        'btn btn-primary px-3 font-weight-bold ml-2',
+
+                    denyButton:
+                        'btn btn-outline-primary px-3 font-weight-bold ml-2',
+
+                    cancelButton:
+                        'btn btn-secondary px-3'
+
+                },
+
+                buttonsStyling: false
 
             }).then((result) => {
 
-
-                // -------------------------------------------------
-                // CAMBIO REAL
-                // -------------------------------------------------
-
                 if (result.isConfirmed) {
 
-                    document.getElementById(
-                        'insp_tipo_actualizacion'
-                    ).value = 'cambio';
+                    document
+                        .getElementById('insp_tipo_actualizacion')
+                        .value = 'trayectoria';
 
                     form.submit();
 
-                    return;
                 }
 
+                else if (result.isDenied) {
 
-                // -------------------------------------------------
-                // CORRECCIÓN
-                // -------------------------------------------------
-
-                if (result.isDenied) {
-
-                    document.getElementById(
-                        'insp_tipo_actualizacion'
-                    ).value = 'correccion';
+                    document
+                        .getElementById('insp_tipo_actualizacion')
+                        .value = 'correccion';
 
                     form.submit();
-
-                    return;
                 }
 
             });
@@ -577,9 +614,7 @@
                 () => func.apply(this, args),
                 wait
             );
-
         };
-
     }
 
 
@@ -619,16 +654,13 @@
             !nivelFiltro ||
             nivelId === String(nivelFiltro);
 
-
         const coincideEnte =
             !enteFiltro ||
             enteId === String(enteFiltro);
 
-
         const coincidePuesto =
             !puestoFiltro ||
             puestoId === String(puestoFiltro);
-
 
         const coincideEstado =
             !estadoFiltro ||
@@ -641,13 +673,8 @@
             coincidePuesto &&
             coincideEstado
         );
-
     }
 
-
-    // =========================================================
-    // FILTRADO DE CARDS
-    // =========================================================
 
     function obtenerCardsFiltradas() {
 
@@ -656,7 +683,6 @@
                 .val()
                 .toLowerCase()
                 .trim();
-
 
         const cards =
             document.querySelectorAll(
@@ -669,11 +695,9 @@
             const coincideFiltros =
                 registroCumpleFiltros(card);
 
-
             const texto =
                 (card.dataset.busqueda || '')
                     .toLowerCase();
-
 
             const coincideBusqueda =
                 !textoBusqueda ||
@@ -684,14 +708,12 @@
                 coincideFiltros &&
                 coincideBusqueda
             );
-
         });
-
     }
 
 
     // =========================================================
-    // PAGINACIÓN DE CARDS
+    // CARDS
     // =========================================================
 
     function renderizarCards() {
@@ -701,14 +723,11 @@
                 '#gridCards .contacto-card-item'
             );
 
-
         const cardsFiltradas =
             obtenerCardsFiltradas();
 
-
         const total =
             cardsFiltradas.length;
-
 
         const totalPaginas =
             Math.max(
@@ -717,14 +736,8 @@
             );
 
 
-        // Si el filtro dejó al usuario en una página
-        // que ya no existe, regresamos a la última válida.
-
         if (paginaCardsActual > totalPaginas) {
-
-            paginaCardsActual =
-                totalPaginas;
-
+            paginaCardsActual = totalPaginas;
         }
 
 
@@ -732,34 +745,25 @@
             (paginaCardsActual - 1) *
             CARDS_POR_PAGINA;
 
-
         const fin =
             inicio + CARDS_POR_PAGINA;
 
-
         const cardsVisibles =
-            cardsFiltradas.slice(inicio, fin);
+            cardsFiltradas.slice(
+                inicio,
+                fin
+            );
 
-
-        // Ocultamos TODAS
 
         todasLasCards.forEach(card => {
-
             card.style.display = 'none';
-
         });
 
-
-        // Mostramos solamente las de esta página
 
         cardsVisibles.forEach(card => {
-
             card.style.display = '';
-
         });
 
-
-        // Información
 
         const info =
             document.getElementById('cardsInfo');
@@ -780,23 +784,17 @@
                 const hasta =
                     Math.min(fin, total);
 
-
                 info.textContent =
                     `Mostrando ${desde}-${hasta} de ${total}`;
-
             }
-
         }
 
 
-        renderizarPaginacionCards(totalPaginas);
-
+        renderizarPaginacionCards(
+            totalPaginas
+        );
     }
 
-
-    // =========================================================
-    // BOTONES DE PAGINACIÓN
-    // =========================================================
 
     function renderizarPaginacionCards(totalPaginas) {
 
@@ -804,7 +802,6 @@
             document.getElementById(
                 'cardsPagination'
             );
-
 
         if (!contenedor) {
             return;
@@ -814,19 +811,13 @@
         contenedor.innerHTML = '';
 
 
-        // Si no hay más de una página,
-        // no mostramos paginación.
-
         if (totalPaginas <= 1) {
-
             return;
-
         }
 
 
         const nav =
             document.createElement('nav');
-
 
         const ul =
             document.createElement('ul');
@@ -835,7 +826,9 @@
             'pagination pagination-sm mb-0';
 
 
-        // Anterior
+        // =====================================================
+        // ANTERIOR
+        // =====================================================
 
         const liAnterior =
             document.createElement('li');
@@ -876,18 +869,22 @@
                             behavior: 'smooth',
                             block: 'start'
                         });
-
                 }
-
             };
 
 
-        liAnterior.appendChild(btnAnterior);
+        liAnterior.appendChild(
+            btnAnterior
+        );
 
-        ul.appendChild(liAnterior);
+        ul.appendChild(
+            liAnterior
+        );
 
 
-        // Páginas
+        // =====================================================
+        // PÁGINAS
+        // =====================================================
 
         for (
             let pagina = 1;
@@ -897,7 +894,6 @@
 
             const li =
                 document.createElement('li');
-
 
             li.className =
                 `page-item ${
@@ -910,14 +906,11 @@
             const button =
                 document.createElement('button');
 
-
             button.className =
                 'page-link';
 
-
             button.type =
                 'button';
-
 
             button.textContent =
                 pagina;
@@ -937,22 +930,25 @@
                             behavior: 'smooth',
                             block: 'start'
                         });
-
                 };
 
 
-            li.appendChild(button);
+            li.appendChild(
+                button
+            );
 
-            ul.appendChild(li);
-
+            ul.appendChild(
+                li
+            );
         }
 
 
-        // Siguiente
+        // =====================================================
+        // SIGUIENTE
+        // =====================================================
 
         const liSiguiente =
             document.createElement('li');
-
 
         liSiguiente.className =
             `page-item ${
@@ -964,7 +960,6 @@
 
         const btnSiguiente =
             document.createElement('button');
-
 
         btnSiguiente.className =
             'page-link';
@@ -994,26 +989,31 @@
                             behavior: 'smooth',
                             block: 'start'
                         });
-
                 }
-
             };
 
 
-        liSiguiente.appendChild(btnSiguiente);
+        liSiguiente.appendChild(
+            btnSiguiente
+        );
 
-        ul.appendChild(liSiguiente);
+        ul.appendChild(
+            liSiguiente
+        );
 
 
-        nav.appendChild(ul);
+        nav.appendChild(
+            ul
+        );
 
-        contenedor.appendChild(nav);
-
+        contenedor.appendChild(
+            nav
+        );
     }
 
 
     // =========================================================
-    // APLICAR FILTROS
+    // FILTROS GLOBALES
     // =========================================================
 
     function aplicarFiltrosGlobales() {
@@ -1025,10 +1025,6 @@
                 .trim();
 
 
-        // ============================
-        // TABLA
-        // ============================
-
         if (vistaActual === 'tabla') {
 
             if (window.tablaContactosDT) {
@@ -1036,36 +1032,21 @@
                 window.tablaContactosDT
                     .search(textoBusqueda)
                     .draw();
-
             }
 
             return;
-
         }
 
-
-        // ============================
-        // CARDS
-        // ============================
-
-        // Cada vez que cambia un filtro
-        // regresamos a la primera página.
 
         paginaCardsActual = 1;
 
         renderizarCards();
-
     }
 
 
-    // =========================================================
-    // LIMPIAR FILTROS
-    // =========================================================
-
     function limpiarFiltros() {
 
-        $('#inputBuscadorGlobal')
-            .val('');
+        $('#inputBuscadorGlobal').val('');
 
 
         $('.filter-trigger').each(function() {
@@ -1079,7 +1060,6 @@
                 $(this)
                     .val('')
                     .trigger('change');
-
             }
 
         });
@@ -1088,19 +1068,18 @@
         paginaCardsActual = 1;
 
         aplicarFiltrosGlobales();
-
     }
 
 
     // =========================================================
-    // DOCUMENT READY
+    // INICIALIZACIÓN
     // =========================================================
 
     $(document).ready(function() {
 
 
         // =====================================================
-        // DATATABLE
+        // DATATABLES
         // =====================================================
 
         $.fn.dataTable.ext.search.push(
@@ -1110,18 +1089,19 @@
                     settings.nTable.id !==
                     'tablaContactos'
                 ) {
-
                     return true;
-
                 }
 
 
                 const row =
-                    settings.aoData[dataIndex].nTr;
+                    settings
+                        .aoData[dataIndex]
+                        .nTr;
 
 
-                return registroCumpleFiltros(row);
-
+                return registroCumpleFiltros(
+                    row
+                );
             }
         );
 
@@ -1137,36 +1117,23 @@
                 $('#tablaContactos').DataTable({
 
                     language: {
-
-                        url:
-                            'https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
-
+                        url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
                     },
-
 
                     dom: 'rtip',
 
-
                     pageLength: 15,
-
 
                     responsive: true,
 
-
                     columnDefs: [
-
                         {
-
                             orderable: false,
-
                             targets: [-1]
-
                         }
-
                     ]
 
                 });
-
         }
 
 
@@ -1178,220 +1145,346 @@
             'change',
             '.filter-trigger',
             function() {
-
                 aplicarFiltrosGlobales();
-
             }
         );
 
-
-        // =====================================================
-        // BUSCADOR
-        // =====================================================
 
         $('#inputBuscadorGlobal').on(
             'keyup',
             debounce(
                 function() {
-
                     aplicarFiltrosGlobales();
-
                 },
                 300
             )
         );
 
 
-        // =====================================================
-        // PRIMER RENDER DE CARDS
-        // =====================================================
-
         renderizarCards();
 
     });
-    
-    // == MODALES ==
-    
-    // Autofocus modal
-    $('#modalCrearContacto').on('shown.bs.modal', function () {
-        $('#modalCrearContacto input[name="nombre"]').trigger('focus');
+
+
+    // =========================================================
+    // TOMSELECT
+    // =========================================================
+
+    window.initSelects = function(scope = document) {
+
+        $(scope)
+            .find('.select-search')
+            .each(function() {
+
+                if (this.tomselect) {
+                    return;
+                }
+
+
+                const defaultValue =
+                    $(this).val();
+
+
+                const ts =
+                    new TomSelect(
+                        this,
+                        {
+                            create: false,
+
+                            sortField: {
+                                field: 'text',
+                                order: 'asc'
+                            }
+                        }
+                    );
+
+
+                if (defaultValue) {
+
+                    ts.setValue(
+                        defaultValue,
+                        true
+                    );
+                }
+
+            });
+    };
+
+
+    // Inicialización general
+
+    initSelects();
+
+
+    // =========================================================
+    // MODAL CREAR CONTACTO
+    // =========================================================
+
+    $('#modalCrearContacto').on(
+        'shown.bs.modal',
+        function() {
+
+            initSelects(this);
+
+            $('#modalCrearContacto input[name="nombre"]')
+                .trigger('focus');
+        }
+    );
+
+
+    // =========================================================
+    // VALIDACIONES CREAR CONTACTO
+    // =========================================================
+
+    $(document).ready(function() {
+
+        const form =
+            $('#modalCrearContacto form');
+
+        const telefono =
+            $('input[name="telefono"]');
+
+        const celular =
+            $('input[name="celular"]');
+
+        const extension =
+            $('input[name="extension"]');
+
+        const correo =
+            $('input[name="correo"]');
+
+
+        function validarTelefono(campo) {
+
+            const valor =
+                campo.val().trim();
+
+
+            if (valor === '') {
+
+                campo.removeClass(
+                    'is-invalid'
+                );
+
+                return true;
+            }
+
+
+            const valido =
+                /^[0-9\s\-()]+$/.test(valor);
+
+
+            campo.toggleClass(
+                'is-invalid',
+                !valido
+            );
+
+
+            return valido;
+        }
+
+
+        function validarExtension(campo) {
+
+            const valor =
+                campo.val().trim();
+
+
+            if (valor === '') {
+
+                campo.removeClass(
+                    'is-invalid'
+                );
+
+                return true;
+            }
+
+
+            const valido =
+                /^[0-9]+$/.test(valor);
+
+
+            campo.toggleClass(
+                'is-invalid',
+                !valido
+            );
+
+
+            return valido;
+        }
+
+
+        function validarCorreo(campo) {
+
+            const valor =
+                campo.val().trim();
+
+
+            if (valor === '') {
+
+                campo.removeClass(
+                    'is-invalid'
+                );
+
+                return true;
+            }
+
+
+            const valido =
+                /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
+                    valor
+                );
+
+
+            campo.toggleClass(
+                'is-invalid',
+                !valido
+            );
+
+
+            return valido;
+        }
+
+
+        telefono.on(
+            'blur',
+            () => validarTelefono(telefono)
+        );
+
+        celular.on(
+            'blur',
+            () => validarTelefono(celular)
+        );
+
+        extension.on(
+            'blur',
+            () => validarExtension(extension)
+        );
+
+        correo.on(
+            'blur',
+            () => validarCorreo(correo)
+        );
+
+
+        telefono.on(
+            'input',
+            () => {
+                if (telefono.hasClass('is-invalid')) {
+                    validarTelefono(telefono);
+                }
+            }
+        );
+
+
+        celular.on(
+            'input',
+            () => {
+                if (celular.hasClass('is-invalid')) {
+                    validarTelefono(celular);
+                }
+            }
+        );
+
+
+        extension.on(
+            'input',
+            () => {
+                if (extension.hasClass('is-invalid')) {
+                    validarExtension(extension);
+                }
+            }
+        );
+
+
+        correo.on(
+            'input',
+            () => {
+                if (correo.hasClass('is-invalid')) {
+                    validarCorreo(correo);
+                }
+            }
+        );
+
+
+        form.on(
+            'submit',
+            function(event) {
+
+                const telefonoValido =
+                    validarTelefono(telefono);
+
+                const celularValido =
+                    validarTelefono(celular);
+
+                const extensionValida =
+                    validarExtension(extension);
+
+                const correoValido =
+                    validarCorreo(correo);
+
+
+                if (
+                    !telefonoValido ||
+                    !celularValido ||
+                    !extensionValida ||
+                    !correoValido
+                ) {
+
+                    event.preventDefault();
+                }
+
+            }
+        );
+
     });
 
-    //
+
+    // =========================================================
+    // ABRIR MODAL SI HAY ERRORES DE VALIDACIÓN
+    // =========================================================
+
     @if ($errors->any())
-        $(document).ready(function () {
-            $('#modalCrearContacto').modal('show');
+
+        $(document).ready(function() {
+
+            $('#modalCrearContacto')
+                .modal('show');
+
         });
+
     @endif
+
+
+    // =========================================================
+    // ESCAPE — CERRAR INSPECTOR
+    // =========================================================
+
+    document.addEventListener(
+        'keydown',
+        function(event) {
+
+            if (
+                event.key === 'Escape'
+            ) {
+
+                const inspector =
+                    document.getElementById(
+                        'inspectorLateral'
+                    );
+
+
+                if (
+                    inspector &&
+                    inspector.style.right === '0px'
+                ) {
+
+                    cerrarInspector();
+                }
+            }
+
+        }
+    );
+
 </script>
-<script>
-$(document).ready(function () {
-
-    const form = $('#modalCrearContacto form');
-
-    const telefono = $('input[name="telefono"]');
-    const celular = $('input[name="celular"]');
-    const extension = $('input[name="extension"]');
-    const correo = $('input[name="correo"]');
-
-
-    // =====================================================
-    // VALIDAR TELÉFONO
-    // =====================================================
-
-    function validarTelefono(campo) {
-
-        const valor = campo.val().trim();
-
-        if (valor === '') {
-            campo.removeClass('is-invalid');
-            return true;
-        }
-
-        const valido =
-            /^[0-9\s\-\(\)]+$/.test(valor);
-
-        campo.toggleClass('is-invalid', !valido);
-
-        return valido;
-    }
-
-
-    // =====================================================
-    // VALIDAR EXTENSIÓN
-    // =====================================================
-
-    function validarExtension(campo) {
-
-        const valor = campo.val().trim();
-
-        if (valor === '') {
-            campo.removeClass('is-invalid');
-            return true;
-        }
-
-        const valido =
-            /^[0-9]+$/.test(valor);
-
-        campo.toggleClass('is-invalid', !valido);
-
-        return valido;
-    }
-
-
-    // =====================================================
-    // VALIDAR CORREO
-    // =====================================================
-
-    function validarCorreo(campo) {
-
-        const valor = campo.val().trim();
-
-        if (valor === '') {
-            campo.removeClass('is-invalid');
-            return true;
-        }
-
-        const valido =
-            /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valor);
-
-        campo.toggleClass('is-invalid', !valido);
-
-        return valido;
-    }
-
-
-    // =====================================================
-    // VALIDAR AL SALIR DEL CAMPO
-    // =====================================================
-
-    telefono.on('blur', function () {
-        validarTelefono(telefono);
-    });
-
-    celular.on('blur', function () {
-        validarTelefono(celular);
-    });
-
-    extension.on('blur', function () {
-        validarExtension(extension);
-    });
-
-    correo.on('blur', function () {
-        validarCorreo(correo);
-    });
-
-
-    // =====================================================
-    // VALIDAR MIENTRAS CORRIGE
-    // =====================================================
-
-    telefono.on('input', function () {
-
-        if (telefono.hasClass('is-invalid')) {
-            validarTelefono(telefono);
-        }
-
-    });
-
-    celular.on('input', function () {
-
-        if (celular.hasClass('is-invalid')) {
-            validarTelefono(celular);
-        }
-
-    });
-
-    extension.on('input', function () {
-
-        if (extension.hasClass('is-invalid')) {
-            validarExtension(extension);
-        }
-
-    });
-
-    correo.on('input', function () {
-
-        if (correo.hasClass('is-invalid')) {
-            validarCorreo(correo);
-        }
-
-    });
-
-
-    // =====================================================
-    // VALIDAR ANTES DE ENVIAR
-    // =====================================================
-
-    form.on('submit', function (event) {
-
-        const telefonoValido =
-            validarTelefono(telefono);
-
-        const celularValido =
-            validarTelefono(celular);
-
-        const extensionValida =
-            validarExtension(extension);
-
-        const correoValido =
-            validarCorreo(correo);
-
-
-        if (
-            !telefonoValido ||
-            !celularValido ||
-            !extensionValida ||
-            !correoValido
-        ) {
-
-            event.preventDefault();
-
-        }
-
-    });
-
-});
-</script>
-
 @endpush

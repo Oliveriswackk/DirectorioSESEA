@@ -43,10 +43,16 @@
 
                     data-sede-id="{{ $asignacion->sede_id ?? '' }}"
                     data-sede="{{ $asignacion->sede->nombre ?? '' }}"
-
                     data-correo="{{ $asignacion->correo ?? '' }}"
                     data-telefono="{{ $asignacion->telefono ?? '' }}"
                     data-extension="{{ $asignacion->extension ?? '' }}"
+                    data-celular="{{ $asignacion->celular ?? '' }}"
+                    data-observaciones="{{ $asignacion->observaciones ?? '' }}"
+
+                    data-nivel="{{ $asignacion->ente->nivelGobierno->nombre ?? '' }}"
+                    data-municipio="{{ $asignacion->ente->municipio->nombre ?? '' }}"
+                    data-estado="{{ $asignacion->ente->municipio->estado->nombre ?? '' }}"
+                    data-direccion="{{ $asignacion->sede->direccion_texto ?? '' }}">
                 >
 
                     <div class="card-body d-flex flex-column justify-content-between">
@@ -172,7 +178,7 @@
                                     ($asignacion->contacto->apellido_paterno ?? '')
                                 ) }}"
 
-                                data-observaciones="{{ $asignacion->contacto->observaciones ?? '' }}"
+                                data-observaciones="{{ $asignacion->observaciones ?? '' }}"
 
                                 title="Añadir nota"
                             >

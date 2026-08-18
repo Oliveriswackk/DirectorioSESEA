@@ -30,7 +30,14 @@
                             data-sede="{{ $asignacion->sede->nombre ?? '' }}"
                             data-correo="{{ $asignacion->correo ?? '' }}"
                             data-telefono="{{ $asignacion->telefono ?? '' }}"
-                            data-extension="{{ $asignacion->extension ?? '' }}">
+                            data-extension="{{ $asignacion->extension ?? '' }}"
+                            data-celular="{{ $asignacion->celular ?? '' }}"
+                            data-observaciones="{{ $asignacion->observaciones ?? '' }}"
+
+                            data-nivel="{{ $asignacion->ente->nivelGobierno->nombre ?? '' }}"
+                            data-municipio="{{ $asignacion->ente->municipio->nombre ?? '' }}"
+                            data-estado="{{ $asignacion->ente->municipio->estado->nombre ?? '' }}"
+                            data-direccion="{{ $asignacion->sede->direccion_texto ?? '' }}">
 
                             <td class="align-middle pl-3">
                                 <div class="font-weight-bold text-dark" style="font-family: 'Montserrat', sans-serif;">
@@ -63,9 +70,15 @@
                                 </div>
                             </td>
                             <td class="align-middle">
-                                @if(!empty($asignacion->contacto->observaciones))
-                                    <span class="text-truncate d-inline-block text-muted small" style="max-width: 150px;" title="{{ $asignacion->contacto->observaciones }}">
-                                        <i class="fas fa-comment-alt text-primary fa-xs mr-1"></i> {{ $asignacion->contacto->observaciones }}
+                                @if(!empty($asignacion->observaciones))
+                                    <span class="text-truncate d-inline-block text-muted small"
+                                        style="max-width: 150px;"
+                                        title="{{ $asignacion->observaciones }}">
+
+                                        <i class="fas fa-comment-alt text-primary fa-xs mr-1"></i>
+
+                                        {{ $asignacion->observaciones }}
+
                                     </span>
                                 @else
                                     <span class="text-muted small">-</span>
@@ -77,7 +90,7 @@
                                     <button type="button" class="btn btn-sm btn-light text-secondary border-0 rounded mr-1 px-2 btn-nota-contacto" 
                                             data-id="{{ $asignacion->contacto_id }}" 
                                             data-nombre="{{ trim(($asignacion->contacto->nombre ?? '') . ' ' . ($asignacion->contacto->apellido_paterno ?? '')) }}" 
-                                            data-observaciones="{{ $asignacion->contacto->observaciones ?? '' }}" 
+                                            data-observaciones="{{ $asignacion->observaciones ?? '' }}"
                                             title="Añadir nota">
                                         <i class="fas fa-comment-alt fa-xs"></i>
                                     </button>
