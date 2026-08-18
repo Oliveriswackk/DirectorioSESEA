@@ -1289,40 +1289,27 @@
     window.initSelects = function(scope = document) {
 
         $(scope)
-            .find('.select-search')
+            .find('select.select-search')
             .each(function() {
 
                 if (this.tomselect) {
                     return;
                 }
 
+                const defaultValue = $(this).val();
 
-                const defaultValue =
-                    $(this).val();
+                const ts = new TomSelect(this, {
+                    create: false,
 
-
-                const ts =
-                    new TomSelect(
-                        this,
-                        {
-                            create: false,
-
-                            sortField: {
-                                field: 'text',
-                                order: 'asc'
-                            }
-                        }
-                    );
-
+                    sortField: {
+                        field: 'text',
+                        order: 'asc'
+                    }
+                });
 
                 if (defaultValue) {
-
-                    ts.setValue(
-                        defaultValue,
-                        true
-                    );
+                    ts.setValue(defaultValue, true);
                 }
-
             });
     };
 

@@ -280,10 +280,18 @@
                 });
             };
 
-            initSelects();
+            try {
+                initSelects();
+            } catch (error) {
+                console.error('Error inicializando TomSelect:', error);
+            }
 
             $('.modal').on('shown.bs.modal', function() {
-                initSelects(this);
+                try {
+                    initSelects(this);
+                } catch (error) {
+                    console.error('Error inicializando TomSelect en modal:', error);
+                }
             });
 
             
@@ -313,12 +321,6 @@
             // 4. Confirmación de Cierre de Sesión con SweetAlert2
             $(document).on('click', '.btn-logout', function(e) {
                 e.preventDefault();
-                
-                let logoutForm = $(this).closest('.dropdown-menu').find('#logout-form');
-                
-                if (logoutForm.length === 0) {
-                    logoutForm = $('#logout-form');
-                }
 
                 Swal.fire({
                     title: '¿Cerrar sesión?',
@@ -331,7 +333,7 @@
                     cancelButtonText: 'Cancelar'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        logoutForm.submit();
+                        $('#logout-form').submit();
                     }
                 });
             });
