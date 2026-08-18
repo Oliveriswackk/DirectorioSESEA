@@ -95,7 +95,7 @@
 
             <!-- Fila 2: Selects de Filtros -->
             <div class="row align-items-center mb-3">
-                <div class="col-md-3 mb-2 mb-md-0 px-1">
+                <div class="col-md-4 mb-2 mb-md-0 px-1">
                     <select id="filtroNivelGobierno" class="select-search form-control form-control-sm border bg-light filter-trigger">
                         <option value="">Nivel Gobierno...</option>
                         @foreach($nivelesGobierno as $nivel)
@@ -103,7 +103,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-md-3 mb-2 mb-md-0 px-1">
+                <div class="col-md-4 mb-2 mb-md-0 px-1">
                     <select id="filtroEnte" class="select-search form-control form-control-sm border bg-light filter-trigger">
                         <option value="">Ente...</option>
                         @foreach($entes as $ente)
@@ -111,19 +111,12 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-md-3 mb-2 mb-md-0 px-1">
+                <div class="col-md-4 mb-2 mb-md-0 px-1">
                     <select id="filtroPuesto" class="select-search form-control form-control-sm border bg-light filter-trigger">
                         <option value="">Puesto...</option>
                         @foreach($puestos as $puesto)
                             <option value="{{ $puesto->id }}">{{ $puesto->nombre }}</option>
                         @endforeach
-                    </select>
-                </div>
-                <div class="col-md-3 mb-2 mb-md-0 px-1">
-                    <select id="filtroEstado" class="select-search form-control form-control-sm border bg-light filter-trigger">
-                        <option value="">Estado (Todos)...</option>
-                        <option value="1">Activos</option>
-                        <option value="0">Inactivos</option>
                     </select>
                 </div>
             </div>
@@ -749,9 +742,6 @@
         const puestoFiltro =
             $('#filtroPuesto').val();
 
-        const estadoFiltro =
-            $('#filtroEstado').val();
-
 
         const nivelId =
             String(elemento.dataset.nivelId || '');
@@ -761,9 +751,6 @@
 
         const puestoId =
             String(elemento.dataset.puestoId || '');
-
-        const activo =
-            String(elemento.dataset.activo || '');
 
 
         const coincideNivel =
@@ -778,16 +765,11 @@
             !puestoFiltro ||
             puestoId === String(puestoFiltro);
 
-        const coincideEstado =
-            !estadoFiltro ||
-            activo === String(estadoFiltro);
-
 
         return (
             coincideNivel &&
             coincideEnte &&
-            coincidePuesto &&
-            coincideEstado
+            coincidePuesto 
         );
     }
 
