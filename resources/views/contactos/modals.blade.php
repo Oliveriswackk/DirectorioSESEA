@@ -261,6 +261,7 @@
                         Información actual
                     </button>
 
+                    <!-- Historial comentado temporalmente hasta que se implemente la funcionalidad
                     <button
                         type="button"
                         id="tabInspectorHistorial"
@@ -269,6 +270,7 @@
                     >
                         Historial
                     </button>
+                    -->
 
                 </div>
 

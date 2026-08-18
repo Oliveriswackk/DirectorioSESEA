@@ -53,7 +53,7 @@
                     data-municipio="{{ $asignacion->ente->municipio->nombre ?? '' }}"
                     data-estado="{{ $asignacion->ente->municipio->estado->nombre ?? '' }}"
                     data-direccion="{{ $asignacion->sede->direccion_texto ?? '' }}">
-                >
+                
 
                     <div class="card-body d-flex flex-column justify-content-between">
 

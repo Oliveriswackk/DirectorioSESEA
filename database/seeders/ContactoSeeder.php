@@ -57,7 +57,7 @@ class ContactoSeeder extends Seeder
                 'nombre' => 'Luis',
                 'apellido_paterno' => 'Torres',
                 'apellido_materno' => 'Flores',
-                'activo' => false,
+                'activo' => true,
             ],
             [
                 'id' => 8,

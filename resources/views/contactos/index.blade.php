@@ -55,7 +55,7 @@
             <p class="text-muted small mb-0">Gestión de servidores públicos y personal registrado</p>
         </div>
         
-        <!-- Botones de Cambio de Vista y Nuevo Contacto -->
+        <!-- Botones de Cambio de Vista (Tabla/Cards)
         <div class="d-flex align-items-center">
             <div class="btn-group btn-group-sm shadow-sm mr-2" role="group">
                 <button type="button" id="btnVistaTabla" class="btn btn-primary active" onclick="cambiarVista('tabla')">
@@ -66,6 +66,7 @@
                 </button>
             </div>
         </div>
+        -->
     </div>
 
     <!-- PANEL DE CONTROL Y FILTROS -->
@@ -232,7 +233,6 @@
     // =========================================================
     // INSPECTOR — ABRIR
     // =========================================================
-
     function abrirInspector(el) {
 
         const id = el.getAttribute('data-id');
@@ -270,7 +270,9 @@
             apellidoMaterno;
 
 
-        // Nombre visible del inspector
+        // =====================================================
+        // NOMBRE VISIBLE
+        // =====================================================
 
         const nombreCompleto = [
             nombre,
@@ -307,7 +309,6 @@
 
             badge.className =
                 'badge badge-danger mr-2';
-
         }
 
 
@@ -402,8 +403,8 @@
 
             } else {
 
-                select.value = valor || '';
-
+                select.value =
+                    valor || '';
             }
 
         });
@@ -414,6 +415,16 @@
         // =====================================================
 
         switchTabInspector('actual');
+
+
+        // =====================================================
+        // GUARDAR ESTADO INICIAL DEL FORMULARIO
+        // =====================================================
+
+        formulario.dataset.estadoOriginal =
+            new URLSearchParams(
+                new FormData(formulario)
+            ).toString();
 
 
         // =====================================================
@@ -429,14 +440,119 @@
     // =========================================================
     // INSPECTOR — CERRAR
     // =========================================================
-
     function cerrarInspector() {
+
+        const inspector =
+            document.getElementById('inspectorLateral');
+
+        const formulario =
+            document.getElementById('formEditarInspector');
+
+        const estadoActual =
+            new URLSearchParams(
+                new FormData(formulario)
+            ).toString();
+
+        const estadoOriginal =
+            formulario.dataset.estadoOriginal || '';
+
+        const hayCambios =
+            estadoActual !== estadoOriginal;
+
+
+        // =====================================================
+        // SIN CAMBIOS → CERRAR DIRECTAMENTE
+        // =====================================================
+
+        if (!hayCambios) {
+
+            inspector.style.right = '-480px';
+
+            return;
+        }
+
+
+        // =====================================================
+        // HAY CAMBIOS → CONFIRMAR
+        // =====================================================
+
+        Swal.fire({
+
+            title: 'Hay cambios sin guardar',
+
+            text:
+                'Modificaste información de este contacto. ¿Qué deseas hacer?',
+
+            icon: 'warning',
+
+            showDenyButton: true,
+            showCancelButton: true,
+
+            confirmButtonText: 'Guardar cambios',
+            denyButtonText: 'Descartar cambios',
+            cancelButtonText: 'Seguir editando',
+
+            reverseButtons: true
+
+        }).then((result) => {
+
+            // =================================================
+            // GUARDAR
+            // =================================================
+
+            if (result.isConfirmed) {
+
+                formulario.requestSubmit();
+
+                return;
+            }
+
+
+            // =================================================
+            // DESCARTAR
+            // =================================================
+
+            if (result.isDenied) {
+
+                inspector.style.right = '-480px';
+
+            }
+
+        });
+    }
+
+    // =========================================================
+    // INSPECTOR — ESC
+    // =========================================================
+
+    document.addEventListener('keydown', function (event) {
+
+        if (event.key !== 'Escape') {
+            return;
+        }
+
+        const inspector =
+            document.getElementById('inspectorLateral');
+
+        if (inspector.style.right === '0px') {
+
+            cerrarInspector();
+
+        }
+
+    });
+
+
+    // =========================================================
+    // INSPECTOR — DESCARTAR Y CERRAR
+    // =========================================================
+
+    function descartarCambiosInspector() {
 
         document
             .getElementById('inspectorLateral')
             .style.right = '-480px';
     }
-
 
     // =========================================================
     // INSPECTOR — PESTAÑAS
@@ -544,14 +660,14 @@
                 title: 'Cambio de asignación',
 
                 text:
-                    'Detectamos un cambio de Ente o Puesto. ¿Qué deseas registrar?',
+                    'Detectamos un cambio en la adscripción. ¿Cómo deseas registrarlo?',
 
                 icon: 'question',
 
                 showDenyButton: true,
                 showCancelButton: true,
 
-                confirmButtonText: 'Cambio real',
+                confirmButtonText: 'Cambio de asignación',
                 denyButtonText: 'Corrección',
                 cancelButtonText: 'Cancelar',
 
@@ -578,7 +694,7 @@
 
                     document
                         .getElementById('insp_tipo_actualizacion')
-                        .value = 'trayectoria';
+                        .value = 'cambio';
 
                     form.submit();
 
