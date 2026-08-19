@@ -4,16 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Models\Sede;
 use App\Models\Ente;
+use App\Services\BitacoraService;
 use Illuminate\Http\Request;
 
 class SedeController extends Controller
 {
+    public function __construct(
+        private BitacoraService $bitacora
+    ) {
+    }
+
     public function index(Request $request)
     {
         $ente_id = $request->get('ente_id');
         $search = $request->get('search');
 
-        // Consulta optimizada con carga ambiciosa de la relación ente
+        // Consulta optimizada con carga de la relación ente
         $sedes = Sede::with('ente:id,nombre,siglas')
             ->when($ente_id, function ($query, $ente_id) {
                 return $query->where('ente_id', $ente_id);
@@ -21,11 +27,11 @@ class SedeController extends Controller
             ->when($search, function ($query, $search) {
                 return $query->where(function ($q) use ($search) {
                     $q->where('nombre', 'like', "%{$search}%")
-                      ->orWhere('direccion_texto', 'like', "%{$search}%")
-                      ->orWhereHas('ente', function ($qEnte) use ($search) {
-                          $qEnte->where('nombre', 'like', "%{$search}%")
+                        ->orWhere('direccion_texto', 'like', "%{$search}%")
+                        ->orWhereHas('ente', function ($qEnte) use ($search) {
+                            $qEnte->where('nombre', 'like', "%{$search}%")
                                 ->orWhere('siglas', 'like', "%{$search}%");
-                      });
+                        });
                 });
             })
             ->orderBy('id', 'desc')
@@ -33,9 +39,17 @@ class SedeController extends Controller
             ->withQueryString();
 
         // Traemos entes para los select de los modales y filtros
-        $entes = Ente::where('activo', true)->select('id', 'nombre', 'siglas')->orderBy('nombre', 'asc')->get();
+        $entes = Ente::where('activo', true)
+            ->select('id', 'nombre', 'siglas')
+            ->orderBy('nombre', 'asc')
+            ->get();
 
-        return view('sedes.index', compact('sedes', 'entes', 'ente_id', 'search'));
+        return view('sedes.index', compact(
+            'sedes',
+            'entes',
+            'ente_id',
+            'search'
+        ));
     }
 
     public function store(Request $request)
@@ -46,9 +60,20 @@ class SedeController extends Controller
             'direccion_texto' => 'nullable|string|max:500',
         ]);
 
-        Sede::create($validated + ['activo' => true]);
+        $sede = Sede::create($validated + [
+            'activo' => true,
+        ]);
 
-        return redirect()->route('sedes.index')->with('success', 'Sede registrada correctamente.');
+        $this->bitacora->registrar(
+            'Sede',
+            $sede->id,
+            'registro_sede',
+            'Se registró una nueva sede en el Directorio.'
+        );
+
+        return redirect()
+            ->route('sedes.index')
+            ->with('success', 'Sede registrada correctamente.');
     }
 
     public function update(Request $request, Sede $sede)
@@ -61,13 +86,35 @@ class SedeController extends Controller
 
         $sede->update($validated);
 
-        return redirect()->route('sedes.index')->with('success', 'Sede actualizada correctamente.');
+        $this->bitacora->registrar(
+            'Sede',
+            $sede->id,
+            'modificacion_sede',
+            'Se modificó la información de la sede.'
+        );
+
+        return redirect()
+            ->route('sedes.index')
+            ->with('success', 'Sede actualizada correctamente.');
     }
 
     public function toggle(Sede $sede)
     {
-        $sede->update(['activo' => !$sede->activo]);
+        $sede->update([
+            'activo' => !$sede->activo,
+        ]);
 
-        return redirect()->route('sedes.index')->with('success', 'Estatus de sede actualizado.');
+        $estado = $sede->activo ? 'activó' : 'desactivó';
+
+        $this->bitacora->registrar(
+            'Sede',
+            $sede->id,
+            'cambio_estado_sede',
+            "Se {$estado} la sede."
+        );
+
+        return redirect()
+            ->route('sedes.index')
+            ->with('success', 'Estatus de sede actualizado.');
     }
 }

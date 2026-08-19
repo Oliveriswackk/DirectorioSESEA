@@ -12,6 +12,15 @@ class Bitacora extends Model
 
     protected $table = 'bitacora';
 
+    public const ACCION_LOGIN = 'iniciar_sesion';
+    public const ACCION_LOGOUT = 'cerrar_sesion';
+
+    public const ACCION_CREAR = 'crear';
+    public const ACCION_MODIFICAR = 'modificar';
+    public const ACCION_INACTIVAR = 'inactivar';
+
+    public const ACCION_OBSERVACION = 'agregar_observacion';
+
     protected $fillable = [
         'user_id',
         'modelo',

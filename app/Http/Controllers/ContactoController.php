@@ -8,11 +8,17 @@ use App\Models\Puesto;
 use App\Models\Ente;
 use App\Models\Sede;
 use App\Models\NivelGobierno;
+use App\Services\BitacoraService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ContactoController extends Controller
 {
+    public function __construct(
+        private BitacoraService $bitacora
+    ) {
+    }
+
     public function index()
     {
         $asignaciones = Asignacion::with([
@@ -113,6 +119,13 @@ class ContactoController extends Controller
                 'fecha_fin' => null,
                 'activo' => true,
             ]);
+
+            $this->bitacora->registrar(
+                'Contacto',
+                $contacto->id,
+                'registro_contacto',
+                'Se registró un nuevo contacto en el Directorio.'
+            );
         });
 
         return redirect()
@@ -140,7 +153,6 @@ class ContactoController extends Controller
             'observaciones' => 'nullable|string|max:255',
         ]);
 
-
         if (
             empty($validated['correo']) &&
             empty($validated['telefono']) &&
@@ -152,7 +164,6 @@ class ContactoController extends Controller
                     'correo' => 'Debe registrar al menos un medio de comunicación: correo, teléfono o celular.',
                 ]);
         }
-
 
         $contacto = Contacto::findOrFail($id);
 
@@ -174,12 +185,10 @@ class ContactoController extends Controller
                 ]);
         }
 
-
         $cambioDeAsignacion =
             $asignacion->ente_id != $validated['ente_id'] ||
             $asignacion->puesto_id != $validated['puesto_id'] ||
             $asignacion->sede_id != ($validated['sede_id'] ?? null);
-
 
         DB::transaction(function () use (
             $validated,
@@ -187,13 +196,11 @@ class ContactoController extends Controller
             $asignacion,
             $cambioDeAsignacion
         ) {
-
             $contacto->update([
                 'nombre' => $validated['nombre'],
                 'apellido_paterno' => $validated['apellido_paterno'] ?? null,
                 'apellido_materno' => $validated['apellido_materno'] ?? null,
             ]);
-
 
             if ($cambioDeAsignacion) {
 
@@ -201,7 +208,6 @@ class ContactoController extends Controller
                     'fecha_fin' => now()->toDateString(),
                     'activo' => false,
                 ]);
-
 
                 Asignacion::create([
                     'contacto_id' => $contacto->id,
@@ -232,6 +238,14 @@ class ContactoController extends Controller
             }
         });
 
+        $this->bitacora->registrar(
+            'Contacto',
+            $contacto->id,
+            'modificacion_contacto',
+            $cambioDeAsignacion
+                ? 'Se modificó la información del contacto y su asignación.'
+                : 'Se modificó la información del contacto.'
+        );
 
         return redirect()
             ->route('contactos.index')
@@ -244,7 +258,7 @@ class ContactoController extends Controller
     }
 
 
-    public function updateNota(Request $request, $id)
+    public function updateNota(Request $request, $id, BitacoraService $bitacora)
     {
         $validated = $request->validate([
             'observaciones' => 'nullable|string|max:255',
@@ -265,6 +279,14 @@ class ContactoController extends Controller
         $asignacion->update([
             'observaciones' => $validated['observaciones'] ?? null,
         ]);
+
+        // Registrar la modificación en bitácora
+        $bitacora->registrar(
+            'Contacto',
+            $contacto->id,
+            'modificacion_observacion',
+            'Se modificó la observación del contacto.'
+        );
 
         return redirect()
             ->route('contactos.index')
@@ -297,7 +319,7 @@ class ContactoController extends Controller
     }
 
 
-    public function reemplazar(Request $request, $id)
+    public function reemplazar(Request $request, $id, BitacoraService $bitacora)
     {
         $validated = $request->validate([
             'nombre' => 'required|string|max:100',
@@ -325,40 +347,66 @@ class ContactoController extends Controller
                 ]);
         }
 
-        DB::transaction(function () use ($validated) {
-            $asignacionExistente = Asignacion::where('ente_id', $validated['ente_id'])
+        $contactoAnterior = Contacto::findOrFail($id);
+
+        $nuevaAsignacion = null;
+
+        DB::transaction(function () use (
+            $validated,
+            $contactoAnterior,
+            &$nuevaAsignacion
+        ) {
+
+            $asignacionExistente = Asignacion::where(
+                'ente_id',
+                $validated['ente_id']
+            )
                 ->where('puesto_id', $validated['puesto_id'])
                 ->where('activo', true)
                 ->lockForUpdate()
                 ->firstOrFail();
+
 
             $asignacionExistente->update([
                 'fecha_fin' => now()->toDateString(),
                 'activo' => false,
             ]);
 
-            $contacto = Contacto::create([
+
+            $nuevoContacto = Contacto::create([
                 'nombre' => $validated['nombre'],
                 'apellido_paterno' => $validated['apellido_paterno'] ?? null,
                 'apellido_materno' => $validated['apellido_materno'] ?? null,
                 'activo' => true,
             ]);
 
-            Asignacion::create([
-                'contacto_id' => $contacto->id,
+
+            $nuevaAsignacion = Asignacion::create([
+                'contacto_id' => $nuevoContacto->id,
                 'puesto_id' => $validated['puesto_id'],
                 'ente_id' => $validated['ente_id'],
                 'sede_id' => $validated['sede_id'] ?? null,
+
                 'correo' => $validated['correo'] ?? null,
                 'telefono' => $validated['telefono'] ?? null,
                 'celular' => $validated['celular'] ?? null,
                 'extension' => $validated['extension'] ?? null,
                 'observaciones' => $validated['observaciones'] ?? null,
+
                 'fecha_inicio' => now()->toDateString(),
                 'fecha_fin' => null,
                 'activo' => true,
             ]);
         });
+
+
+        $bitacora->registrar(
+            'Asignacion',
+            $nuevaAsignacion->id,
+            'reemplazo_asignacion',
+            'Se reemplazó al titular de una asignación.'
+        );
+
 
         return redirect()
             ->route('contactos.index')

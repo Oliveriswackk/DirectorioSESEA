@@ -37,6 +37,14 @@ class RegisteredUserController extends Controller
             'activo' => 0,  // Bloqueado hasta autorización
         ]);
 
+        //1.1 Registramos la acción en la bitácora
+        app(\App\Services\BitacoraService::class)->registrar(
+            'User',
+            $user->id,
+            'solicitud_acceso',
+            'Solicitud de acceso al sistema.'
+        );
+
         event(new Registered($user));
 
         // 2. ENVIAR CORREO LEIDO DEL .ENV
