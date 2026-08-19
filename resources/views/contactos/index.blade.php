@@ -553,45 +553,32 @@
 
     function switchTabInspector(tab) {
 
-        const tabActual = document.getElementById('tabInspectorActual');
-        const tabHistorial = document.getElementById('tabInspectorHistorial');
+        const tabActual =
+            document.getElementById('tabInspectorActual');
 
-        const contenidoActual = document.getElementById('tabInspectorActualContenido');
-        const contenidoHistorial = document.getElementById('tabInspectorHistorialContenido');
+        const contenidoActual =
+            document.getElementById('tabInspectorActualContenido');
 
-        if (
-            !tabActual ||
-            !tabHistorial ||
-            !contenidoActual ||
-            !contenidoHistorial
-        ) {
-            console.error('No se encontraron los elementos del inspector.');
+        if (!tabActual || !contenidoActual) {
+            console.error(
+                'No se encontraron los elementos principales del inspector.'
+            );
             return;
         }
 
         if (tab === 'actual') {
 
             tabActual.classList.add('active');
-            tabHistorial.classList.remove('active');
 
             contenidoActual.style.display = 'block';
-            contenidoHistorial.style.display = 'none';
 
             return;
         }
 
-        if (tab === 'historial') {
-
-            tabActual.classList.remove('active');
-            tabHistorial.classList.add('active');
-
-            contenidoActual.style.display = 'none';
-            contenidoHistorial.style.display = 'block';
-
-            return;
-        }
-
-        console.warn('Pestaña de inspector desconocida:', tab);
+        console.warn(
+            'Pestaña de inspector no disponible actualmente:',
+            tab
+        );
     }
 
     // =========================================================
@@ -1262,59 +1249,6 @@
         renderizarCards();
 
     });
-
-
-    // =========================================================
-    // TOMSELECT
-    // =========================================================
-
-    window.initSelects = function(scope = document) {
-
-        $(scope)
-            .find('select.select-search')
-            .each(function() {
-
-                if (this.tomselect) {
-                    return;
-                }
-
-                const defaultValue = $(this).val();
-
-                const ts = new TomSelect(this, {
-                    create: false,
-
-                    sortField: {
-                        field: 'text',
-                        order: 'asc'
-                    }
-                });
-
-                if (defaultValue) {
-                    ts.setValue(defaultValue, true);
-                }
-            });
-    };
-
-
-    // Inicialización general
-
-    initSelects();
-
-
-    // =========================================================
-    // MODAL CREAR CONTACTO
-    // =========================================================
-
-    $('#modalCrearContacto').on(
-        'shown.bs.modal',
-        function() {
-
-            initSelects(this);
-
-            $('#modalCrearContacto input[name="nombre"]')
-                .trigger('focus');
-        }
-    );
 
 
     // =========================================================
