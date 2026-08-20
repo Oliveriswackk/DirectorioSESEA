@@ -1463,12 +1463,149 @@
     // ABRIR MODAL SI HAY ERRORES DE VALIDACIÓN
     // =========================================================
 
-    @if ($errors->any())
+    @if ($errors->any() || session('asignacion_existente'))
 
         $(document).ready(function() {
 
-            $('#modalCrearContacto')
-                .modal('show');
+            $('#modalCrearContacto').modal('show');
+
+        });
+
+    @endif
+
+
+    @if (session('asignacion_existente'))
+
+        $(document).ready(function() {
+
+            const asignacionExistente =
+                @json(session('asignacion_existente'));
+
+            const form =
+                $('#modalCrearContacto form');
+
+            if (!form.length) {
+                return;
+            }
+
+
+            let contenidoMedio = '';
+
+            if (
+                asignacionExistente.tipo_medio &&
+                asignacionExistente.medio
+            ) {
+
+                contenidoMedio = `
+                    <div class="mt-3">
+
+                        <div class="small text-muted mb-1">
+                            ${asignacionExistente.tipo_medio}
+                        </div>
+
+                        <div class="font-weight-bold text-dark">
+                            ${asignacionExistente.medio}
+                        </div>
+
+                    </div>
+                `;
+            }
+
+
+            Swal.fire({
+
+                title: 'La asignación ya está ocupada',
+
+                html: `
+                    <div class="text-left">
+
+                        <p class="mb-3">
+                            Ya existe un titular activo para esta asignación.
+                        </p>
+
+                        <div class="border rounded p-3 bg-light">
+
+                            <div class="small text-muted mb-1">
+                                Titular actual
+                            </div>
+
+                            <div class="font-weight-bold text-dark">
+                                ${asignacionExistente.nombre}
+                            </div>
+
+                            ${contenidoMedio}
+
+                        </div>
+
+                        <p class="small text-muted mt-3 mb-0">
+                            Puedes cancelar el registro o reemplazar
+                            al titular actual.
+                        </p>
+
+                    </div>
+                `,
+
+                icon: 'warning',
+
+                showCancelButton: true,
+
+                confirmButtonText: 'Reemplazar titular',
+                cancelButtonText: 'Cancelar',
+
+                reverseButtons: true,
+
+                customClass: {
+
+                    confirmButton:
+                        'btn btn-primary px-3 font-weight-bold ml-2',
+
+                    cancelButton:
+                        'btn btn-secondary px-3'
+
+                },
+
+                buttonsStyling: false
+
+            }).then((result) => {
+
+                if (result.isConfirmed) {
+
+                    const url =
+                        "{{ route('contactos.reemplazar', ':id') }}"
+                            .replace(
+                                ':id',
+                                asignacionExistente.contacto_id
+                            );
+
+                    form.attr('action', url);
+                    form.attr('method', 'POST');
+
+                    /*
+                    * El formulario ya contiene todos los datos
+                    * gracias a old() después del redirect.
+                    *
+                    * Enviamos directamente el formulario.
+                    */
+                    form.off('submit');
+
+                    HTMLFormElement.prototype.submit.call(
+                        form[0]
+                    );
+
+                    return;
+                }
+
+
+                if (
+                    result.dismiss ===
+                    Swal.DismissReason.cancel
+                ) {
+
+                    $('#modalCrearContacto').modal('show');
+
+                }
+
+            });
 
         });
 

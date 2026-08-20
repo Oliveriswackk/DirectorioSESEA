@@ -39,15 +39,15 @@
                             <div class="row">
                                 <div class="col-md-4 form-group mb-3">
                                     <label class="font-weight-bold text-gray-700 small">Nombre <span class="text-danger">*</span></label>
-                                    <input type="text" name="nombre" class="form-control" required placeholder="Ej. María José"autofocus>
+                                    <input type="text" name="nombre" class="form-control" required placeholder="Ej. María José"autofocus value="{{ old('nombre') }}">
                                 </div>
                                 <div class="col-md-4 form-group mb-3">
                                     <label class="font-weight-bold text-gray-700 small">Apellido Paterno</label>
-                                    <input type="text" name="apellido_paterno" class="form-control">
+                                    <input type="text" name="apellido_paterno" class="form-control" value="{{ old('apellido_paterno') }}">
                                 </div>
                                 <div class="col-md-4 form-group mb-3">
                                     <label class="font-weight-bold text-gray-700 small">Apellido Materno</label>
-                                    <input type="text" name="apellido_materno" class="form-control">
+                                    <input type="text" name="apellido_materno" class="form-control" value="{{ old('apellido_materno') }}">
                                 </div>
                             </div>
                         </div>
@@ -57,43 +57,94 @@
                             <h6 class="text-xs font-weight-bold text-uppercase text-muted mb-3 border-bottom pb-1">
                                 2. Ubicación Institucional
                             </h6>
+
                             <div class="row">
+
                                 <div class="col-md-6 form-group mb-3">
                                     <label class="font-weight-bold text-gray-700 small">
                                         Ente <span class="text-danger">*</span>
                                     </label>
-                                    <select name="ente_id" class="form-control select-search" required>
+
+                                    <select
+                                        name="ente_id"
+                                        class="form-control select-search"
+                                        required
+                                    >
                                         <option value="">Seleccione...</option>
+
                                         @foreach($entes ?? [] as $ente)
-                                            <option value="{{ $ente->id }}">{{ $ente->nombre }}</option>
+
+                                            <option
+                                                value="{{ $ente->id }}"
+                                                {{ old('ente_id') == $ente->id ? 'selected' : '' }}
+                                            >
+                                                {{ $ente->nombre }}
+                                            </option>
+
                                         @endforeach
                                     </select>
                                 </div>
+
 
                                 <div class="col-md-6 form-group mb-3">
                                     <label class="font-weight-bold text-gray-700 small">
                                         Puesto <span class="text-danger">*</span>
                                     </label>
-                                    <select name="puesto_id" class="form-control select-search" required>
+
+                                    <select
+                                        name="puesto_id"
+                                        class="form-control select-search"
+                                        required
+                                    >
                                         <option value="">Seleccione...</option>
+
                                         @foreach($puestos ?? [] as $puesto)
-                                            <option value="{{ $puesto->id }}">{{ $puesto->nombre }}</option>
+
+                                            <option
+                                                value="{{ $puesto->id }}"
+                                                {{ old('puesto_id') == $puesto->id ? 'selected' : '' }}
+                                            >
+                                                {{ $puesto->nombre }}
+                                            </option>
+
                                         @endforeach
                                     </select>
                                 </div>
+
                             </div>
 
+
                             <div class="row">
+
                                 <div class="col-md-12 form-group mb-0">
-                                    <label class="font-weight-bold text-gray-700 small">Sede <span class="text-muted font-weight-normal">(Opcional)</span></label>
-                                    <select name="sede_id" class="form-control select-search">
+                                    <label class="font-weight-bold text-gray-700 small">
+                                        Sede
+                                        <span class="text-muted font-weight-normal">
+                                            (Opcional)
+                                        </span>
+                                    </label>
+
+                                    <select
+                                        name="sede_id"
+                                        class="form-control select-search"
+                                    >
                                         <option value="">Seleccione...</option>
+
                                         @foreach($sedes ?? [] as $sede)
-                                            <option value="{{ $sede->id }}">{{ $sede->nombre }}</option>
+
+                                            <option
+                                                value="{{ $sede->id }}"
+                                                {{ old('sede_id') == $sede->id ? 'selected' : '' }}
+                                            >
+                                                {{ $sede->nombre }}
+                                            </option>
+
                                         @endforeach
                                     </select>
                                 </div>
+
                             </div>
+
                         </div>
 
                         <!-- Bloque 3: Medios de Contacto -->
@@ -151,7 +202,7 @@
                                 4. Observaciones Iniciales
                             </h6>
                             <div class="form-group mb-0">
-                                <textarea name="observaciones" class="form-control" rows="2"></textarea>
+                                <textarea name="observaciones" class="form-control" rows="2">{{ old('observaciones') }}</textarea>
                             </div>
                         </div>
 

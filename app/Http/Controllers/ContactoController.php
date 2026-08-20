@@ -86,18 +86,63 @@ class ContactoController extends Controller
                 ]);
         }
 
-        $asignacionExistente = Asignacion::where('ente_id', $validated['ente_id'])
+        /*
+        |--------------------------------------------------------------------------
+        | Verificar si ya existe un titular activo
+        |--------------------------------------------------------------------------
+        */
+
+        $asignacionExistente = Asignacion::with('contacto')
+            ->where('ente_id', $validated['ente_id'])
             ->where('puesto_id', $validated['puesto_id'])
             ->where('activo', true)
             ->first();
 
         if ($asignacionExistente) {
+
+            $medio = null;
+            $tipoMedio = null;
+
+            if (!empty($asignacionExistente->correo)) {
+
+                $medio = $asignacionExistente->correo;
+                $tipoMedio = 'Correo institucional';
+
+            } elseif (!empty($asignacionExistente->telefono)) {
+
+                $medio = $asignacionExistente->telefono;
+                $tipoMedio = 'Teléfono';
+
+            } elseif (!empty($asignacionExistente->celular)) {
+
+                $medio = $asignacionExistente->celular;
+                $tipoMedio = 'Celular';
+            }
+
             return back()
                 ->withInput()
-                ->with('asignacion_existente', $asignacionExistente->id);
+                ->with('asignacion_existente', [
+                    'contacto_id' => $asignacionExistente->contacto_id,
+
+                    'nombre' => trim(
+                        $asignacionExistente->contacto->nombre . ' ' .
+                        ($asignacionExistente->contacto->apellido_paterno ?? '') . ' ' .
+                        ($asignacionExistente->contacto->apellido_materno ?? '')
+                    ),
+
+                    'tipo_medio' => $tipoMedio,
+                    'medio' => $medio,
+                ]);
         }
 
+        /*
+        |--------------------------------------------------------------------------
+        | Registrar contacto y asignación
+        |--------------------------------------------------------------------------
+        */
+
         DB::transaction(function () use ($validated) {
+
             $contacto = Contacto::create([
                 'nombre' => $validated['nombre'],
                 'apellido_paterno' => $validated['apellido_paterno'] ?? null,
@@ -110,11 +155,13 @@ class ContactoController extends Controller
                 'puesto_id' => $validated['puesto_id'],
                 'ente_id' => $validated['ente_id'],
                 'sede_id' => $validated['sede_id'] ?? null,
+
                 'correo' => $validated['correo'] ?? null,
                 'telefono' => $validated['telefono'] ?? null,
                 'celular' => $validated['celular'] ?? null,
                 'extension' => $validated['extension'] ?? null,
                 'observaciones' => $validated['observaciones'] ?? null,
+
                 'fecha_inicio' => now()->toDateString(),
                 'fecha_fin' => null,
                 'activo' => true,
