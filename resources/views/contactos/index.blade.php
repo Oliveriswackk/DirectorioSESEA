@@ -173,6 +173,45 @@
         @include('contactos.partials.cards-view')
     </div>
 
+    <!-- BUZÓN DE INFORMACIÓN PARA SISTEMAS -->
+    <div class="card border-0 shadow-sm rounded-lg mt-3 mb-4">
+        <div class="card-body p-3">
+            <div class="d-flex align-items-center justify-content-between">
+
+                <div class="d-flex align-items-center">
+
+                    <div class="mr-3 text-primary">
+                        <i class="fas fa-file-upload fa-lg"></i>
+                    </div>
+
+                    <div>
+                        <h6 class="font-weight-bold text-gray-800 mb-1">
+                            ¿Tienes varios contactos que agregar o actualizar?
+                        </h6>
+
+                        <p class="small text-muted mb-0">
+                            Envíalos a Sistemas para su revisión y carga.
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="ml-3">
+                    <button
+                        type="button"
+                        class="btn btn-primary btn-sm rounded shadow-sm"
+                        data-toggle="modal"
+                        data-target="#modalEnviarInformacion">
+
+                        <i class="fas fa-paper-plane fa-xs mr-1"></i>
+                        Enviar información
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <!-- LLAMADO ÚNICO DE MODALES EXTERNOS -->

@@ -9,6 +9,8 @@ use App\Models\Ente;
 use App\Models\Sede;
 use App\Models\NivelGobierno;
 use App\Services\BitacoraService;
+use App\Mail\InformacionDirectorioRecibida;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -495,5 +497,39 @@ class ContactoController extends Controller
         return redirect()
             ->route('contactos.index')
             ->with('success', 'Asignación reemplazada exitosamente.');
+    }
+
+
+    public function enviarInformacion(Request $request)
+    {
+        $validated = $request->validate([
+            'archivo' => [
+                'required',
+                'file',
+                'max:10240',
+                'mimes:pdf,docx,xlsx,json',
+            ],
+        ]);
+
+        $archivo = $validated['archivo'];
+
+        $usuario = auth()->user()->name ?? 'Usuario desconocido';
+
+        $fecha = now()->format('d/m/Y H:i:s');
+
+        Mail::send(
+            new InformacionDirectorioRecibida(
+                $archivo,
+                $usuario,
+                $fecha
+            )
+        );
+
+        return redirect()
+            ->route('contactos.index')
+            ->with(
+                'success',
+                'Información enviada correctamente. Sistemas recibió el archivo para su revisión.'
+            );
     }
 }

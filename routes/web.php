@@ -48,6 +48,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('contactos/{id}/reemplazar', [ContactoController::class, 'reemplazar'])->name('contactos.reemplazar');
     Route::resource('contactos', ContactoController::class);
     Route::patch('contactos/{id}/nota', [ContactoController::class, 'updateNota'])->name('contactos.nota');
+    Route::post('/contactos/enviar-informacion', [ContactoController::class, 'enviarInformacion'])->name('contactos.enviar-informacion'); // Enviar info contactos
 
     // Módulo: Estados
     Route::prefix('estados')->name('estados.')->group(function () {
