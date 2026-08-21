@@ -33,6 +33,7 @@
                             data-extension="{{ $asignacion->extension ?? '' }}"
                             data-celular="{{ $asignacion->celular ?? '' }}"
                             data-observaciones="{{ $asignacion->observaciones ?? '' }}"
+                            data-ultima-actualizacion="{{ $asignacion->updated_at?->toISOString() }}"
 
                             data-nivel="{{ $asignacion->ente->nivelGobierno->nombre ?? '' }}"
                             data-municipio="{{ $asignacion->ente->municipio->nombre ?? '' }}"
@@ -45,7 +46,16 @@
                                     {{ $asignacion->contacto->apellido_paterno ?? '' }} 
                                     {{ $asignacion->contacto->apellido_materno ?? '' }}
                                 </div>
-                                <small class="text-muted d-block">{{ $asignacion->puesto->nombre ?? 'Sin puesto asignado' }}</small>
+
+                                <small class="text-muted d-block">
+                                    {{ $asignacion->puesto->nombre ?? 'Sin puesto asignado' }}
+                                </small>
+
+                                @if($asignacion->updated_at && $asignacion->updated_at->lte(now()->subMonths(3)))
+                                    <small class="d-block text-revision mt-1">
+                                        <i class="fas fa-exclamation-triangle fa-xs mr-1"></i>
+                                            Actualizado hace {{ (int) $asignacion->updated_at->diffInMonths(now()) }} meses                                    </small>
+                                @endif
                             </td>
                             <td class="align-middle">
                                 <div class="font-weight-bold text-gray-800">

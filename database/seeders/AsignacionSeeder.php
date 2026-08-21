@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class AsignacionSeeder extends Seeder
 {
@@ -13,9 +14,9 @@ class AsignacionSeeder extends Seeder
             [
                 'id' => 1,
                 'contacto_id' => 1,
-                'ente_id' => 2, // Secretaría de Hacienda (Estatal / Nivel 1)
+                'ente_id' => 2,
                 'sede_id' => 11,
-                'puesto_id' => 5, // Directivo / Mando Medio
+                'puesto_id' => 5,
                 'correo' => 'juan.perez@chihuahua.gob.mx',
                 'telefono' => '6141234567',
                 'extension' => '101',
@@ -24,13 +25,15 @@ class AsignacionSeeder extends Seeder
                 'fecha_fin' => null,
                 'observaciones' => 'Asignación activa en Tesorería Estatal (Nivel 1).',
                 'activo' => true,
+                'updated_at' => Carbon::now()->subMonths(4),
             ],
+
             [
                 'id' => 2,
                 'contacto_id' => 2,
-                'ente_id' => 12, // Secretaría de Seguridad Pública (Estatal / Nivel 1)
+                'ente_id' => 12,
                 'sede_id' => null,
-                'puesto_id' => 8, // Operativo / Técnico especializado
+                'puesto_id' => 8,
                 'correo' => 'maria.gomez@chihuahua.gob.mx',
                 'telefono' => '6147654321',
                 'extension' => '205',
@@ -39,13 +42,15 @@ class AsignacionSeeder extends Seeder
                 'fecha_fin' => null,
                 'observaciones' => 'Personal operativo estatal sin sede fija.',
                 'activo' => true,
+                'updated_at' => Carbon::now()->subMonths(5),
             ],
+
             [
                 'id' => 3,
                 'contacto_id' => 3,
-                'ente_id' => 152, // Municipio de Chihuahua (Municipal / Nivel 3)
+                'ente_id' => 152,
                 'sede_id' => null,
-                'puesto_id' => 4, // Coordinador de Área
+                'puesto_id' => 4,
                 'correo' => 'carlos.ruiz@chihuahua.gob.mx',
                 'telefono' => null,
                 'extension' => null,
@@ -54,13 +59,15 @@ class AsignacionSeeder extends Seeder
                 'fecha_fin' => null,
                 'observaciones' => 'Asignación en Ayuntamiento de Chihuahua (Nivel 3).',
                 'activo' => true,
+                'updated_at' => Carbon::now()->subMonths(6),
             ],
+
             [
                 'id' => 4,
                 'contacto_id' => 4,
-                'ente_id' => 15, // Secretaría de Cultura (Estatal / Nivel 1)
+                'ente_id' => 15,
                 'sede_id' => 126,
-                'puesto_id' => 3, // Enlace Administrativo
+                'puesto_id' => 3,
                 'correo' => null,
                 'telefono' => '6149998877',
                 'extension' => '300',
@@ -69,13 +76,15 @@ class AsignacionSeeder extends Seeder
                 'fecha_fin' => null,
                 'observaciones' => 'Enlace administrativo con sede asignada.',
                 'activo' => true,
+                'updated_at' => Carbon::now()->subMonths(8),
             ],
+
             [
                 'id' => 5,
                 'contacto_id' => 5,
-                'ente_id' => 102, // JMAS Ahumada (Municipal / Nivel 3)
+                'ente_id' => 102,
                 'sede_id' => 11,
-                'puesto_id' => 6, // Analista / Especialista
+                'puesto_id' => 6,
                 'correo' => 'ana.lopez@jmasahumada.gob.mx',
                 'telefono' => null,
                 'extension' => null,
@@ -84,13 +93,16 @@ class AsignacionSeeder extends Seeder
                 'fecha_fin' => null,
                 'observaciones' => 'Paramunicipal del agua (Nivel 3) con datos mínimos.',
                 'activo' => true,
+                'updated_at' => Carbon::now()->subMonths(10),
             ],
+
+            // Reciente
             [
                 'id' => 6,
                 'contacto_id' => 6,
-                'ente_id' => 101, // SESEA - Secretaría Ejecutiva Sistema Estatal Anticorrupción (Órgano Autónomo / Nivel 1)
+                'ente_id' => 101,
                 'sede_id' => 1,
-                'puesto_id' => 10, // Consultor / Asesor Técnico
+                'puesto_id' => 10,
                 'correo' => 'soporte.sesea@chihuahua.gob.mx',
                 'telefono' => '6145554433',
                 'extension' => '404',
@@ -99,13 +111,15 @@ class AsignacionSeeder extends Seeder
                 'fecha_fin' => null,
                 'observaciones' => 'Asignación en Órgano Autónomo Estatal.',
                 'activo' => true,
+                'updated_at' => Carbon::now()->subMonths(1),
             ],
+
             [
                 'id' => 7,
                 'contacto_id' => 7,
-                'ente_id' => 170, // Municipio de Juárez (Municipal / Nivel 3)
+                'ente_id' => 170,
                 'sede_id' => null,
-                'puesto_id' => 1, // Titular / Secretario / Alcalde
+                'puesto_id' => 1,
                 'correo' => 'luis.torres@juarez.gob.mx',
                 'telefono' => '6561112233',
                 'extension' => null,
@@ -114,13 +128,15 @@ class AsignacionSeeder extends Seeder
                 'fecha_fin' => '2025-12-31',
                 'observaciones' => 'Asignación histórica/inactiva en gobierno municipal fronterizo.',
                 'activo' => true,
+                'updated_at' => Carbon::now()->subMonths(2),
             ],
+
             [
                 'id' => 8,
                 'contacto_id' => 8,
-                'ente_id' => 250, // FODARCH (Entidad Estatal / Nivel 1)
+                'ente_id' => 250,
                 'sede_id' => 19,
-                'puesto_id' => 7, // Auxiliar de Servicios / Apoyo
+                'puesto_id' => 7,
                 'correo' => 'sofia.ramirez@chihuahua.gob.mx',
                 'telefono' => '6142223344',
                 'extension' => '110',
@@ -129,13 +145,15 @@ class AsignacionSeeder extends Seeder
                 'fecha_fin' => '2025-08-01',
                 'observaciones' => 'Asignación concluída en entidad de fomento estatal.',
                 'activo' => false,
+                'updated_at' => Carbon::now()->subMonths(1),
             ],
+
             [
                 'id' => 9,
                 'contacto_id' => 9,
-                'ente_id' => 201, // IMPLAN Chihuahua (Paramunicipal / Nivel 3)
+                'ente_id' => 201,
                 'sede_id' => 125,
-                'puesto_id' => 11, // Investigador / Planeación
+                'puesto_id' => 11,
                 'correo' => 'roberto.davila@chihuahua.gob.mx',
                 'telefono' => '6143334455',
                 'extension' => '112',
@@ -144,13 +162,15 @@ class AsignacionSeeder extends Seeder
                 'fecha_fin' => null,
                 'observaciones' => 'Personal técnico en organismo descentralizado municipal.',
                 'activo' => true,
+                'updated_at' => Carbon::now()->subMonths(2),
             ],
+
             [
                 'id' => 10,
                 'contacto_id' => 10,
-                'ente_id' => 150, // Municipio de Cuauhtémoc (Municipal / Nivel 3)
+                'ente_id' => 150,
                 'sede_id' => null,
-                'puesto_id' => 2, // Director General / Subsecretario
+                'puesto_id' => 2,
                 'correo' => 'operativo.cuauhtemoc@chihuahua.gob.mx',
                 'telefono' => '6254445566',
                 'extension' => null,
@@ -159,6 +179,178 @@ class AsignacionSeeder extends Seeder
                 'fecha_fin' => null,
                 'observaciones' => 'Mando superior en administración municipal de la región menonita/centro.',
                 'activo' => true,
+                'updated_at' => Carbon::now()->subMonths(1),
+            ],
+
+            // Nuevos contactos
+            [
+                'id' => 11,
+                'contacto_id' => 11,
+                'ente_id' => 2,
+                'sede_id' => 11,
+                'puesto_id' => 4,
+                'correo' => 'laura.mendoza@chihuahua.gob.mx',
+                'telefono' => '6145551001',
+                'extension' => '201',
+                'celular' => null,
+                'fecha_inicio' => '2025-08-01',
+                'fecha_fin' => null,
+                'observaciones' => 'Coordinación administrativa estatal.',
+                'activo' => true,
+                'updated_at' => Carbon::now()->subMonths(4),
+            ],
+
+            [
+                'id' => 12,
+                'contacto_id' => 12,
+                'ente_id' => 12,
+                'sede_id' => null,
+                'puesto_id' => 6,
+                'correo' => 'jorge.navarro@chihuahua.gob.mx',
+                'telefono' => '6145551002',
+                'extension' => null,
+                'celular' => null,
+                'fecha_inicio' => '2025-09-01',
+                'fecha_fin' => null,
+                'observaciones' => 'Especialista de área.',
+                'activo' => true,
+                'updated_at' => Carbon::now()->subMonths(7),
+            ],
+
+            [
+                'id' => 13,
+                'contacto_id' => 13,
+                'ente_id' => 152,
+                'sede_id' => null,
+                'puesto_id' => 3,
+                'correo' => 'daniela.morales@chihuahua.gob.mx',
+                'telefono' => '6145551003',
+                'extension' => '305',
+                'celular' => null,
+                'fecha_inicio' => '2025-10-01',
+                'fecha_fin' => null,
+                'observaciones' => 'Enlace administrativo municipal.',
+                'activo' => true,
+                'updated_at' => Carbon::now()->subMonths(1),
+            ],
+
+            [
+                'id' => 14,
+                'contacto_id' => 14,
+                'ente_id' => 15,
+                'sede_id' => 126,
+                'puesto_id' => 5,
+                'correo' => 'miguel.ortega@chihuahua.gob.mx',
+                'telefono' => '6145551004',
+                'extension' => '401',
+                'celular' => null,
+                'fecha_inicio' => '2025-10-15',
+                'fecha_fin' => null,
+                'observaciones' => 'Mando medio en Secretaría de Cultura.',
+                'activo' => true,
+                'updated_at' => Carbon::now()->subMonths(5),
+            ],
+
+            [
+                'id' => 15,
+                'contacto_id' => 15,
+                'ente_id' => 102,
+                'sede_id' => 11,
+                'puesto_id' => 8,
+                'correo' => 'fernanda.vargas@jmasahumada.gob.mx',
+                'telefono' => '6145551005',
+                'extension' => null,
+                'celular' => '6145552005',
+                'fecha_inicio' => '2025-11-01',
+                'fecha_fin' => null,
+                'observaciones' => 'Personal técnico paramunicipal.',
+                'activo' => true,
+                'updated_at' => Carbon::now()->subMonths(3),
+            ],
+
+            [
+                'id' => 16,
+                'contacto_id' => 16,
+                'ente_id' => 101,
+                'sede_id' => 1,
+                'puesto_id' => 10,
+                'correo' => 'ricardo.cervantes@chihuahua.gob.mx',
+                'telefono' => '6145551006',
+                'extension' => '406',
+                'celular' => null,
+                'fecha_inicio' => '2026-01-01',
+                'fecha_fin' => null,
+                'observaciones' => null,
+                'activo' => true,
+                'updated_at' => Carbon::now()->subMonths(1),
+            ],
+
+            [
+                'id' => 17,
+                'contacto_id' => 17,
+                'ente_id' => 201,
+                'sede_id' => 125,
+                'puesto_id' => 11,
+                'correo' => 'patricia.valdez@chihuahua.gob.mx',
+                'telefono' => '6145551007',
+                'extension' => '115',
+                'celular' => null,
+                'fecha_inicio' => '2026-01-15',
+                'fecha_fin' => null,
+                'observaciones' => 'Personal de planeación.',
+                'activo' => true,
+                'updated_at' => Carbon::now()->subMonths(2),
+            ],
+
+            [
+                'id' => 18,
+                'contacto_id' => 18,
+                'ente_id' => 150,
+                'sede_id' => null,
+                'puesto_id' => 7,
+                'correo' => 'andres.fuentes@chihuahua.gob.mx',
+                'telefono' => '6255551008',
+                'extension' => null,
+                'celular' => null,
+                'fecha_inicio' => '2026-02-01',
+                'fecha_fin' => null,
+                'observaciones' => 'Personal de apoyo municipal.',
+                'activo' => true,
+                'updated_at' => Carbon::now()->subMonths(6),
+            ],
+
+            [
+                'id' => 19,
+                'contacto_id' => 19,
+                'ente_id' => 2,
+                'sede_id' => 11,
+                'puesto_id' => 2,
+                'correo' => 'gabriela.pineda@chihuahua.gob.mx',
+                'telefono' => '6145551009',
+                'extension' => '501',
+                'celular' => null,
+                'fecha_inicio' => '2026-02-15',
+                'fecha_fin' => null,
+                'observaciones' => 'Directiva estatal.',
+                'activo' => true,
+                'updated_at' => Carbon::now()->subMonths(4),
+            ],
+
+            [
+                'id' => 20,
+                'contacto_id' => 20,
+                'ente_id' => 12,
+                'sede_id' => null,
+                'puesto_id' => 8,
+                'correo' => 'eduardo.marquez@chihuahua.gob.mx',
+                'telefono' => '6145551010',
+                'extension' => '210',
+                'celular' => null,
+                'fecha_inicio' => '2026-03-01',
+                'fecha_fin' => null,
+                'observaciones' => null,
+                'activo' => true,
+                'updated_at' => Carbon::now()->subMonths(1),
             ],
         ];
 

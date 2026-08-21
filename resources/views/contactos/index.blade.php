@@ -2,6 +2,7 @@
 
 @section('content')
 <style>
+    /* Inspector CSS */
     .inspector-tab {
         position: relative;
         border: 0;
@@ -44,6 +45,11 @@
     .inspector-tab:active {
         outline: none !important;
         box-shadow: none !important;
+    }
+
+    /* Alerta CSS */
+    .text-revision {
+        color: #daa20a !important;
     }
 </style>
 <div class="container-fluid px-4">
@@ -95,7 +101,7 @@
 
             <!-- Fila 2: Selects de Filtros -->
             <div class="row align-items-center mb-3">
-                <div class="col-md-4 mb-2 mb-md-0 px-1">
+                <div class="col-md-3 mb-2 mb-md-0 px-1">
                     <select id="filtroNivelGobierno" class="select-search form-control form-control-sm border bg-light filter-trigger">
                         <option value="">Nivel Gobierno...</option>
                         @foreach($nivelesGobierno as $nivel)
@@ -103,7 +109,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-md-4 mb-2 mb-md-0 px-1">
+                <div class="col-md-3 mb-2 mb-md-0 px-1">
                     <select id="filtroEnte" class="select-search form-control form-control-sm border bg-light filter-trigger">
                         <option value="">Ente...</option>
                         @foreach($entes as $ente)
@@ -111,12 +117,23 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-md-4 mb-2 mb-md-0 px-1">
+                <div class="col-md-3 mb-2 mb-md-0 px-1">
                     <select id="filtroPuesto" class="select-search form-control form-control-sm border bg-light filter-trigger">
                         <option value="">Puesto...</option>
                         @foreach($puestos as $puesto)
                             <option value="{{ $puesto->id }}">{{ $puesto->nombre }}</option>
                         @endforeach
+                    </select>
+                </div>
+                <div class="col-md-3 mb-2 mb-md-0 px-1">
+                    <select id="filtroRevision"
+                            class="select-search form-control form-control-sm border bg-light filter-trigger">
+
+                        <option value="">Revisión...</option>
+                        <option value="requiere_revision">
+                            Requiere revisión
+                        </option>
+
                     </select>
                 </div>
             </div>
@@ -729,6 +746,9 @@
         const puestoFiltro =
             $('#filtroPuesto').val();
 
+        const revisionFiltro =
+            $('#filtroRevision').val();
+
 
         const nivelId =
             String(elemento.dataset.nivelId || '');
@@ -738,6 +758,9 @@
 
         const puestoId =
             String(elemento.dataset.puestoId || '');
+
+        const ultimaActualizacion =
+            elemento.dataset.ultimaActualizacion || '';
 
 
         const coincideNivel =
@@ -751,13 +774,39 @@
         const coincidePuesto =
             !puestoFiltro ||
             puestoId === String(puestoFiltro);
+        
+        let coincideRevision = true;
+
+        if (revisionFiltro === 'requiere_revision') {
+
+            if (!ultimaActualizacion) {
+
+                coincideRevision = false;
+
+            } else {
+
+                const fechaActualizacion =
+                    new Date(ultimaActualizacion);
+
+                const fechaLimite =
+                    new Date();
+
+                fechaLimite.setMonth(
+                    fechaLimite.getMonth() - 3
+                );
+
+                coincideRevision =
+                    fechaActualizacion <= fechaLimite;
+            }
+        }
 
 
         return (
             coincideNivel &&
             coincideEnte &&
-            coincidePuesto 
-        );
+            coincidePuesto &&
+            coincideRevision
+        );;
     }
 
 
@@ -1207,7 +1256,7 @@
 
                     dom: 'rtip',
 
-                    pageLength: 15,
+                    pageLength: 10,
 
                     responsive: true,
 
