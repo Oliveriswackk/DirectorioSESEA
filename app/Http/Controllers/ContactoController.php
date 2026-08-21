@@ -308,7 +308,7 @@ class ContactoController extends Controller
     public function updateNota(Request $request, $id, BitacoraService $bitacora)
     {
         $validated = $request->validate([
-            'observaciones' => 'nullable|string|max:255',
+            'observacion' => 'required|string|max:255',
         ]);
 
         $contacto = Contacto::findOrFail($id);
@@ -319,25 +319,62 @@ class ContactoController extends Controller
 
         if (!$asignacion) {
             return back()->withErrors([
-                'observaciones' => 'El contacto no tiene una asignación activa.',
+                'observacion' => 'El contacto no tiene una asignación activa.',
             ]);
         }
 
+        $nuevaObservacion = trim($validated['observacion']);
+
+        /*
+        |--------------------------------------------------------------------------
+        | AGREGAR LA NUEVA OBSERVACIÓN
+        |--------------------------------------------------------------------------
+        */
+
+        $observacionesActuales = trim(
+            $asignacion->observaciones ?? ''
+        );
+
+        if ($observacionesActuales !== '') {
+
+            $observacionesActuales .= "\n";
+
+        }
+
+        $observacionesActuales .= '• ' . $nuevaObservacion;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | GUARDAR
+        |--------------------------------------------------------------------------
+        */
+
         $asignacion->update([
-            'observaciones' => $validated['observaciones'] ?? null,
+            'observaciones' => $observacionesActuales,
         ]);
 
-        // Registrar la modificación en bitácora
+
+        /*
+        |--------------------------------------------------------------------------
+        | BITÁCORA
+        |--------------------------------------------------------------------------
+        */
+
         $bitacora->registrar(
             'Contacto',
             $contacto->id,
-            'modificacion_observacion',
-            'Se modificó la observación del contacto.'
+            'agrego_observacion',
+            'Se agregó una observación al contacto.'
         );
+
 
         return redirect()
             ->route('contactos.index')
-            ->with('success', 'Nota guardada exitosamente.');
+            ->with(
+                'success',
+                'Observación agregada correctamente.'
+            );
     }
 
 

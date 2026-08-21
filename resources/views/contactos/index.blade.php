@@ -1642,5 +1642,136 @@
         }
     );
 
+    // =========================================================
+    // OBSERVACIONES — ABRIR MODAL
+    // =========================================================
+
+    function configurarBotonesObservacion() {
+
+        const botones =
+            document.querySelectorAll(
+                '.btn-nota-contacto'
+            );
+
+        botones.forEach(function(boton) {
+
+            // Evitar registrar el evento dos veces
+            if (boton.dataset.observacionConfigurada === '1') {
+                return;
+            }
+
+            boton.dataset.observacionConfigurada = '1';
+
+            boton.addEventListener('click', function(event) {
+
+                // Evitar que el click llegue a otros elementos
+                event.stopPropagation();
+
+                // =================================================
+                // DATOS DEL CONTACTO
+                // =================================================
+
+                const contactoId =
+                    boton.dataset.id;
+
+                const nombre =
+                    boton.dataset.nombre || 'Contacto';
+
+                // =================================================
+                // FORMULARIO
+                // =================================================
+
+                const form =
+                    document.getElementById(
+                        'formAgregarObservacion'
+                    );
+
+                if (!form) {
+
+                    console.error(
+                        'No existe #formAgregarObservacion'
+                    );
+
+                    return;
+                }
+
+                // =================================================
+                // CONFIGURAR ACTION
+                // =================================================
+
+                const action =
+                    "{{ route('contactos.nota', ':id') }}"
+                        .replace(
+                            ':id',
+                            contactoId
+                        );
+
+                form.setAttribute(
+                    'action',
+                    action
+                );
+
+                // =================================================
+                // MOSTRAR NOMBRE
+                // =================================================
+
+                const nombreElemento =
+                    document.getElementById(
+                        'nombreContactoObservacion'
+                    );
+
+                if (nombreElemento) {
+
+                    nombreElemento.textContent =
+                        nombre;
+                }
+
+                // =================================================
+                // LIMPIAR CAMPO
+                // =================================================
+
+                const input =
+                    document.getElementById(
+                        'observacionInput'
+                    );
+
+                if (input) {
+                    input.value = '';
+                }
+
+                // =================================================
+                // ABRIR MODAL
+                // =================================================
+
+                const modal =
+                    $('#modalAgregarObservacion');
+
+                if (!modal.length) {
+
+                    console.error(
+                        'No existe #modalAgregarObservacion'
+                    );
+
+                    return;
+                }
+
+                modal.modal('show');
+
+            });
+
+        });
+
+    }
+
+
+    // =========================================================
+    // INICIALIZAR BOTONES DE OBSERVACIONES
+    // =========================================================
+
+    $(document).ready(function() {
+
+        configurarBotonesObservacion();
+
+    });
 </script>
 @endpush

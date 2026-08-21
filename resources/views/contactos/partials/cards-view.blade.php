@@ -167,8 +167,8 @@
 
 
                             {{-- Nota --}}
-                            <button type="button"
-
+                            <button
+                                type="button"
                                 class="btn btn-sm btn-light text-secondary border px-2 mr-1 btn-nota-contacto"
 
                                 data-id="{{ $asignacion->contacto_id }}"
@@ -178,13 +178,11 @@
                                     ($asignacion->contacto->apellido_paterno ?? '')
                                 ) }}"
 
-                                data-observaciones="{{ $asignacion->observaciones ?? '' }}"
+                                data-observaciones='@json($asignacion->observaciones ?? "")'
 
-                                title="Añadir nota"
+                                title="Agregar observación"
                             >
-
                                 <i class="fas fa-comment-alt fa-xs"></i>
-
                             </button>
 
 

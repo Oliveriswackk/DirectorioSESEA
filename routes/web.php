@@ -49,7 +49,6 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('contactos', ContactoController::class);
     Route::patch('contactos/{id}/nota', [ContactoController::class, 'updateNota'])->name('contactos.nota');
 
-    
     // Módulo: Estados
     Route::prefix('estados')->name('estados.')->group(function () {
         Route::get('/', [EstadoController::class, 'index'])->name('index');

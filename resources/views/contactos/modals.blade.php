@@ -919,6 +919,101 @@
     </div>
 
 
+    <!-- ================================================================= -->
+    <!-- 3. AÑADIR OBSERVACIÓN -->
+    <!-- ================================================================= -->
+    <div class="modal fade" id="modalAgregarObservacion" tabindex="-1" role="dialog" aria-labelledby="modalAgregarObservacionLabel" aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content border-0 shadow">
+
+        <!-- ================================================= -->
+        <!-- HEADER -->
+        <!-- ================================================= -->
+        <div class="modal-header bg-white border-bottom-0 pb-0">
+            <h5 class="modal-title font-weight-bold text-gray-800" id="modalAgregarObservacionLabel">
+                <i class="fas fa-comment-medical text-primary mr-2"></i>
+                Agregar observación
+            </h5>
+            <button type="button" class="close text-gray-500" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <!-- ================================================= -->
+        <!-- FORMULARIO -->
+        <!-- ================================================= -->
+        <form id="formAgregarObservacion" method="POST">
+            @csrf
+            @method('PATCH')
+
+            <div class="modal-body pt-3">
+
+                <!-- Tarjeta sutil para el contexto del contacto -->
+                <div class="p-3 mb-3 bg-light rounded border-left-primary">
+                    <div class="small font-weight-bold text-uppercase text-muted mb-1">
+                        Contacto seleccionado
+                    </div>
+                    <div id="nombreContactoObservacion" class="font-weight-bold text-gray-800 h6 mb-0">
+                        —
+                    </div>
+                </div>
+
+                <div class="form-group mb-0">
+                    <label for="observacionInput" class="font-weight-bold text-gray-700 small text-uppercase">
+                        Nueva Observación <span class="text-danger">*</span>
+                    </label>
+                    
+                    <div class="input-group">
+                        <textarea
+                            id="observacionInput"
+                            name="observacion"
+                            class="form-control"
+                            rows="4"
+                            maxlength="255"
+                            placeholder="Escribe una observación específica sobre este contacto..."
+                            required
+                        ></textarea>
+                    </div>
+
+                    <!-- Texto de ayuda y Contador de caracteres nativo -->
+                    <div class="d-flex justify-content-between mt-2">
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle mr-1"></i> Se agregará como una nueva viñeta en el historial.
+                        </small>
+                        <small class="text-muted font-weight-bold" id="charCount">0/255</small>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ================================================= -->
+            <!-- FOOTER -->
+            <!-- ================================================= -->
+            <div class="modal-footer bg-white border-top-0 pt-0">
+                <button type="button" class="btn btn-outline-secondary btn-sm px-3" data-dismiss="modal">
+                    Cancelar
+                </button>
+                <button type="submit" class="btn btn-primary btn-sm px-3 font-weight-bold shadow-sm">
+                    <i class="fas fa-plus fa-sm mr-1"></i> Guardar observación
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<!-- Script opcional para el contador dinámico (puedes ponerlo al final de tu vista) -->
+<script>
+    document.getElementById('observacionInput').addEventListener('input', function() {
+        const currentLength = this.value.length;
+        document.getElementById('charCount').textContent = `${currentLength}/255`;
+    });
+</script>
+
+    </div>
+
+
     {{-- =====================================================
         ESTILOS DEL INSPECTOR
     ====================================================== --}}

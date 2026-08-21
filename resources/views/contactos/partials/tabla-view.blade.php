@@ -87,11 +87,14 @@
                             <td class="align-middle text-right pr-3" onclick="event.stopPropagation();">
                                 <div class="btn-group" role="group">
                                     <!-- Botón de nota -->
-                                    <button type="button" class="btn btn-sm btn-light text-secondary border-0 rounded mr-1 px-2 btn-nota-contacto" 
-                                            data-id="{{ $asignacion->contacto_id }}" 
-                                            data-nombre="{{ trim(($asignacion->contacto->nombre ?? '') . ' ' . ($asignacion->contacto->apellido_paterno ?? '')) }}" 
-                                            data-observaciones="{{ $asignacion->observaciones ?? '' }}"
-                                            title="Añadir nota">
+                                    <button
+                                        type="button"
+                                        class="btn btn-sm btn-light text-secondary border-0 rounded mr-1 px-2 btn-nota-contacto" 
+                                        data-id="{{ $asignacion->contacto_id }}" 
+                                        data-nombre="{{ trim(($asignacion->contacto->nombre ?? '') . ' ' . ($asignacion->contacto->apellido_paterno ?? '')) }}" 
+                                        data-observaciones="{{ $asignacion->observaciones ?? '' }}"
+                                        title="Agregar observación"
+                                    >
                                         <i class="fas fa-comment-alt fa-xs"></i>
                                     </button>
                                     
