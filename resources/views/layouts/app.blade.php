@@ -73,43 +73,54 @@
                 </a>
             </li>
 
-            <hr class="sidebar-divider">
+            @php
+                $puedeAdministrarCatalogos = in_array(
+                    strtolower(auth()->user()->role->nombre ?? ''),
+                    ['administrador', 'coordinador']
+                );
+            @endphp
 
-            <!-- Módulos de Operación -->
-            <div class="sidebar-heading">INSTITUCIONES</div>
+            @if ($puedeAdministrarCatalogos)
 
-            <li class="nav-item">
-                <a class="nav-link" href="{{ Route::has('entes.index') ? route('entes.index') : '#' }}">
-                    <i class="fas fa-fw fa-landmark"></i>
-                    <span>Entes</span>
-                </a>
-            </li>
+                <hr class="sidebar-divider">
 
-            <li class="nav-item">
-                <a class="nav-link" href="{{ Route::has('sedes.index') ? route('sedes.index') : '#' }}">
-                    <i class="fas fa-fw fa-building"></i>
-                    <span>Sedes</span>
-                </a>
-            </li>
+                <!-- Módulos de Operación -->
+                <div class="sidebar-heading">INSTITUCIONES</div>
 
-            <hr class="sidebar-divider">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ Route::has('entes.index') ? route('entes.index') : '#' }}">
+                        <i class="fas fa-fw fa-landmark"></i>
+                        <span>Entes</span>
+                    </a>
+                </li>
 
-            <!-- Cobertura Territorial  -->
-            <div class="sidebar-heading">REGIONES</div>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ Route::has('sedes.index') ? route('sedes.index') : '#' }}">
+                        <i class="fas fa-fw fa-building"></i>
+                        <span>Sedes</span>
+                    </a>
+                </li>
 
-            <li class="nav-item {{ request()->routeIs('estados.*') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('estados.index') }}">
-                    <i class="fas fa-fw fa-map"></i>
-                    <span>Estados</span>
-                </a>
-            </li>
+                <hr class="sidebar-divider">
 
-            <li class="nav-item">
-                <a class="nav-link" href="{{ Route::has('municipios.index') ? route('municipios.index') : '#' }}">
-                    <i class="fas fa-fw fa-map-marker-alt"></i>
-                    <span>Municipios</span>
-                </a>
-            </li>
+                <!-- Cobertura Territorial -->
+                <div class="sidebar-heading">REGIONES</div>
+
+                <li class="nav-item {{ request()->routeIs('estados.*') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ route('estados.index') }}">
+                        <i class="fas fa-fw fa-map"></i>
+                        <span>Estados</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ Route::has('municipios.index') ? route('municipios.index') : '#' }}">
+                        <i class="fas fa-fw fa-map-marker-alt"></i>
+                        <span>Municipios</span>
+                    </a>
+                </li>
+
+            @endif
 
             <hr class="sidebar-divider d-none d-md-block">
 

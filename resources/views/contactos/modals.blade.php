@@ -542,6 +542,13 @@
 
         <div id="tabInspectorActualContenido">
 
+        @php
+            $puedeModificarAsignacion = in_array(
+                strtolower(auth()->user()->role->nombre ?? ''),
+                ['administrador', 'coordinador']
+            );
+        @endphp
+
             <form id="formEditarInspector"
                   method="POST">
 
@@ -656,10 +663,12 @@
                     </div>
 
 
+                    <!-- ENTE -->
+
                     <div class="form-group mb-3">
 
                         <label for="insp_ente_id"
-                               class="small font-weight-bold text-gray-700">
+                            class="small font-weight-bold text-gray-700">
 
                             Ente público
 
@@ -667,7 +676,8 @@
 
                         <select name="ente_id"
                                 id="insp_ente_id"
-                                class="select-search form-control form-control-sm">
+                                class="select-search form-control form-control-sm"
+                                {{ !$puedeModificarAsignacion ? 'disabled' : '' }}>
 
                             <option value="">
                                 Seleccione un ente...
@@ -683,13 +693,23 @@
 
                         </select>
 
+                        @if (!$puedeModificarAsignacion)
+
+                            <input type="hidden"
+                                name="ente_id"
+                                id="insp_ente_id_hidden">
+
+                        @endif
+
                     </div>
 
+
+                    <!-- SEDE -->
 
                     <div class="form-group mb-3">
 
                         <label for="insp_sede_id"
-                               class="small font-weight-bold text-gray-700">
+                            class="small font-weight-bold text-gray-700">
 
                             Sede
 
@@ -697,7 +717,8 @@
 
                         <select name="sede_id"
                                 id="insp_sede_id"
-                                class="select-search form-control form-control-sm">
+                                class="select-search form-control form-control-sm"
+                                {{ !$puedeModificarAsignacion ? 'disabled' : '' }}>
 
                             <option value="">
                                 Seleccione una sede...
@@ -713,13 +734,23 @@
 
                         </select>
 
+                        @if (!$puedeModificarAsignacion)
+
+                            <input type="hidden"
+                                name="sede_id"
+                                id="insp_sede_id_hidden">
+
+                        @endif
+
                     </div>
 
+
+                    <!-- PUESTO -->
 
                     <div class="form-group mb-0">
 
                         <label for="insp_puesto_id"
-                               class="small font-weight-bold text-gray-700">
+                            class="small font-weight-bold text-gray-700">
 
                             Puesto
 
@@ -727,7 +758,8 @@
 
                         <select name="puesto_id"
                                 id="insp_puesto_id"
-                                class="select-search form-control form-control-sm">
+                                class="select-search form-control form-control-sm"
+                                {{ !$puedeModificarAsignacion ? 'disabled' : '' }}>
 
                             <option value="">
                                 Seleccione un puesto...
@@ -742,6 +774,14 @@
                             @endforeach
 
                         </select>
+
+                        @if (!$puedeModificarAsignacion)
+
+                            <input type="hidden"
+                                name="puesto_id"
+                                id="insp_puesto_id_hidden">
+
+                        @endif
 
                     </div>
 

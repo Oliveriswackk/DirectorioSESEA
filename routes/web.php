@@ -53,32 +53,37 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/contactos/enviar-informacion', [ContactoController::class, 'enviarInformacion'])->name('contactos.enviar-informacion'); // Compartir info contactos entre áreas
 
 
-    // Módulo: Estados
-    Route::prefix('estados')->name('estados.')->group(function () {
-        Route::get('/', [EstadoController::class, 'index'])->name('index');
-        Route::post('/', [EstadoController::class, 'store'])->name('store');
-        Route::put('/{estado}', [EstadoController::class, 'update'])->name('update');
-        Route::patch('/{estado}/toggle', [EstadoController::class, 'toggleActive'])->name('toggle');
+    // Módulos restringidos a Administradores y Coordinadores
+    Route::middleware(['catalogos'])->group(function () {
+
+        // Módulo: Estados
+        Route::prefix('estados')->name('estados.')->group(function () {
+            Route::get('/', [EstadoController::class, 'index'])->name('index');
+            Route::post('/', [EstadoController::class, 'store'])->name('store');
+            Route::put('/{estado}', [EstadoController::class, 'update'])->name('update');
+            Route::patch('/{estado}/toggle', [EstadoController::class, 'toggleActive'])->name('toggle');
+        });
+
+
+        // Módulo: Municipios
+        Route::resource('municipios', MunicipioController::class)->except(['create', 'edit', 'show', 'destroy']);
+        Route::patch('municipios/{municipio}/toggle', [MunicipioController::class, 'toggleActive'])->name('municipios.toggle');
+
+
+        // Módulo: Entes
+        Route::get('/entes', [EnteController::class, 'index'])->name('entes.index');
+        Route::post('/entes', [EnteController::class, 'store'])->name('entes.store');
+        Route::put('/entes/{ente}', [EnteController::class, 'update'])->name('entes.update');
+        Route::patch('/entes/{ente}/toggle', [EnteController::class, 'toggle'])->name('entes.toggle');
+        
+
+        // Módulo: Sedes
+        Route::get('/sedes', [SedeController::class, 'index'])->name('sedes.index');
+        Route::post('/sedes', [SedeController::class, 'store'])->name('sedes.store');
+        Route::put('/sedes/{sede}', [SedeController::class, 'update'])->name('sedes.update');
+        Route::patch('/sedes/{sede}/toggle', [SedeController::class, 'toggle'])->name('sedes.toggle');
+        
     });
-
-
-    // Módulo: Municipios
-    Route::resource('municipios', MunicipioController::class)->except(['create', 'edit', 'show', 'destroy']);
-    Route::patch('municipios/{municipio}/toggle', [MunicipioController::class, 'toggleActive'])->name('municipios.toggle');
-
-
-    // Módulo: Entes
-    Route::get('/entes', [EnteController::class, 'index'])->name('entes.index');
-    Route::post('/entes', [EnteController::class, 'store'])->name('entes.store');
-    Route::put('/entes/{ente}', [EnteController::class, 'update'])->name('entes.update');
-    Route::patch('/entes/{ente}/toggle', [EnteController::class, 'toggle'])->name('entes.toggle');
-    
-
-    // Módulo: Sedes
-    Route::get('/sedes', [SedeController::class, 'index'])->name('sedes.index');
-    Route::post('/sedes', [SedeController::class, 'store'])->name('sedes.store');
-    Route::put('/sedes/{sede}', [SedeController::class, 'update'])->name('sedes.update');
-    Route::patch('/sedes/{sede}/toggle', [SedeController::class, 'toggle'])->name('sedes.toggle');
     
 });
 

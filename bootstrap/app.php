@@ -5,6 +5,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Http\Middleware\CheckSessionTimeout;
+use App\Http\Middleware\CheckCatalogAccess;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -16,6 +17,11 @@ return Application::configure(basePath: dirname(__DIR__))
         // Agregamos middleware al grupo 'web'
         $middleware->web(append: [
             CheckSessionTimeout::class,
+        ]);
+
+        // Middleware para administración de catálogos
+        $middleware->alias([
+            'catalogos' => CheckCatalogAccess::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
@@ -32,4 +38,4 @@ return Application::configure(basePath: dirname(__DIR__))
                 'exception' => $e
             ], 500);
         });
-    })->create(); 
+    })->create();
