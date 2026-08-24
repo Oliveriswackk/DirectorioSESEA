@@ -41,6 +41,78 @@ class ContactoController extends Controller
     }
 
 
+    public function exportarPdf(Request $request)
+    {
+        $export = new ContactosExport(
+            $request->query('busqueda'),
+            $request->query('nivel_gobierno'),
+            $request->query('ente'),
+            $request->query('puesto'),
+            $request->query('revision')
+        );
+
+        $asignaciones = $export->collection();
+
+        $filtros = [];
+
+        if ($request->filled('nivel_gobierno')) {
+            $nivel = NivelGobierno::find($request->query('nivel_gobierno'));
+
+            if ($nivel) {
+                $filtros[] = 'Nivel: ' . $nivel->nombre;
+            }
+        }
+
+        if ($request->filled('ente')) {
+            $ente = Ente::find($request->query('ente'));
+
+            if ($ente) {
+                $filtros[] = 'Ente: ' . $ente->nombre;
+            }
+        }
+
+        if ($request->filled('puesto')) {
+            $puesto = Puesto::find($request->query('puesto'));
+
+            if ($puesto) {
+                $filtros[] = 'Puesto: ' . $puesto->nombre;
+            }
+        }
+
+        if ($request->filled('revision')) {
+            if ($request->query('revision') === 'requiere_revision') {
+                $filtros[] = 'Requiere revisión';
+            }
+        }
+
+        if ($request->filled('busqueda')) {
+            $filtros[] = 'Búsqueda: ' . $request->query('busqueda');
+        }
+
+        $filtrosAplicados =
+            empty($filtros)
+                ? 'Todos los contactos'
+                : implode(' · ', $filtros);
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView(
+            'contactos.pdf',
+            [
+                'asignaciones' => $asignaciones,
+                'filtrosAplicados' => $filtrosAplicados,
+                'fechaGeneracion' => now()->format('d/m/Y H:i'),
+            ]
+        );
+
+        $pdf->setPaper('letter', 'landscape');
+
+        return $pdf->download(
+            'directorio-contactos-' .
+            now()->format('Y-m-d') .
+            '.pdf'
+        );
+    }
+
+
     public function index()
     {
         $asignaciones = Asignacion::with([

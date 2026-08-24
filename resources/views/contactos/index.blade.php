@@ -158,12 +158,12 @@
                                 <i class="fas fa-file-excel text-success mr-1"></i>
                                 Exportar a Excel
                             </a>
-                            <!--
-                            <a class="dropdown-item" href="#">
+                    
+                            <a class="dropdown-item" href="{{ route('contactos.exportar.pdf') }}" id="btnExportarPdf">
                                 <i class="fas fa-file-pdf text-danger mr-1"></i>
                                 Exportar a PDF
                             </a>
-                            -->
+
                         </div>
                     </div>
                 </div>
@@ -1229,7 +1229,6 @@
 
         $('#inputBuscadorGlobal').val('');
 
-
         $('.filter-trigger').each(function() {
 
             if (this.tomselect) {
@@ -1238,36 +1237,28 @@
 
             } else {
 
-                $(this)
-                    .val('')
-                    .trigger('change');
+                $(this).val('');
             }
 
         });
 
-
         paginaCardsActual = 1;
 
         aplicarFiltrosGlobales();
-
-        actualizarUrlExportacion();
     }
 
+    
     // =========================================================
-    // EXPORTACIÓN — RESPETAR FILTROS ACTUALES
+    // EXPORTACIONES — RESPETAR FILTROS ACTUALES
     // =========================================================
 
-    function actualizarUrlExportacion() {
-
-        const boton =
-            document.getElementById('btnExportarExcel');
-
-        if (!boton) {
-            return;
-        }
+    function obtenerUrlExportacion(urlBase) {
 
         const url =
-            new URL(boton.href, window.location.origin);
+            new URL(
+                urlBase,
+                window.location.origin
+            );
 
 
         // =====================================================
@@ -1279,18 +1270,8 @@
                 .val()
                 .trim();
 
-        if (busqueda !== '') {
-
-            url.searchParams.set(
-                'busqueda',
-                busqueda
-            );
-
-        } else {
-
-            url.searchParams.delete(
-                'busqueda'
-            );
+        if (busqueda) {
+            url.searchParams.set('busqueda', busqueda);
         }
 
 
@@ -1298,20 +1279,13 @@
         // NIVEL DE GOBIERNO
         // =====================================================
 
-        const nivel =
+        const nivelGobierno =
             $('#filtroNivelGobierno').val();
 
-        if (nivel) {
-
+        if (nivelGobierno) {
             url.searchParams.set(
                 'nivel_gobierno',
-                nivel
-            );
-
-        } else {
-
-            url.searchParams.delete(
-                'nivel_gobierno'
+                nivelGobierno
             );
         }
 
@@ -1324,16 +1298,9 @@
             $('#filtroEnte').val();
 
         if (ente) {
-
             url.searchParams.set(
                 'ente',
                 ente
-            );
-
-        } else {
-
-            url.searchParams.delete(
-                'ente'
             );
         }
 
@@ -1346,16 +1313,9 @@
             $('#filtroPuesto').val();
 
         if (puesto) {
-
             url.searchParams.set(
                 'puesto',
                 puesto
-            );
-
-        } else {
-
-            url.searchParams.delete(
-                'puesto'
             );
         }
 
@@ -1368,117 +1328,52 @@
             $('#filtroRevision').val();
 
         if (revision) {
-
             url.searchParams.set(
                 'revision',
                 revision
             );
-
-        } else {
-
-            url.searchParams.delete(
-                'revision'
-            );
         }
 
-        // ACTUALIZAR ENLACE
 
-        boton.href =
-            url.toString();
+        return url.toString();
     }
 
 
     // =========================================================
-    // EXPORTAR EXCEL CON FILTROS ACTUALES
+    // BOTONES DE EXPORTACIÓN
     // =========================================================
 
     document.addEventListener('DOMContentLoaded', function () {
 
-        const btnExportarExcel =
-            document.getElementById('btnExportarExcel');
+        const botones = [
+            'btnExportarExcel',
+            'btnExportarPdf'
+        ];
 
-        if (!btnExportarExcel) {
-            return;
-        }
 
-        btnExportarExcel.addEventListener('click', function (event) {
+        botones.forEach(function (id) {
 
-            event.preventDefault();
+            const boton =
+                document.getElementById(id);
 
-            const url =
-                new URL(this.href, window.location.origin);
-
-            // BUSCADOR GLOBAL
-            const busqueda =
-                $('#inputBuscadorGlobal')
-                    .val()
-                    .trim();
-
-            if (busqueda) {
-                url.searchParams.set(
-                    'busqueda',
-                    busqueda
-                );
+            if (!boton) {
+                return;
             }
 
-            // NIVEL DE GOBIERNO
-            const nivelGobierno =
-                $('#filtroNivelGobierno').val();
 
-            if (nivelGobierno) {
-                url.searchParams.set(
-                    'nivel_gobierno',
-                    nivelGobierno
-                );
-            }
+            boton.addEventListener('click', function (event) {
 
-            // ENTE
-            const ente =
-                $('#filtroEnte').val();
+                event.preventDefault();
 
-            if (ente) {
-                url.searchParams.set(
-                    'ente',
-                    ente
-                );
-            }
+                window.location.href =
+                    obtenerUrlExportacion(this.href);
 
-            // =====================================================
-            // PUESTO
-            // =====================================================
+            });
 
-            const puesto =
-                $('#filtroPuesto').val();
-
-            if (puesto) {
-                url.searchParams.set(
-                    'puesto',
-                    puesto
-                );
-            }
-
-            // =====================================================
-            // REVISIÓN
-            // =====================================================
-
-            const revision =
-                $('#filtroRevision').val();
-
-            if (revision) {
-                url.searchParams.set(
-                    'revision',
-                    revision
-                );
-            }
-
-            // =====================================================
-            // DESCARGAR
-            // =====================================================
-
-            window.location.href = url.toString();
         });
 
     });
+
 
     // =========================================================
     // INICIALIZACIÓN
@@ -1573,7 +1468,6 @@
 
 
         renderizarCards();
-        actualizarUrlExportacion();
 
     });
 
