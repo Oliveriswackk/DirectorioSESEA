@@ -10,9 +10,13 @@ use App\Models\Sede;
 use App\Models\NivelGobierno;
 use App\Services\BitacoraService;
 use App\Mail\InformacionDirectorioRecibida;
+use App\Exports\ContactosExport;
+
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
+
+use Maatwebsite\Excel\Facades\Excel;
 
 class ContactoController extends Controller
 {
@@ -20,6 +24,22 @@ class ContactoController extends Controller
         private BitacoraService $bitacora
     ) {
     }
+
+
+    public function exportarExcel(Request $request)
+    {
+        return Excel::download(
+            new ContactosExport(
+                $request->query('busqueda'),
+                $request->query('nivel_gobierno'),
+                $request->query('ente'),
+                $request->query('puesto'),
+                $request->query('revision')
+            ),
+            'directorio-contactos-' . now()->format('Y-m-d') . '.xlsx'
+        );
+    }
+
 
     public function index()
     {

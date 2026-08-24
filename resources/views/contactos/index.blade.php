@@ -154,8 +154,16 @@
                             <i class="fas fa-file-excel mr-1"></i> Exportar
                         </button>
                         <div class="dropdown-menu dropdown-menu-right shadow-sm border-0 small">
-                            <a class="dropdown-item" href="#"><i class="fas fa-file-excel text-success mr-1"></i> Exportar a Excel</a>
-                            <a class="dropdown-item" href="#"><i class="fas fa-file-pdf text-danger mr-1"></i> Exportar a PDF</a>
+                            <a class="dropdown-item" href="{{ route('contactos.exportar.excel') }}" id="btnExportarExcel">
+                                <i class="fas fa-file-excel text-success mr-1"></i>
+                                Exportar a Excel
+                            </a>
+                            <!--
+                            <a class="dropdown-item" href="#">
+                                <i class="fas fa-file-pdf text-danger mr-1"></i>
+                                Exportar a PDF
+                            </a>
+                            -->
                         </div>
                     </div>
                 </div>
@@ -1241,8 +1249,236 @@
         paginaCardsActual = 1;
 
         aplicarFiltrosGlobales();
+
+        actualizarUrlExportacion();
     }
 
+    // =========================================================
+    // EXPORTACIÓN — RESPETAR FILTROS ACTUALES
+    // =========================================================
+
+    function actualizarUrlExportacion() {
+
+        const boton =
+            document.getElementById('btnExportarExcel');
+
+        if (!boton) {
+            return;
+        }
+
+        const url =
+            new URL(boton.href, window.location.origin);
+
+
+        // =====================================================
+        // BUSCADOR GLOBAL
+        // =====================================================
+
+        const busqueda =
+            $('#inputBuscadorGlobal')
+                .val()
+                .trim();
+
+        if (busqueda !== '') {
+
+            url.searchParams.set(
+                'busqueda',
+                busqueda
+            );
+
+        } else {
+
+            url.searchParams.delete(
+                'busqueda'
+            );
+        }
+
+
+        // =====================================================
+        // NIVEL DE GOBIERNO
+        // =====================================================
+
+        const nivel =
+            $('#filtroNivelGobierno').val();
+
+        if (nivel) {
+
+            url.searchParams.set(
+                'nivel_gobierno',
+                nivel
+            );
+
+        } else {
+
+            url.searchParams.delete(
+                'nivel_gobierno'
+            );
+        }
+
+
+        // =====================================================
+        // ENTE
+        // =====================================================
+
+        const ente =
+            $('#filtroEnte').val();
+
+        if (ente) {
+
+            url.searchParams.set(
+                'ente',
+                ente
+            );
+
+        } else {
+
+            url.searchParams.delete(
+                'ente'
+            );
+        }
+
+
+        // =====================================================
+        // PUESTO
+        // =====================================================
+
+        const puesto =
+            $('#filtroPuesto').val();
+
+        if (puesto) {
+
+            url.searchParams.set(
+                'puesto',
+                puesto
+            );
+
+        } else {
+
+            url.searchParams.delete(
+                'puesto'
+            );
+        }
+
+
+        // =====================================================
+        // REVISIÓN
+        // =====================================================
+
+        const revision =
+            $('#filtroRevision').val();
+
+        if (revision) {
+
+            url.searchParams.set(
+                'revision',
+                revision
+            );
+
+        } else {
+
+            url.searchParams.delete(
+                'revision'
+            );
+        }
+
+        // ACTUALIZAR ENLACE
+
+        boton.href =
+            url.toString();
+    }
+
+
+    // =========================================================
+    // EXPORTAR EXCEL CON FILTROS ACTUALES
+    // =========================================================
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        const btnExportarExcel =
+            document.getElementById('btnExportarExcel');
+
+        if (!btnExportarExcel) {
+            return;
+        }
+
+        btnExportarExcel.addEventListener('click', function (event) {
+
+            event.preventDefault();
+
+            const url =
+                new URL(this.href, window.location.origin);
+
+            // BUSCADOR GLOBAL
+            const busqueda =
+                $('#inputBuscadorGlobal')
+                    .val()
+                    .trim();
+
+            if (busqueda) {
+                url.searchParams.set(
+                    'busqueda',
+                    busqueda
+                );
+            }
+
+            // NIVEL DE GOBIERNO
+            const nivelGobierno =
+                $('#filtroNivelGobierno').val();
+
+            if (nivelGobierno) {
+                url.searchParams.set(
+                    'nivel_gobierno',
+                    nivelGobierno
+                );
+            }
+
+            // ENTE
+            const ente =
+                $('#filtroEnte').val();
+
+            if (ente) {
+                url.searchParams.set(
+                    'ente',
+                    ente
+                );
+            }
+
+            // =====================================================
+            // PUESTO
+            // =====================================================
+
+            const puesto =
+                $('#filtroPuesto').val();
+
+            if (puesto) {
+                url.searchParams.set(
+                    'puesto',
+                    puesto
+                );
+            }
+
+            // =====================================================
+            // REVISIÓN
+            // =====================================================
+
+            const revision =
+                $('#filtroRevision').val();
+
+            if (revision) {
+                url.searchParams.set(
+                    'revision',
+                    revision
+                );
+            }
+
+            // =====================================================
+            // DESCARGAR
+            // =====================================================
+
+            window.location.href = url.toString();
+        });
+
+    });
 
     // =========================================================
     // INICIALIZACIÓN
@@ -1319,6 +1555,7 @@
             '.filter-trigger',
             function() {
                 aplicarFiltrosGlobales();
+                actualizarUrlExportacion();
             }
         );
 
@@ -1328,6 +1565,7 @@
             debounce(
                 function() {
                     aplicarFiltrosGlobales();
+                    actualizarUrlExportacion();
                 },
                 300
             )
@@ -1335,6 +1573,7 @@
 
 
         renderizarCards();
+        actualizarUrlExportacion();
 
     });
 

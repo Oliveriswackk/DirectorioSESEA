@@ -45,10 +45,12 @@ Route::middleware(['auth'])->group(function () {
 
     // Módulo: Contactos
     Route::get('contactos/verificar-asignacion', [ContactoController::class, 'verificarAsignacion'])->name('contactos.verificar-asignacion');
+    Route::get('contactos/exportar/excel', [ContactoController::class, 'exportarExcel'])->name('contactos.exportar.excel'); // Exportar excel de contactos
     Route::post('contactos/{id}/reemplazar', [ContactoController::class, 'reemplazar'])->name('contactos.reemplazar');
     Route::resource('contactos', ContactoController::class);
     Route::patch('contactos/{id}/nota', [ContactoController::class, 'updateNota'])->name('contactos.nota');
-    Route::post('/contactos/enviar-informacion', [ContactoController::class, 'enviarInformacion'])->name('contactos.enviar-informacion'); // Enviar info contactos
+    Route::post('/contactos/enviar-informacion', [ContactoController::class, 'enviarInformacion'])->name('contactos.enviar-informacion'); // Compartir info contactos entre áreas
+
 
     // Módulo: Estados
     Route::prefix('estados')->name('estados.')->group(function () {
