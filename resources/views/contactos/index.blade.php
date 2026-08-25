@@ -130,8 +130,13 @@
                             class="select-search form-control form-control-sm border bg-light filter-trigger">
 
                         <option value="">Revisión...</option>
+
                         <option value="requiere_revision">
                             Requiere revisión
+                        </option>
+
+                        <option value="no_requiere_revision">
+                            No requiere revisión
                         </option>
 
                     </select>
@@ -824,11 +829,15 @@
         
         let coincideRevision = true;
 
-        if (revisionFiltro === 'requiere_revision') {
+        if (
+            revisionFiltro === 'requiere_revision' ||
+            revisionFiltro === 'no_requiere_revision'
+        ) {
 
             if (!ultimaActualizacion) {
 
-                coincideRevision = false;
+                coincideRevision =
+                    revisionFiltro === 'no_requiere_revision';
 
             } else {
 
@@ -842,11 +851,15 @@
                     fechaLimite.getMonth() - 3
                 );
 
-                coincideRevision =
+                const requiereRevision =
                     fechaActualizacion <= fechaLimite;
+
+                coincideRevision =
+                    revisionFiltro === 'requiere_revision'
+                        ? requiereRevision
+                        : !requiereRevision;
             }
         }
-
 
         return (
             coincideNivel &&
