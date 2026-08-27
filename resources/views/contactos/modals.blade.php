@@ -444,8 +444,8 @@
 </div>
 
 
-<!-- ================================================================= -->
-<!-- 2. CAJÓN LATERAL — INSPECTOR DE CONTACTO / VINCULACIÓN            -->
+!-- ================================================================= -->
+<<!-- 2. CAJÓN LATERAL — INSPECTOR DE CONTACTO / VINCULACIÓN            -->
 <!-- ================================================================= -->
 
 <div id="inspectorLateral"
@@ -537,7 +537,7 @@
     </header>
 
 
-    <div class="px-4 py-4 flex-grow-1"
+    <div class="px-4 py-4 flex-grow-1 inspector-scroll"
          style="overflow-y: auto; min-height: 0;">
 
         <div id="tabInspectorActualContenido">

@@ -51,6 +51,28 @@
     .text-revision {
         color: #daa20a !important;
     }
+
+    /* =========================================================
+       SCROLLBAR DEL INSPECTOR
+       ========================================================= */
+
+    .inspector-scroll::-webkit-scrollbar {
+        width: 17px;
+    }
+
+    .inspector-scroll::-webkit-scrollbar-track {
+        background: #f1f3f5;
+    }
+
+    .inspector-scroll::-webkit-scrollbar-thumb {
+        background: #4e73df;
+        border-radius: 0;
+    }
+
+    .inspector-scroll::-webkit-scrollbar-thumb:hover {
+        background: #2e59d9;
+    }
+
 </style>
 <div class="container-fluid px-4">
 
@@ -495,7 +517,7 @@
 
         document
             .getElementById('inspectorLateral')
-            .style.right = '0';
+            .style.right = '17px';
     }
 
 
@@ -528,7 +550,7 @@
 
         if (!hayCambios) {
 
-            inspector.style.right = '-480px';
+            inspector.style.right = '-497px';
 
             return;
         }
@@ -576,7 +598,7 @@
 
             if (result.isDenied) {
 
-                inspector.style.right = '-480px';
+                inspector.style.right = '-497px';
 
             }
 
@@ -613,7 +635,7 @@
 
         document
             .getElementById('inspectorLateral')
-            .style.right = '-480px';
+            .style.right = '-497px';
     }
 
     // =========================================================
