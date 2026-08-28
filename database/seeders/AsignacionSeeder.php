@@ -10,6 +10,15 @@ class AsignacionSeeder extends Seeder
 {
     public function run(): void
     {
+
+        if (!config('seeders.allow_data_seeders')) {
+            $this->command?->error(
+                'AsignacionSeeder bloqueado. ALLOW_DATA_SEEDERS no está habilitado.'
+            );
+
+            return;
+        }
+        
         $asignaciones = [
             [
                 'id' => 1,
