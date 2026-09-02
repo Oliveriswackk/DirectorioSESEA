@@ -19,9 +19,14 @@ class DatabaseSeeder extends Seeder
             EnteSeeder::class,
             SedeSeeder::class,
             PuestoSeeder::class,
-            UserSeeder::class,
-            ContactoSeeder::class,
-            AsignacionSeeder::class,
         ]);
+
+        if (config('seeders.allow_data_seeders')) {
+            $this->call([
+                UserSeeder::class,
+                ContactoSeeder::class,
+                AsignacionSeeder::class,
+            ]);
+        }
     }
 }
