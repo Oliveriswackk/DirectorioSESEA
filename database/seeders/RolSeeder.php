@@ -13,30 +13,22 @@ class RolSeeder extends Seeder
             [
                 'id' => 1,
                 'nombre' => 'Administrador',
-                'activo' => true,
-                'created_at' => now(),
-                'updated_at' => now(),
+                'activo' => 1,
             ],
             [
                 'id' => 2,
                 'nombre' => 'Coordinador',
-                'activo' => true,
-                'created_at' => now(),
-                'updated_at' => now(),
+                'activo' => 1,
             ],
             [
                 'id' => 3,
                 'nombre' => 'Colaborador',
-                'activo' => true,
-                'created_at' => now(),
-                'updated_at' => now(),
+                'activo' => 1,
             ],
             [
                 'id' => 4,
                 'nombre' => 'Invitado',
-                'activo' => true,
-                'created_at' => now(),
-                'updated_at' => now(),
+                'activo' => 1,
             ],
         ]);
     }
