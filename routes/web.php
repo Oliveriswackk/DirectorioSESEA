@@ -7,6 +7,7 @@ use App\Http\Controllers\MunicipioController;
 use App\Http\Controllers\EnteController;
 use App\Http\Controllers\SedeController;
 use App\Http\Controllers\ContactoController;
+use App\Http\Controllers\Api\ContactoApiController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -15,6 +16,7 @@ use Illuminate\Http\Request;
 Route::get('/', function () {
     return Auth::check() ? redirect()->route('contactos.index') : redirect()->route('login');
 });
+
 
 // Logout Manual y Seguro
 Route::post('/logout', function (Request $request) {
@@ -26,10 +28,16 @@ Route::post('/logout', function (Request $request) {
     return redirect('/login');
 })->name('logout');
 
+
 // Autorizar solicitud de acceso
 Route::get('/admin/autorizar-acceso/{user}/{role}', [AprobacionController::class, 'procesarAprobacion'])
     ->name('admin.aprobar.solicitud')
     ->middleware('signed');
+
+
+// API para consumo interno de SCO
+Route::get('/api/contactos', [ContactoApiController::class, 'buscar'])->name('api.contactos.buscar');
+
 
 // Rutas protegidas por autenticación
 Route::middleware(['auth'])->group(function () {
