@@ -1228,36 +1228,151 @@
     }
 
 
-    // =========================================================
     // FILTROS GLOBALES
-    // =========================================================
+    async function aplicarFiltrosGlobales() {
 
-    function aplicarFiltrosGlobales() {
+        const params = new URLSearchParams();
 
-        const textoBusqueda =
-            $('#inputBuscadorGlobal')
-                .val()
-                .toLowerCase()
+        const busqueda =
+            document
+                .getElementById('inputBuscadorGlobal')
+                ?.value
                 .trim();
 
+        const nivelGobierno =
+            document
+                .getElementById('filtroNivelGobierno')
+                ?.value;
 
-        if (vistaActual === 'tabla') {
+        const ente =
+            document
+                .getElementById('filtroEnte')
+                ?.value;
 
-            if (window.tablaContactosDT) {
+        const puesto =
+            document
+                .getElementById('filtroPuesto')
+                ?.value;
 
-                window.tablaContactosDT
-                    .search(textoBusqueda)
-                    .draw();
-            }
+        const revision =
+            document
+                .getElementById('filtroRevision')
+                ?.value;
 
-            return;
+
+        if (busqueda) {
+            params.set('busqueda', busqueda);
+        }
+
+        if (nivelGobierno) {
+            params.set('nivel_gobierno', nivelGobierno);
+        }
+
+        if (ente) {
+            params.set('ente', ente);
+        }
+
+        if (puesto) {
+            params.set('puesto', puesto);
+        }
+
+        if (revision) {
+            params.set('revision', revision);
         }
 
 
-        paginaCardsActual = 1;
+        const url =
+            `/contactos?${params.toString()}`;
 
-        renderizarCards();
+
+        try {
+
+            const response =
+                await fetch(url, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+
+            if (!response.ok) {
+                throw new Error(
+                    `HTTP ${response.status}`
+                );
+            }
+
+
+            const html =
+                await response.text();
+
+
+            document
+                .getElementById('seccionTabla')
+                .innerHTML = html;
+
+
+            // Volver a configurar la tabla después del fetch
+            inicializarDataTable();
+
+            // Volver a configurar los botones de observaciones
+            configurarBotonesObservacion();
+
+
+        } catch (error) {
+
+            console.error(
+                'Error al aplicar filtros:',
+                error
+            );
+
+        }
     }
+
+    $(document).on(
+        'click',
+        '#seccionTabla .pagination a',
+        async function(e) {
+
+            e.preventDefault();
+
+            const url = this.href;
+
+            try {
+
+                const response =
+                    await fetch(url, {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+
+                if (!response.ok) {
+                    throw new Error(
+                        `HTTP ${response.status}`
+                    );
+                }
+
+                const html =
+                    await response.text();
+
+                document
+                    .getElementById('seccionTabla')
+                    .innerHTML = html;
+
+                inicializarDataTable();
+
+                configurarBotonesObservacion();
+
+            } catch (error) {
+
+                console.error(
+                    'Error al cambiar de página:',
+                    error
+                );
+
+            }
+        }
+    );
 
 
     function limpiarFiltros() {
@@ -1411,69 +1526,50 @@
 
 
     // =========================================================
-    // INICIALIZACIÓN
-    // =========================================================
+// INICIALIZACIÓN
+// =========================================================
+
+function inicializarDataTable() {
+
+    if (
+        !$.fn.DataTable ||
+        !document.getElementById('tablaContactos')
+    ) {
+        return;
+    }
+
+    if (
+        $.fn.DataTable.isDataTable('#tablaContactos')
+    ) {
+        $('#tablaContactos')
+            .DataTable()
+            .destroy();
+    }
+
+    window.tablaContactosDT =
+        $('#tablaContactos').DataTable({
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
+            },
+            dom: 'rt',
+            paging: false,
+            searching: false,
+            info: false,
+            responsive: true,
+            columnDefs: [
+                {
+                    orderable: false,
+                    targets: [-1]
+                }
+            ]
+        });
+}
+
 
     $(document).ready(function() {
 
-
-        // =====================================================
         // DATATABLES
-        // =====================================================
-
-        $.fn.dataTable.ext.search.push(
-            function(settings, data, dataIndex) {
-
-                if (
-                    settings.nTable.id !==
-                    'tablaContactos'
-                ) {
-                    return true;
-                }
-
-
-                const row =
-                    settings
-                        .aoData[dataIndex]
-                        .nTr;
-
-
-                return registroCumpleFiltros(
-                    row
-                );
-            }
-        );
-
-
-        if (
-            $.fn.DataTable &&
-            !$.fn.DataTable.isDataTable(
-                '#tablaContactos'
-            )
-        ) {
-
-            window.tablaContactosDT =
-                $('#tablaContactos').DataTable({
-
-                    language: {
-                        url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
-                    },
-
-                    dom: 'rtip',
-
-                    pageLength: 10,
-
-                    responsive: true,
-
-                    columnDefs: [
-                        {
-                            orderable: false,
-                            targets: [-1]
-                        }
-                    ]
-
-                });
-        }
+        inicializarDataTable();
 
 
         // =====================================================

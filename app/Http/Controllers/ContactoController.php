@@ -11,6 +11,7 @@ use App\Models\NivelGobierno;
 use App\Services\BitacoraService;
 use App\Mail\InformacionDirectorioRecibida;
 use App\Exports\ContactosExport;
+use App\Queries\AsignacionQuery;
 
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
@@ -115,15 +116,18 @@ class ContactoController extends Controller
 
     public function index()
     {
-        $asignaciones = Asignacion::with([
-            'contacto',
+        $filters = request()->only([
+            'busqueda',
+            'nivel_gobierno',
+            'ente',
             'puesto',
-            'ente.nivelGobierno',
-            'ente.municipio.estado',
-            'sede',
-        ])
-            ->where('activo', true)
-            ->get();
+            'revision',
+        ]);
+
+        $asignaciones = AsignacionQuery::make()
+            ->filter($filters)
+            ->paginate(15)
+            ->withQueryString();
 
         $puestos = Puesto::where('activo', true)
             ->orderBy('nombre')
@@ -141,6 +145,13 @@ class ContactoController extends Controller
         $sedes = Sede::where('activo', true)
             ->orderBy('nombre')
             ->get();
+
+        if (request()->ajax()) {
+            return view(
+                'contactos.partials.tabla-view',
+                compact('asignaciones')
+            );
+        }
 
         return view('contactos.index', compact(
             'asignaciones',

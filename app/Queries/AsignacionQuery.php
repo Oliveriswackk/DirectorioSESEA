@@ -12,6 +12,7 @@ class AsignacionQuery
     ) {
     }
 
+
     public static function make(): self
     {
         return new self(
@@ -26,6 +27,7 @@ class AsignacionQuery
                 ->where('activo', true)
         );
     }
+
 
     public function filter(array $filters): self
     {
@@ -58,15 +60,44 @@ class AsignacionQuery
 
             ->when($filters['puesto'] ?? null, function ($query, $value) {
                 $query->where('puesto_id', $value);
+            })
+
+            ->when($filters['busqueda'] ?? null, function ($query, $value) {
+                $terminos = preg_split('/\s+/', trim($value));
+
+                foreach ($terminos as $termino) {
+                    $query->where(function ($query) use ($termino) {
+                        $query
+                            ->whereHas('contacto', function ($query) use ($termino) {
+                                $query
+                                    ->where('nombre', 'like', "%{$termino}%")
+                                    ->orWhere('apellido_paterno', 'like', "%{$termino}%")
+                                    ->orWhere('apellido_materno', 'like', "%{$termino}%");
+                            })
+                            ->orWhereHas('ente', function ($query) use ($termino) {
+                                $query
+                                    ->where('nombre', 'like', "%{$termino}%")
+                                    ->orWhere('siglas', 'like', "%{$termino}%");
+                            })
+                            ->orWhereHas('puesto', function ($query) use ($termino) {
+                                $query->where('nombre', 'like', "%{$termino}%");
+                            })
+                            ->orWhere('correo', 'like', "%{$termino}%")
+                            ->orWhere('telefono', 'like', "%{$termino}%")
+                            ->orWhere('celular', 'like', "%{$termino}%");
+                    });
+                }
             });
 
         return $this;
     }
-
+    
+    
     public function get()
     {
         return $this->query->get();
     }
+
 
     public function paginate(int $perPage = 25)
     {
