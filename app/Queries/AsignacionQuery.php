@@ -17,12 +17,45 @@ class AsignacionQuery
     {
         return new self(
             Asignacion::query()
+                ->select([
+                    'id',
+                    'contacto_id',
+                    'ente_id',
+                    'sede_id',
+                    'puesto_id',
+                    'correo',
+                    'telefono',
+                    'extension',
+                    'celular',
+                    'observaciones',
+                    'activo',
+                    'updated_at',
+                ])
                 ->with([
-                    'contacto',
-                    'ente.nivelGobierno',
-                    'ente.municipio.estado',
-                    'sede',
-                    'puesto',
+                    'contacto:id,nombre,apellido_paterno,apellido_materno',
+
+                    'ente:id,nivel_gobierno_id,municipio_id,nombre,siglas',
+
+                    'ente.nivelGobierno:id,nombre',
+
+                    'ente.municipio' => function ($query) {
+                        $query->select([
+                            'id',
+                            'estado_id',
+                            'nombre',
+                        ]);
+                    },
+
+                    'ente.municipio.estado' => function ($query) {
+                        $query->select([
+                            'id',
+                            'nombre',
+                        ]);
+                    },
+
+                    'sede:id,nombre,direccion_texto',
+
+                    'puesto:id,nombre',
                 ])
                 ->where('activo', true)
         );
@@ -60,6 +93,22 @@ class AsignacionQuery
 
             ->when($filters['puesto'] ?? null, function ($query, $value) {
                 $query->where('puesto_id', $value);
+            })
+
+            ->when($filters['revision'] ?? null, function ($query, $value) {
+                $fechaLimite = now()->subMonths(3);
+
+                if ($value === 'requiere_revision') {
+                    $query->whereNotNull('updated_at')
+                        ->where('updated_at', '<=', $fechaLimite);
+                }
+
+                if ($value === 'no_requiere_revision') {
+                    $query->where(function ($query) use ($fechaLimite) {
+                        $query->whereNull('updated_at')
+                            ->orWhere('updated_at', '>', $fechaLimite);
+                    });
+                }
             })
 
             ->when($filters['busqueda'] ?? null, function ($query, $value) {

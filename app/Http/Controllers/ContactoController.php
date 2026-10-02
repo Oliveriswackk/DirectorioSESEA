@@ -119,7 +119,10 @@ class ContactoController extends Controller
         $filters = request()->only([
             'busqueda',
             'nivel_gobierno',
+            'estado',
+            'municipio',
             'ente',
+            'sede',
             'puesto',
             'revision',
         ]);

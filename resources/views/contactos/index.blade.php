@@ -204,9 +204,6 @@
         @include('contactos.partials.tabla-view')
     </div>
 
-    <div id="seccionCards" style="display: none;">
-        @include('contactos.partials.cards-view')
-    </div>
 
     <!-- BUZÓN DE INFORMACIÓN PARA SISTEMAS -->
     <div class="card border-0 shadow-sm rounded-lg mt-3 mb-4">
@@ -256,63 +253,6 @@
 
 @push('scripts')
 <script>
-
-    let vistaActual = 'tabla';
-
-    const CARDS_POR_PAGINA = 12;
-
-    let paginaCardsActual = 1;
-
-
-    // =========================================================
-    // CAMBIO DE VISTA
-    // =========================================================
-
-    function cambiarVista(tipo) {
-
-        vistaActual = tipo;
-
-        const tabla = document.getElementById('seccionTabla');
-        const cards = document.getElementById('seccionCards');
-
-        const btnTabla = document.getElementById('btnVistaTabla');
-        const btnCards = document.getElementById('btnVistaCards');
-
-        if (tipo === 'tabla') {
-
-            tabla.style.display = 'block';
-            cards.style.display = 'none';
-
-            btnTabla.classList.add('btn-primary', 'active');
-            btnTabla.classList.remove('btn-light', 'border');
-
-            btnCards.classList.remove('btn-primary', 'active');
-            btnCards.classList.add('btn-light', 'border');
-
-            if (window.tablaContactosDT) {
-                window.tablaContactosDT
-                    .columns
-                    .adjust()
-                    .responsive
-                    .recalc();
-            }
-
-        } else {
-
-            tabla.style.display = 'none';
-            cards.style.display = 'block';
-
-            btnCards.classList.add('btn-primary', 'active');
-            btnCards.classList.remove('btn-light', 'border');
-
-            btnTabla.classList.remove('btn-primary', 'active');
-            btnTabla.classList.add('btn-light', 'border');
-
-        }
-
-        aplicarFiltrosGlobales();
-    }
-
 
     // =========================================================
     // INSPECTOR — ABRIR
@@ -447,22 +387,14 @@
         const sedeId =
             el.getAttribute('data-sede-id') || '';
 
-
-        // =====================================================
         // GUARDAR VALORES ORIGINALES
-        // =====================================================
-
         formulario.dataset.puestoOriginal =
             puestoId;
 
         formulario.dataset.enteOriginal =
             enteId;
 
-
-        // =====================================================
         // CARGAR TOMSELECT
-        // =====================================================
-
         const selects = [
             ['puesto', puestoId],
             ['ente', enteId],
@@ -493,27 +425,12 @@
 
         });
 
-
-        // =====================================================
-        // SIEMPRE INICIAR EN INFORMACIÓN ACTUAL
-        // =====================================================
-
         switchTabInspector('actual');
-
-
-        // =====================================================
-        // GUARDAR ESTADO INICIAL DEL FORMULARIO
-        // =====================================================
 
         formulario.dataset.estadoOriginal =
             new URLSearchParams(
                 new FormData(formulario)
             ).toString();
-
-
-        // =====================================================
-        // ABRIR INSPECTOR
-        // =====================================================
 
         document
             .getElementById('inspectorLateral')
@@ -785,10 +702,7 @@
         });
 
 
-    // =========================================================
     // DEBOUNCE
-    // =========================================================
-
     function debounce(func, wait) {
 
         let timeout;
@@ -802,429 +716,6 @@
                 wait
             );
         };
-    }
-
-
-    // =========================================================
-    // FILTROS
-    // =========================================================
-
-    function registroCumpleFiltros(elemento) {
-
-        const nivelFiltro =
-            $('#filtroNivelGobierno').val();
-
-        const enteFiltro =
-            $('#filtroEnte').val();
-
-        const puestoFiltro =
-            $('#filtroPuesto').val();
-
-        const revisionFiltro =
-            $('#filtroRevision').val();
-
-
-        const nivelId =
-            String(elemento.dataset.nivelId || '');
-
-        const enteId =
-            String(elemento.dataset.enteId || '');
-
-        const puestoId =
-            String(elemento.dataset.puestoId || '');
-
-        const ultimaActualizacion =
-            elemento.dataset.ultimaActualizacion || '';
-
-
-        const coincideNivel =
-            !nivelFiltro ||
-            nivelId === String(nivelFiltro);
-
-        const coincideEnte =
-            !enteFiltro ||
-            enteId === String(enteFiltro);
-
-        const coincidePuesto =
-            !puestoFiltro ||
-            puestoId === String(puestoFiltro);
-        
-        let coincideRevision = true;
-
-        if (
-            revisionFiltro === 'requiere_revision' ||
-            revisionFiltro === 'no_requiere_revision'
-        ) {
-
-            if (!ultimaActualizacion) {
-
-                coincideRevision =
-                    revisionFiltro === 'no_requiere_revision';
-
-            } else {
-
-                const fechaActualizacion =
-                    new Date(ultimaActualizacion);
-
-                const fechaLimite =
-                    new Date();
-
-                fechaLimite.setMonth(
-                    fechaLimite.getMonth() - 3
-                );
-
-                const requiereRevision =
-                    fechaActualizacion <= fechaLimite;
-
-                coincideRevision =
-                    revisionFiltro === 'requiere_revision'
-                        ? requiereRevision
-                        : !requiereRevision;
-            }
-        }
-
-        return (
-            coincideNivel &&
-            coincideEnte &&
-            coincidePuesto &&
-            coincideRevision
-        );;
-    }
-
-
-    function obtenerCardsFiltradas() {
-
-        const textoBusqueda =
-            $('#inputBuscadorGlobal')
-                .val()
-                .toLowerCase()
-                .trim();
-
-        const cards =
-            document.querySelectorAll(
-                '#gridCards .contacto-card-item'
-            );
-
-
-        return Array.from(cards).filter(card => {
-
-            const coincideFiltros =
-                registroCumpleFiltros(card);
-
-            const texto =
-                (card.dataset.busqueda || '')
-                    .toLowerCase();
-
-            const coincideBusqueda =
-                !textoBusqueda ||
-                texto.includes(textoBusqueda);
-
-
-            return (
-                coincideFiltros &&
-                coincideBusqueda
-            );
-        });
-    }
-
-
-    // =========================================================
-    // CARDS
-    // =========================================================
-
-    function renderizarCards() {
-
-        const todasLasCards =
-            document.querySelectorAll(
-                '#gridCards .contacto-card-item'
-            );
-
-        const cardsFiltradas =
-            obtenerCardsFiltradas();
-
-        const total =
-            cardsFiltradas.length;
-
-        const totalPaginas =
-            Math.max(
-                1,
-                Math.ceil(total / CARDS_POR_PAGINA)
-            );
-
-
-        if (paginaCardsActual > totalPaginas) {
-            paginaCardsActual = totalPaginas;
-        }
-
-
-        const inicio =
-            (paginaCardsActual - 1) *
-            CARDS_POR_PAGINA;
-
-        const fin =
-            inicio + CARDS_POR_PAGINA;
-
-        const cardsVisibles =
-            cardsFiltradas.slice(
-                inicio,
-                fin
-            );
-
-
-        todasLasCards.forEach(card => {
-            card.style.display = 'none';
-        });
-
-
-        cardsVisibles.forEach(card => {
-            card.style.display = '';
-        });
-
-
-        const info =
-            document.getElementById('cardsInfo');
-
-
-        if (info) {
-
-            if (total === 0) {
-
-                info.textContent =
-                    'No se encontraron resultados';
-
-            } else {
-
-                const desde =
-                    inicio + 1;
-
-                const hasta =
-                    Math.min(fin, total);
-
-                info.textContent =
-                    `Mostrando ${desde}-${hasta} de ${total}`;
-            }
-        }
-
-
-        renderizarPaginacionCards(
-            totalPaginas
-        );
-    }
-
-
-    function renderizarPaginacionCards(totalPaginas) {
-
-        const contenedor =
-            document.getElementById(
-                'cardsPagination'
-            );
-
-        if (!contenedor) {
-            return;
-        }
-
-
-        contenedor.innerHTML = '';
-
-
-        if (totalPaginas <= 1) {
-            return;
-        }
-
-
-        const nav =
-            document.createElement('nav');
-
-        const ul =
-            document.createElement('ul');
-
-        ul.className =
-            'pagination pagination-sm mb-0';
-
-
-        // =====================================================
-        // ANTERIOR
-        // =====================================================
-
-        const liAnterior =
-            document.createElement('li');
-
-        liAnterior.className =
-            `page-item ${
-                paginaCardsActual === 1
-                    ? 'disabled'
-                    : ''
-            }`;
-
-
-        const btnAnterior =
-            document.createElement('button');
-
-        btnAnterior.className =
-            'page-link';
-
-        btnAnterior.type =
-            'button';
-
-        btnAnterior.innerHTML =
-            '&laquo;';
-
-
-        btnAnterior.onclick =
-            function() {
-
-                if (paginaCardsActual > 1) {
-
-                    paginaCardsActual--;
-
-                    renderizarCards();
-
-                    document
-                        .getElementById('contenedorCards')
-                        ?.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
-                }
-            };
-
-
-        liAnterior.appendChild(
-            btnAnterior
-        );
-
-        ul.appendChild(
-            liAnterior
-        );
-
-
-        // =====================================================
-        // PÁGINAS
-        // =====================================================
-
-        for (
-            let pagina = 1;
-            pagina <= totalPaginas;
-            pagina++
-        ) {
-
-            const li =
-                document.createElement('li');
-
-            li.className =
-                `page-item ${
-                    pagina === paginaCardsActual
-                        ? 'active'
-                        : ''
-                }`;
-
-
-            const button =
-                document.createElement('button');
-
-            button.className =
-                'page-link';
-
-            button.type =
-                'button';
-
-            button.textContent =
-                pagina;
-
-
-            button.onclick =
-                function() {
-
-                    paginaCardsActual =
-                        pagina;
-
-                    renderizarCards();
-
-                    document
-                        .getElementById('contenedorCards')
-                        ?.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
-                };
-
-
-            li.appendChild(
-                button
-            );
-
-            ul.appendChild(
-                li
-            );
-        }
-
-
-        // =====================================================
-        // SIGUIENTE
-        // =====================================================
-
-        const liSiguiente =
-            document.createElement('li');
-
-        liSiguiente.className =
-            `page-item ${
-                paginaCardsActual === totalPaginas
-                    ? 'disabled'
-                    : ''
-            }`;
-
-
-        const btnSiguiente =
-            document.createElement('button');
-
-        btnSiguiente.className =
-            'page-link';
-
-        btnSiguiente.type =
-            'button';
-
-        btnSiguiente.innerHTML =
-            '&raquo;';
-
-
-        btnSiguiente.onclick =
-            function() {
-
-                if (
-                    paginaCardsActual <
-                    totalPaginas
-                ) {
-
-                    paginaCardsActual++;
-
-                    renderizarCards();
-
-                    document
-                        .getElementById('contenedorCards')
-                        ?.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
-                }
-            };
-
-
-        liSiguiente.appendChild(
-            btnSiguiente
-        );
-
-        ul.appendChild(
-            liSiguiente
-        );
-
-
-        nav.appendChild(
-            ul
-        );
-
-        contenedor.appendChild(
-            nav
-        );
     }
 
 
@@ -1310,11 +801,8 @@
                 .getElementById('seccionTabla')
                 .innerHTML = html;
 
-
-            // Volver a configurar la tabla después del fetch
             inicializarDataTable();
 
-            // Volver a configurar los botones de observaciones
             configurarBotonesObservacion();
 
 
@@ -1391,8 +879,6 @@
             }
 
         });
-
-        paginaCardsActual = 1;
 
         aplicarFiltrosGlobales();
     }
@@ -1526,56 +1012,53 @@
 
 
     // =========================================================
-// INICIALIZACIÓN
-// =========================================================
+    // INICIALIZACIÓN
+    // =========================================================
 
-function inicializarDataTable() {
+    function inicializarDataTable() {
 
-    if (
-        !$.fn.DataTable ||
-        !document.getElementById('tablaContactos')
-    ) {
-        return;
+        if (
+            !$.fn.DataTable ||
+            !document.getElementById('tablaContactos')
+        ) {
+            return;
+        }
+
+        if (
+            $.fn.DataTable.isDataTable('#tablaContactos')
+        ) {
+            $('#tablaContactos')
+                .DataTable()
+                .destroy();
+        }
+
+        window.tablaContactosDT =
+            $('#tablaContactos').DataTable({
+                language: {
+                    url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
+                },
+                dom: 'rt',
+                paging: false,
+                searching: false,
+                info: false,
+                responsive: true,
+                columnDefs: [
+                    {
+                        orderable: false,
+                        targets: [-1]
+                    }
+                ]
+            });
     }
-
-    if (
-        $.fn.DataTable.isDataTable('#tablaContactos')
-    ) {
-        $('#tablaContactos')
-            .DataTable()
-            .destroy();
-    }
-
-    window.tablaContactosDT =
-        $('#tablaContactos').DataTable({
-            language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
-            },
-            dom: 'rt',
-            paging: false,
-            searching: false,
-            info: false,
-            responsive: true,
-            columnDefs: [
-                {
-                    orderable: false,
-                    targets: [-1]
-                }
-            ]
-        });
-}
 
 
     $(document).ready(function() {
 
-        // DATATABLES
         inicializarDataTable();
-
 
         // =====================================================
         // FILTROS
         // =====================================================
-
         $(document).on(
             'change',
             '.filter-trigger',
@@ -1584,7 +1067,6 @@ function inicializarDataTable() {
                 actualizarUrlExportacion();
             }
         );
-
 
         $('#inputBuscadorGlobal').on(
             'keyup',
@@ -1597,16 +1079,12 @@ function inicializarDataTable() {
             )
         );
 
-
-        renderizarCards();
-
     });
 
 
     // =========================================================
     // VALIDACIONES CREAR CONTACTO
     // =========================================================
-
     $(document).ready(function() {
 
         const form =
