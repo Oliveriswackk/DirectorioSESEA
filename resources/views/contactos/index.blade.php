@@ -1052,34 +1052,32 @@
     }
 
 
-    $(document).ready(function() {
+$(document).ready(function() {
 
-        inicializarDataTable();
+    inicializarDataTable();
 
-        // =====================================================
-        // FILTROS
-        // =====================================================
-        $(document).on(
-            'change',
-            '.filter-trigger',
+    // =====================================================
+    // FILTROS
+    // =====================================================
+    $(document).on(
+        'change',
+        '.filter-trigger',
+        function() {
+            aplicarFiltrosGlobales();
+        }
+    );
+
+    $('#inputBuscadorGlobal').on(
+        'keyup',
+        debounce(
             function() {
                 aplicarFiltrosGlobales();
-                actualizarUrlExportacion();
-            }
-        );
+            },
+            300
+        )
+    );
 
-        $('#inputBuscadorGlobal').on(
-            'keyup',
-            debounce(
-                function() {
-                    aplicarFiltrosGlobales();
-                    actualizarUrlExportacion();
-                },
-                300
-            )
-        );
-
-    });
+});
 
 
     // =========================================================

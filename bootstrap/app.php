@@ -14,6 +14,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        // Permitir que 'password' se limpie de espacios (al omitirlo de las excepciones)
+        $middleware->trimStrings(except: [
+            'current_password',
+            'password_confirmation',
+        ]);
+
         // Agregamos middleware al grupo 'web'
         $middleware->web(append: [
             CheckSessionTimeout::class,
